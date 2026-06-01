@@ -21,22 +21,29 @@ public class VNPayConfig {
 
     static {
         try ( InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(".env")) {
-            if (in == null) {
-                throw new RuntimeException("Không tìm thấy file .env trong thư mục src/main/resources");
+            if (in != null) {
+                props.load(in);
+            } else {
+                System.out.println("[INFO] Không tìm thấy file .env, sử dụng System Environment của Cloud.");
             }
-            props.load(in);
         } catch (Exception e) {
-            throw new RuntimeException("Lỗi khi đọc file .env trong VNPayConfig", e);
+            System.err.println("[WARN] Lỗi đọc file .env cục bộ: " + e.getMessage());
         }
     }
 
-    // Đọc các thông số cấu hình VNPay từ file .env
-    public static final String vnp_TmnCode = props.getProperty("VNPAY_TMN_CODE");
-    public static final String vnp_HashSecret = props.getProperty("VNPAY_HASH_SECRET");
-    public static final String vnp_PayUrl = props.getProperty("VNPAY_URL");
-    public static final String vnp_Returnurl = props.getProperty("VNPAY_RETURN_URL");
+    private static String getEnv(String key) {
+        String value = System.getenv(key);
+        if (value != null && !value.isEmpty()) {
+            return value;
+        }
+        return props.getProperty(key);
+    }
 
-    // Hàm tạo mã băm HmacSHA512 bảo mật của VNPay (Giữ nguyên gốc)
+    public static final String vnp_TmnCode = getEnv("VNPAY_TMN_CODE");
+    public static final String vnp_HashSecret = getEnv("VNPAY_HASH_SECRET");
+    public static final String vnp_PayUrl = getEnv("VNPAY_URL");
+    public static final String vnp_Returnurl = getEnv("VNPAY_RETURN_URL");
+
     public static String hmacSHA512(final String key, final String data) {
         try {
             if (key == null || data == null) {
@@ -58,7 +65,6 @@ public class VNPayConfig {
         }
     }
 
-    // Hàm lấy IP an toàn của khách hàng (Giữ nguyên gốc)
     public static String getIpAddress(HttpServletRequest request) {
         String ipAddress = request.getHeader("X-FORWARDED-FOR");
         if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {

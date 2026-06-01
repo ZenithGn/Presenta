@@ -16,7 +16,7 @@ Presenta is a modern, innovative platform designed to connect talented students 
 
 ## 🛠️ Tech Stack
 
-- **Java** (82.5%) - Core backend logic and application framework
+- **Java** (82.5%) - Servlet-based backend with JSP templating
 - **CSS** (15.5%) - Styling and responsive design
 - **JavaScript** (1.8%) - Interactive frontend components
 - **Other** (0.2%) - Additional utilities and configurations
@@ -26,7 +26,8 @@ Presenta is a modern, innovative platform designed to connect talented students 
 ### Prerequisites
 
 - Java Development Kit (JDK) 11 or higher
-- Maven or Gradle (depending on build configuration)
+- Apache Tomcat 9.0 or higher
+- Maven (for dependency management and building)
 - A modern web browser for the frontend interface
 
 ### Installation
@@ -39,22 +40,36 @@ Presenta is a modern, innovative platform designed to connect talented students 
 
 2. **Build the project**
    ```bash
-   # Using Maven
-   mvn clean install
-   
-   # Or using Gradle
-   gradle build
+   mvn clean package
    ```
+   This generates a WAR file in the `target/` directory.
 
-3. **Run the application**
+3. **Deploy to Tomcat**
+   - Copy the generated WAR file to your Tomcat `webapps/` directory:
+     ```bash
+     cp target/Presenta.war $CATALINA_HOME/webapps/
+     ```
+   - Or use Tomcat Manager GUI to deploy the WAR file
+
+4. **Start Tomcat**
    ```bash
-   mvn spring-boot:run
+   $CATALINA_HOME/bin/startup.sh   # On Linux/Mac
    # Or
-   gradle bootRun
+   %CATALINA_HOME%\bin\startup.bat  # On Windows
    ```
 
-4. **Access the application**
-   - Open your browser and navigate to `http://localhost:8080`
+5. **Access the application**
+   - Open your browser and navigate to `http://localhost:8080/Presenta`
+
+### Development Setup (Using Tomcat Maven Plugin)
+
+For local development, you can run directly with Maven:
+
+```bash
+mvn tomcat7:run
+```
+
+Then access the application at `http://localhost:8080/Presenta`
 
 ## 📁 Project Structure
 
@@ -62,23 +77,48 @@ Presenta is a modern, innovative platform designed to connect talented students 
 Presenta/
 ├── src/
 │   ├── main/
-│   │   ├── java/          # Java backend source code
-│   │   └── resources/     # Application configuration and assets
-│   └── test/              # Unit and integration tests
-├── public/                # Static assets and frontend files
-├── styles/                # CSS stylesheets
-├── scripts/               # JavaScript files for interactivity
-├── pom.xml               # Maven configuration (if using Maven)
-└── README.md             # This file
+│   │   ├── java/              # Java Servlet source code
+│   │   ├── webapp/
+│   │   │   ├── WEB-INF/
+│   │   │   │   └── web.xml   # Servlet configuration
+│   │   │   ├── jsp/          # JSP page templates
+│   │   │   ├── css/          # CSS stylesheets
+│   │   │   ├── js/           # JavaScript files
+│   │   │   └── index.jsp     # Home page
+│   │   └── resources/        # Configuration files
+│   └── test/                 # Unit and integration tests
+├── pom.xml                   # Maven configuration
+└── README.md                 # This file
 ```
 
 ## 🚀 Usage
 
-[Add specific usage instructions for your application here, such as:
-- How to create/upload templates
-- How to browse the marketplace
-- How to customize templates
-- User account management]
+### Creating Templates
+[Add specific usage instructions for your application here]
+
+### Browsing the Marketplace
+[Explain how users can browse and search for templates]
+
+### Customizing Templates
+[Describe the customization process]
+
+## 🚀 Development
+
+### Running Tests
+```bash
+mvn test
+```
+
+### Building for Production
+```bash
+mvn clean package -DskipTests
+```
+
+### Debugging
+Set your IDE to connect to a remote Tomcat debugger on port 8000, then run:
+```bash
+$CATALINA_HOME/bin/startup.sh jpda start
+```
 
 ## 🤝 Contributing
 

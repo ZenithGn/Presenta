@@ -13,3 +13,11 @@ nb-configuration.xml
 
 # Chặn log hệ thống
 *.log
+
+src/test/
+
+# Bỏ qua các file class đã biên dịch của phần test trong target
+target/test-classes/
+
+# Bỏ qua báo cáo kết quả chạy kiểm thử tự động của Maven
+target/surefire-reports/

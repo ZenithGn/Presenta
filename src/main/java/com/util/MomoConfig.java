@@ -8,21 +8,37 @@ package com.util;
  *
  * @author lehan
  */
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class MomoConfig {
 
-    public static final String PARTNER_CODE = "MOMON7FC20260528_TEST";
-    public static final String ACCESS_KEY = "KsezT6fWlisIaP0C";
-    public static final String SECRET_KEY = "fvmRc4tgPJLTKnapGDWA2GANBKuvmbPR";
-    
-    public static final String ENDPOINT = "https://test-payment.momo.vn/v2/gateway/api/create";
-    public static final String RETURN_URL = "http://localhost:8080/EXE202_Maven/MomoReturnController";
-    public static final String IPN_URL = "http://localhost:8080/EXE202_Maven/MomoReturnController";
+private static final Properties props = new Properties();
 
-    // Thuật toán HmacSHA256 của MoMo
+    static {
+        try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(".env")) {
+            if (in == null) {
+                throw new RuntimeException("Không tìm thấy file .env trong thư mục src/main/resources");
+            }
+            props.load(in);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi đọc file .env trong MomoConfig", e);
+        }
+    }
+
+    // Đọc các thông số cấu hình MoMo từ file .env
+    public static final String PARTNER_CODE = props.getProperty("MOMO_PARTNER_CODE");
+    public static final String ACCESS_KEY = props.getProperty("MOMO_ACCESS_KEY");
+    public static final String SECRET_KEY = props.getProperty("MOMO_SECRET_KEY");
+    
+    public static final String ENDPOINT = props.getProperty("MOMO_ENDPOINT");
+    public static final String RETURN_URL = props.getProperty("MOMO_RETURN_URL");
+    public static final String IPN_URL = props.getProperty("MOMO_IPN_URL");
+
+    // Thuật toán HmacSHA256 của MoMo (Giữ nguyên gốc)
     public static String hmacSHA256(String data, String key) {
         try {
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");

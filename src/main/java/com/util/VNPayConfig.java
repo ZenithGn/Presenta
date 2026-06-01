@@ -8,6 +8,7 @@ package com.util;
  *
  * @author lehan
  */
+import io.github.cdimascio.dotenv.Dotenv;
 import java.nio.charset.StandardCharsets;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -15,10 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 
 public class VNPayConfig {
     
-    public static final String vnp_TmnCode = "ZKLL269B";
-    public static final String vnp_HashSecret = "9B882Y67J33ALUTY6Q8W5HN91TOYMRC1";
-    public static final String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static final String vnp_Returnurl = "http://localhost:8080/EXE202_Maven/VNPayReturnController";
+    // .env file load karva mate
+    private static final Dotenv dotenv = Dotenv.load();
+
+    public static final String vnp_TmnCode = dotenv.get("VNPAY_TMN_CODE");
+    public static final String vnp_HashSecret = dotenv.get("VNPAY_HASH_SECRET");
+    public static final String vnp_PayUrl = dotenv.get("VNPAY_URL");
+    public static final String vnp_Returnurl = dotenv.get("VNPAY_RETURN_URL");
 
     // Hàm tạo mã băm HmacSHA512 bảo mật của VNPay
     public static String hmacSHA512(final String key, final String data) {

@@ -8,23 +8,19 @@ package com.util;
  *
  * @author lehan
  */
-import io.github.cdimascio.dotenv.Dotenv;
 import java.nio.charset.StandardCharsets;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class MomoConfig {
 
-    // .env file load karva mate
-    private static final Dotenv dotenv = Dotenv.load();
-
-    public static final String PARTNER_CODE = dotenv.get("MOMO_PARTNER_CODE");
-    public static final String ACCESS_KEY = dotenv.get("MOMO_ACCESS_KEY");
-    public static final String SECRET_KEY = dotenv.get("MOMO_SECRET_KEY");
+    public static final String PARTNER_CODE = "MOMON7FC20260528_TEST";
+    public static final String ACCESS_KEY = "KsezT6fWlisIaP0C";
+    public static final String SECRET_KEY = "fvmRc4tgPJLTKnapGDWA2GANBKuvmbPR";
     
-    public static final String ENDPOINT = dotenv.get("MOMO_ENDPOINT");
-    public static final String RETURN_URL = dotenv.get("MOMO_RETURN_URL");
-    public static final String IPN_URL = dotenv.get("MOMO_IPN_URL");
+    public static final String ENDPOINT = "https://test-payment.momo.vn/v2/gateway/api/create";
+    public static final String RETURN_URL = "http://localhost:8080/EXE202_Maven/MomoReturnController";
+    public static final String IPN_URL = "http://localhost:8080/EXE202_Maven/MomoReturnController";
 
     // Thuật toán HmacSHA256 của MoMo
     public static String hmacSHA256(String data, String key) {

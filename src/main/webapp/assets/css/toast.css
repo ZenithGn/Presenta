@@ -1,0 +1,49 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : May 28, 2026, 2:48:28 PM
+    Author     : lehan
+*/
+/* assets/css/toast.css */
+#custom-toast {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: #28a745; 
+    color: #fff;
+    text-align: left;
+    border-radius: 8px;
+    padding: 16px 20px;
+    position: fixed; /* Giúp khung nổi lên trên cùng */
+    z-index: 99999;
+    right: 30px; 
+    bottom: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s, transform 0.4s, visibility 0.4s;
+}
+
+#custom-toast.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-icon {
+    font-size: 18px;
+    background: rgba(255, 255, 255, 0.2);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}

@@ -1,0 +1,274 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : May 28, 2026, 5:30:47 PM
+    Author     : lehan
+*/
+/* --- CSS CHO KHU VỰC TIÊU ĐỀ & NÚT BACK --- */
+.checkout-header-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 35px;
+}
+
+/* Sửa lại margin-bottom của title cũ cho khít với nút back */
+.checkout-main-title {
+    color: #fff;
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0; /* Bỏ margin cũ để flexbox của wrapper quản lý khoảng cách */
+}
+
+/* Style cho nút Back to Cart */
+.btn-back-to-cart {
+    color: #a3aedb; /* Màu xanh tím mờ chuẩn giao diện Presenta */
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    transition: all 0.2s ease;
+}
+
+.btn-back-to-cart:hover {
+    color: #ffffff; /* Sáng rực lên khi hover */
+    transform: translateX(-4px); /* Hiệu ứng dịch nhẹ sang trái chỉ hướng */
+}
+
+.checkout-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+.checkout-main-title {
+    color: #fff;
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 40px;
+}
+
+.checkout-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.pane-title {
+    color: #0b1c4a;
+    font-size: 18px;
+    font-weight: 800;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+/* --- HỘP CHỌN PHƯƠNG THỨC THANH TOÁN (CỘT TRÁI) --- */
+.payment-methods-box {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    border: 2px solid rgba(138, 180, 248, 0.2);
+}
+
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.payment-card-label {
+    cursor: pointer;
+    display: block;
+}
+
+.real-radio {
+    display: none; /* Ẩn radio hệ thống */
+}
+
+.custom-payment-card {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.2s ease;
+}
+
+/* Tạo vòng tròn tích chọn tùy biến */
+.radio-indicator {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.radio-indicator::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background: #4a8ee6;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s ease;
+}
+
+.payment-name {
+    color: #334155;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+/* Trạng thái khi kích hoạt chọn */
+.real-radio:checked + .custom-payment-card {
+    border-color: #4a8ee6;
+    background: rgba(74, 142, 230, 0.05);
+}
+
+.real-radio:checked + .custom-payment-card .radio-indicator {
+    border-color: #4a8ee6;
+}
+
+.real-radio:checked + .custom-payment-card .radio-indicator::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* --- KHU VỰC TỔNG KẾT ĐƠN HÀNG (CỘT PHẢI) --- */
+.order-summary-box {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    border: 2px solid rgba(138, 180, 248, 0.2);
+}
+
+.summary-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.summary-item-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #334155;
+    font-weight: 600;
+}
+
+.s-item-name {
+    max-width: 75%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.summary-divider {
+    height: 1px;
+    background-color: rgba(11, 28, 74, 0.1);
+    margin: 20px 0;
+}
+
+/* CSS KHU VỰC VOUCHER */
+.voucher-input-wrapper {
+    display: flex;
+    gap: 8px;
+}
+
+.voucher-input-field {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #e2e8f0;
+    font-weight: 700;
+    outline: none;
+    color: #0b1c4a;
+}
+
+.btn-apply-checkout {
+    padding: 0 20px;
+    background: #4a8ee6;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-apply-checkout:hover {
+    background: #2b6bc9;
+}
+
+.checkout-v-msg {
+    font-size: 12px;
+    font-weight: 700;
+    margin: 8px 0 0 0;
+}
+.checkout-v-msg.success {
+    color: #28a745;
+}
+.checkout-v-msg.error {
+    color: #ff4d4f;
+}
+
+/* BILL CHI TIẾT TỔNG TIỀN */
+.bill-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    color: #0b1c4a;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.final-total-row {
+    font-size: 16px;
+    color: #0b1c4a;
+}
+.final-total-row span:last-child {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0b1c4a;
+}
+
+.btn-place-order {
+    background-color: #050a24;
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+    padding: 15px 0;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.3s;
+}
+
+.btn-place-order:hover {
+    background-color: #2b3b75;
+}
+
+@media (max-width: 850px) {
+    .checkout-grid {
+        grid-template-columns: 1fr;
+    }
+}

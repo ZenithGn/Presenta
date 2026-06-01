@@ -1,0 +1,281 @@
+<%-- 
+    Document   : profile
+    Created on : May 29, 2026, 10:28:01 AM
+    Author     : lehan
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.model.User" %>
+<%@ page import="com.model.Template" %>
+<%@ page import="com.model.Order" %>
+<%@ page import="java.util.List" %>
+
+<%
+    User loginUser = (User) session.getAttribute("LOGIN_USER");
+    if (loginUser == null) {
+        response.sendRedirect(request.getContextPath() + "/MainController");
+        return;
+    }
+    List<Template> purchasedTemplates = (List<Template>) request.getAttribute("purchasedTemplates");
+    List<Order> customOrders = (List<Order>) request.getAttribute("customOrders");
+
+    String toastMsg = (String) session.getAttribute("toastMessage");
+%>
+
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <title>My Profile - Presenta</title>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/profile.css">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+
+        <link rel="apple-touch-icon" sizes="180x180" href="${pageContext.request.contextPath}/assets/images/favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="${pageContext.request.contextPath}/assets/images/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="${pageContext.request.contextPath}/assets/images/favicon/favicon-16x16.png">
+        <link rel="manifest" href="${pageContext.request.contextPath}/assets/images/favicon/site.webmanifest">
+        <link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/images/favicon/favicon.ico">
+    </head>
+
+    <%-- LỚP LANDING-BODY SẼ KÍCH HOẠT MÀU NỀN TÍM CHUNG CỦA HỆ THỐNG --%>
+    <body class="landing-body">
+
+        <%-- NAVBAR ĐÃ CHUYỂN SANG NỀN TRONG SUỐT --%>
+        <nav class="navbar" style="border-bottom: none; background: transparent;">
+            <a href="${pageContext.request.contextPath}/MainController" class="nav-brand" style="font-family: 'Pacifico', cursive; font-size: 28px; color:white;">Presenta</a>
+            <div class="nav-links">
+                <a href="${pageContext.request.contextPath}/MainController" style="color:white;">HOME</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=Shop" style="color:white;">SHOP</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=DesignerHub" style="color:white;">DESIGNER HUB</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=ViewCart" style="color:white;">CART</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=Profile " style="border-bottom: 2px solid white; font-weight: 700;">PROFILE</a>
+            </div>
+            <div class="nav-actions">
+                <span style="color: #dae2fd; font-size: 14px; margin-right: 10px;">Welcome, <b><%= loginUser.getUsername()%></b></span>
+                <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin:0; display: inline-block;">
+                    <input type="hidden" name="action" value="Logout">
+                    <button type="submit" class="btn-outline" style="padding: 6px 16px; font-size: 12px; border-radius: 999px; color:white; border-color:white;">Logout</button>
+                </form>
+            </div>
+        </nav>
+
+        <main class="profile-container">
+            <aside class="profile-sidebar">
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
+
+                    <div class="avatar-wrapper" onclick="triggerFileUpload()" title="Click để đổi ảnh đại diện">
+                        <%
+                            String userAvatar = loginUser.getAvatarUrl();
+                            // Đảm bảo đường dẫn là tuyệt đối từ gốc context
+                            String avatarSrc = (userAvatar != null && !userAvatar.isEmpty()) ? userAvatar : "";
+
+                            if (!avatarSrc.isEmpty()) {
+                        %>
+                        <img src="<%= avatarSrc%>" id="main-avatar-img" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                        <% } else {%>
+                        <div class="user-avatar" id="main-avatar-placeholder"><%= loginUser.getUsername().substring(0, 1).toUpperCase()%></div>
+                        <img src="" id="main-avatar-img" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                        <% }%>
+
+                        <div class="avatar-hover-overlay">
+                            📷
+                        </div>
+                    </div>
+
+                    <h3 class="user-name"><%= loginUser.getUsername()%></h3>
+                </div>
+                <ul class="sidebar-menu">
+                    <li class="menu-item active" onclick="switchTab('tab-purchased', this)" id="nav-tab-purchased">🛒 Template đã mua</li>
+                    <li class="menu-item" onclick="switchTab('tab-custom', this)" id="nav-tab-custom">🖌️ Đơn Customize</li>
+                    <li class="menu-item" onclick="switchTab('tab-info', this)" id="nav-tab-info">⚙️ Cài đặt tài khoản</li>
+                </ul>
+            </aside>
+
+            <section class="profile-content-area">
+
+                <div id="tab-purchased" class="tab-pane active">
+                    <h2 class="tab-title">Template Đã Mua (Download)</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tên Template</th>
+                                <th>Ngày mua</th>
+                                <th style="text-align: right;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (purchasedTemplates != null && !purchasedTemplates.isEmpty()) {
+                                    for (Template t : purchasedTemplates) {%>
+                            <tr>
+                                <td><%= t.getTitle()%></td>
+                                <td style="color: #cbd5e1; font-weight: 400;"><%= t.getCreateAt() != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(t.getCreateAt()) : "N/A"%></td>
+                                <td style="text-align: right;">
+                                    <a href="<%= t.getFileURL()%>" target="_blank" class="btn-action btn-download">📥 Download</a>
+                                    <button class="btn-action btn-review" onclick="openReviewModal(<%= t.getTemplateID()%>, '<%= t.getTitle().replace("'", "\\'")%>')">⭐ Review</button>
+                                </td>
+                            </tr>
+                            <% }
+                            } else { %>
+                            <tr><td colspan="3" style="text-align: center; padding: 40px; color: #94a3b8;">Bạn chưa mua sản phẩm nào.</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+
+                    <%-- PAGING DÀNH CHO TAB 1 --%>
+                    <%
+                        Integer tagPage = (Integer) request.getAttribute("tag");
+                        Integer endPage = (Integer) request.getAttribute("endPage");
+                        if (tagPage != null && endPage != null && endPage > 1) {
+                    %>
+                    <div style="display: flex; justify-content: center; gap: 8px; margin-top: 25px;">
+                        <% for (int i = 1; i <= endPage; i++) {%>
+                        <a href="MainController?action=Profile&page=<%= i%>&tab=purchased" 
+                           style="padding: 8px 14px; border-radius: 8px; text-decoration: none; color: white; border: 1px solid rgba(255,255,255,0.2);
+                           <%= (i == tagPage) ? "background: #D8B4FF; color: #11052C;" : ""%>">
+                            <%= i%>
+                        </a>
+                        <% } %>
+                    </div>
+                    <% }%>
+                </div>
+
+                <div id="tab-custom" class="tab-pane">
+                </div>
+
+                <div id="tab-info" class="tab-pane">
+                <h2 class="tab-title">Cài đặt tài khoản</h2>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                    
+                    <div style="display: flex; flex-direction: column; gap: 30px;">
+                        
+                        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                            <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Thông tin cá nhân</h4>
+                            <form action="${pageContext.request.contextPath}/AccountController" method="POST">
+                                <input type="hidden" name="updateType" value="profile">
+                                
+                                <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Tên đăng nhập (Username)</label>
+                                <input type="text" value="<%= loginUser.getUsername() %>" disabled 
+                                       style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:15px; background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.4); cursor: not-allowed; box-sizing: border-box; font-weight: bold;">
+                                
+                                <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Địa chỉ Email</label>
+                                <input type="email" name="email" value="<%= loginUser.getEmail() %>" required 
+                                       style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
+                                
+                                <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding: 10px 20px; width: 100%;">Lưu thông tin</button>
+                            </form>
+                        </div>
+
+                        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                            <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Đổi mật khẩu</h4>
+                            <form action="${pageContext.request.contextPath}/AccountController" method="POST">
+                                <input type="hidden" name="updateType" value="password">
+                                
+                                <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Mật khẩu hiện tại</label>
+                                <input type="password" name="oldPass" required style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:15px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
+                                
+                                <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Mật khẩu mới</label>
+                                <input type="password" name="newPass" required style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
+                                
+                                <button type="submit" class="btn-action" style="background: transparent; color:#D8B4FF; border: 1px solid #D8B4FF; padding: 10px 20px; width: 100%;">Thay đổi mật khẩu</button>
+                            </form>
+                        </div>
+                        
+                    </div>
+
+                    <div>
+                        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); height: 100%; box-sizing: border-box; display: flex; flex-direction: column;">
+                            <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Đổi ảnh đại diện</h4>
+                            <p style="font-size: 13px; color: #cbd5e1; margin-top: 0; line-height: 1.5; flex-grow: 1;">
+                                Bấm trực tiếp vào hình vòng tròn ảnh đại diện ở menu bên trái, hoặc bấm nút bên dưới để chọn một file ảnh (JPG, PNG, GIF) từ máy tính của bạn.
+                                <br><br>
+                                <span style="color: #ffc107;">* Lưu ý: Kích thước file không được vượt quá 10MB.</span>
+                            </p>
+                            
+                            <form action="${pageContext.request.contextPath}/AccountController" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+                                <input type="hidden" name="updateType" value="avatar">
+                                
+                                <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Chọn file ảnh từ máy</label>
+                                <input type="file" name="avatarFile" id="avatar-file-input" accept="image/png, image/jpeg, image/gif" required 
+                                       style="width:100%; padding:10px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box; font-size: 12px;">
+                                
+                                <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding: 12px 24px; width: 100%;">Lưu Ảnh Đại Diện Mới</button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            </section>
+        </main>
+
+        <div id="reviewModal" class="modal-overlay">
+            <div class="modal-content">
+                <h3 style="margin-top: 0; color: #ffffff;">Đánh giá sản phẩm</h3>
+                <p id="reviewTemplateName" style="color: #D8B4FF; font-size: 14px; margin-bottom: 5px; font-weight:bold;"></p>
+
+                <form action="${pageContext.request.contextPath}/MainController" method="POST">
+                    <input type="hidden" name="action" value="SubmitReview">
+                    <input type="hidden" name="templateId" id="reviewTemplateId">
+
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5" required><label for="star5">★</label>
+                        <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                        <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                        <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                        <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+                    </div>
+
+                    <textarea name="comment" class="review-textarea" rows="4" placeholder="Chia sẻ cảm nhận của bạn về Template này..." required></textarea>
+
+                    <div style="display: flex; gap: 10px; justify-content: space-between;">
+                        <button type="button" class="btn-action" style="background: rgba(255,255,255,0.1); color: #ffffff; flex:1;" onclick="closeReviewModal()">Hủy</button>
+                        <button type="submit" class="btn-action" style="background: #D8B4FF; color: #11052C; flex:1;">Gửi Đánh Giá</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <% if (toastMsg != null) {%>
+        <div id="toastAlert" class="toast-msg"><%= toastMsg%></div>
+        <% session.removeAttribute("toastMessage");
+            }%>
+
+        <footer class="main-footer">
+            <div class="footer-container">
+                <div class="footer-col brand-col">
+                    <div class="brand-logo-desc-wrapper">
+                        <img src="${pageContext.request.contextPath}/assets/images/logo.jpg" alt="Presenta Logo" class="footer-image-logo">
+                        <div class="brand-text-content">
+                            <a href="#" class="footer-logo" style="margin-bottom: 4px;">Presenta</a>
+                            <p class="footer-desc" style="margin-bottom: 0;">The next generation template marketplace for academic visionaries and creative professionals. Empowering students and designers worldwide.</p>
+                        </div>
+                    </div>
+                    <div class="footer-socials">
+                        <a href="https://www.facebook.com/profile.php?id=61590550761077" target="_blank" class="social-icon">🌐</a>
+                        <a href="#" class="social-icon">💬</a>
+                        <a href="mailto:presentaproject05@gmail.com" target="_blank" class="social-icon">📧</a>
+                    </div>
+                </div>
+                <div class="footer-col contact-col">
+                    <h4>GET IN TOUCH</h4>
+                    <ul class="contact-info-list">
+                        <li><span class="contact-icon">📍</span><span>FPT University, District 9, Ho Chi Minh City</span></li>
+                        <li><span class="contact-icon">📧</span><span>presentaproject05@gmail.com</span></li>
+                        <li><span class="contact-icon">📞</span><span>+84 (28) 7300 5588</span></li>
+                        <li><span class="contact-icon">⏱</span><span>Mon - Fri: 8:00 AM - 5:00 PM</span></li>
+                    </ul>
+                </div>
+            </div> 
+            <div class="footer-bottom">
+                <div class="footer-bottom-container">
+                    <p>&copy; 2026 Presenta. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+        <script src="${pageContext.request.contextPath}/assets/js/toast.js"></script>
+        <script src="${pageContext.request.contextPath}/assets/js/profile.js"></script>
+    </body>
+</html>

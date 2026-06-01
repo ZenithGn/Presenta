@@ -1,0 +1,159 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : May 24, 2026, 5:17:53 PM
+    Author     : lehan
+*/
+/* File: assets/css/global.css */
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap');
+
+:root {
+    /* Colors based on Vibrant Academic Glass */
+    --surface: #0b1326;
+    --surface-glass: rgba(255, 255, 255, 0.05);
+    --border-glass: rgba(255, 255, 255, 0.15);
+    --on-surface: #dae2fd;
+    --text-muted: #958da1;
+    --primary: #d2bbff;
+    --primary-container: #7c3aed;
+    --secondary-container: #0566d9;
+    --error: #ffb4ab;
+    --error-container: #93000a;
+
+    --btn-gradient: linear-gradient(135deg, var(--primary-container), var(--secondary-container));
+    --font-main: 'Be Vietnam Pro', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-main);
+}
+
+body {
+    background-color: var(--surface);
+    color: var(--on-surface);
+    min-height: 100vh;
+    /* Hiệu ứng Atmosphere: Radial blur */
+    background-image: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.15) 0%, transparent 60%);
+    background-attachment: fixed;
+}
+
+/* --- Common Components --- */
+.glass-panel {
+    background: var(--surface-glass);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--border-glass);
+    border-radius: 16px;
+}
+
+.btn-primary {
+    background: var(--btn-gradient);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--on-surface);
+    border: 1px solid var(--border-glass);
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-outline:hover {
+    background: var(--surface-glass);
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(124, 58, 237, 0.2);
+    border: 1px solid var(--primary-container);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* ========================================== */
+/* TOAST MESSAGE CSS                          */
+/* ========================================== */
+#toast {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: #28a745; /* Màu xanh lá cây báo thành công */
+    color: #fff;
+    text-align: left;
+    border-radius: 8px;
+    padding: 16px 20px;
+    position: fixed;
+    z-index: 9999;
+    right: 30px; /* Nằm ở góc dưới bên phải */
+    bottom: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s, transform 0.4s, visibility 0.4s;
+}
+
+/* Biểu tượng dấu tick */
+.toast-icon {
+    font-size: 18px;
+    background: rgba(255, 255, 255, 0.2);
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Class kích hoạt hiệu ứng hiện */
+#toast.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Hiệu ứng gạch chân và in đậm cho menu đang chọn */
+.nav-links a {
+    transition: all 0.2s ease;
+    padding-bottom: 4px; /* Khoảng cách từ chữ xuống đường gạch */
+}
+
+.nav-links a.active-nav {
+    font-weight: 800; /* In đậm chữ */
+    border-bottom: 3px solid currentColor; /* Gạch chân tự ăn theo màu chữ */
+}
+
+.nav-links a:hover {
+    opacity: 0.8;
+}

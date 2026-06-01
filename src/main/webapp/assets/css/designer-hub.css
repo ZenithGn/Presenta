@@ -1,0 +1,317 @@
+/* =========================================================
+   DESIGNER HUB - STYLES
+   ========================================================= */
+
+.hub-body-wrapper {
+    padding-bottom: 0;
+    padding-top: 1px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+.hub-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* --- HERO SECTION --- */
+.hub-hero {
+    text-align: center;
+    padding: 80px 0;
+    position: relative;
+}
+.hub-title-script {
+    font-family: 'Pacifico', cursive;
+    font-size: 100px;
+    color: white;
+    text-shadow: 0 0 20px rgba(255,255,255,0.3);
+    line-height: 1.2;
+    margin-bottom: -20px;
+    position: relative;
+    z-index: 2;
+}
+.hub-hero-box {
+    background: #D8B4FF;
+    color: #11052C;
+    border-radius: 32px;
+    padding: 40px;
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+.hub-hero-box h2 {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+.hub-hero-box p {
+    font-weight: 500;
+    font-size: 16px;
+}
+
+/* --- SECTION TITLE CHUNG --- */
+.hub-section-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: white;
+}
+.hub-section-subtitle {
+    text-align: center;
+    color: #ccc3d8;
+    margin-bottom: 48px;
+    font-size: 16px;
+}
+
+/* --- CATEGORIES SECTION --- */
+.category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 800px;
+    margin: 0 auto 100px;
+}
+.category-item {
+    background: rgba(29, 21, 59, 0.8);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 24px 40px;
+    text-align: center;
+    transition: 0.3s;
+}
+.category-item:hover {
+    background: rgba(124, 58, 237, 0.3);
+    border-color: #D8B4FF;
+    transform: translateY(-3px);
+}
+.category-item h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 8px;
+}
+.category-item p {
+    font-size: 14px;
+    color: #ccc3d8;
+}
+
+/* --- WHY JOIN SECTION --- */
+.why-join-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto 100px;
+}
+.why-card {
+    background: linear-gradient(135deg, #3B185F 0%, #150E56 100%);
+    border-radius: 24px;
+    padding: 40px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.why-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 12px;
+}
+.why-card p {
+    font-size: 14px;
+    color: #ccc3d8;
+}
+
+/* --- HOW IT WORKS SECTION --- */
+.how-it-works-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 800px;
+    margin: 0 auto 100px;
+}
+.step-item {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(90deg, #1D153B 0%, transparent 100%);
+    border-radius: 999px;
+    padding: 16px 40px;
+    border-left: 4px solid #7C3AED;
+}
+.step-number {
+    font-family: 'Pacifico', cursive;
+    font-size: 64px;
+    color: rgba(255,255,255,0.1);
+    margin-right: 24px;
+    line-height: 1;
+}
+.step-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+}
+
+/* --- FEATURED DESIGNER (Thẻ lượn sóng) --- */
+.designer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin: 0 auto 100px;
+    max-width: 1000px;
+}
+.scalloped-designer-card {
+    position: relative;
+    background: linear-gradient(to bottom, #2C2D3A 0%, #E5B2CA 100%);
+    border-radius: 150px 150px 0 0;
+    padding: 12px 12px 40px 12px;
+    text-align: center;
+    color: #11052C;
+    /* Hiệu ứng cắt lượn sóng đáy */
+    --mask: radial-gradient(12px at 12px 100%, #0000 98%, #000) -12px calc(100% - 10px) / 24px 100% repeat-x,
+        linear-gradient(#000 0 0) 0 0 / 100% calc(100% - 12px) no-repeat;
+    -webkit-mask: var(--mask);
+    mask: var(--mask);
+    transition: transform 0.3s ease;
+}
+.scalloped-designer-card:hover {
+    transform: translateY(-10px);
+}
+.scalloped-avatar-wrap {
+    width: 100%;
+    height: 250px;
+    border-radius: 140px 140px 0 0;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+.scalloped-avatar-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.scalloped-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    margin-bottom: 16px;
+}
+.scalloped-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #11052C;
+}
+.scalloped-spec {
+    font-size: 11px;
+    color: #555;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+.scalloped-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+.btn-grid-book {
+    background: #11052C;
+    color: white;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 999px;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none;
+}
+.btn-grid-contact {
+    background: transparent;
+    color: #11052C;
+    border: 1px solid #11052C;
+    padding: 8px 24px;
+    border-radius: 999px;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* =========================================================
+   NÂNG CẤP CTA BOTTOM NỔI BẬT (GLOW GLASSMORPHISM)
+   ========================================================= */
+.cta-bottom {
+    padding: 100px 24px;
+    text-align: center;
+}
+
+/* Chiếc hộp kính mờ bo góc có viền phát sáng nhẹ */
+.cta-card {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 40px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(216, 180, 255, 0.25); /* Viền tím nhạt xuyên thấu */
+    border-radius: 32px;
+    backdrop-filter: blur(16px); /* Hiệu ứng kính mờ nghệ thuật */
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(124, 58, 237, 0.15); /* Đổ bóng neon phát sáng nhẹ */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hiệu ứng vết sáng mờ ảo bên trong hộp kính */
+.cta-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(216, 180, 255, 0.06) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Tiêu đề chữ đổ màu từ Trắng sang Tím ánh kim rực rỡ */
+.cta-card h2 {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 16px;
+    background: linear-gradient(180deg, #FFFFFF 30%, #D8B4FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 20px rgba(216, 180, 255, 0.2);
+}
+
+.cta-card p {
+    color: #E2D7FF;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 36px;
+    opacity: 0.9;
+}
+
+/* NÚT BẤM CTA ĐƯỢC THIẾT KẾ ĐỘT PHÁ NỔI BẬT */
+.btn-cta-highlight {
+    background: linear-gradient(135deg, #7C3AED 0%, #0566d9 100%); /* Phối màu Neon đỉnh cao giống nút Login/Sign up */
+    color: white !important;
+    padding: 16px 48px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+.btn-cta-highlight:hover {
+    transform: translateY(-4px); /* Nẩy lên mạnh hơn khi di chuột */
+    box-shadow: 0 15px 35px rgba(124, 58, 237, 0.6),
+        0 0 25px rgba(255, 255, 255, 0.3); /* Tăng cường độ phát sáng */
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-cta-highlight:active {
+    transform: translateY(-1px);
+}

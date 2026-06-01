@@ -1,0 +1,15 @@
+# Chặn thư mục target (nơi chứa file .war và class đã biên dịch, không cần đưa lên github)
+target/
+
+# Chặn file cấu hình môi trường chứa mật khẩu Database AWS của bạn
+.env
+
+# Chặn các file cấu hình riêng của IDE (NetBeans/IntelliJ)
+nb-configuration.xml
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Chặn log hệ thống
+*.log

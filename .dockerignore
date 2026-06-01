@@ -1,0 +1,6 @@
+target
+nb-configuration.xml
+.git
+.gitignore
+*.log
+.DS_Store

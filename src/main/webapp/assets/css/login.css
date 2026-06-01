@@ -1,0 +1,129 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : May 24, 2026, 5:17:59 PM
+    Author     : lehan
+*/
+/* File: assets/css/login.css */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.login-card {
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.brand-title {
+    font-size: 48px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 8px;
+    background: var(--btn-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 16px;
+    margin-bottom: 32px;
+}
+
+.form-group { margin-bottom: 24px; }
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    background: #0F172A;
+    border: 1px solid var(--border-glass);
+    color: var(--on-surface);
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(210, 187, 255, 0.2);
+}
+
+.login-btn-submit { width: 100%; margin-top: 10px; padding: 14px; font-size: 16px;}
+.login-btn-back { display: block; width: 100%; text-align: center; margin-top: 20px;}
+
+.error-msg {
+    color: var(--error);
+    background: var(--error-container);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 24px;
+    text-align: center;
+    border: 1px solid var(--error);
+}
+/* --- Cập nhật mới cho link Quên mật khẩu và Đăng ký --- */
+
+.password-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+.password-header label {
+    margin-bottom: 0 !important; 
+}
+
+.link-forgot {
+    font-size: 13px;
+    color: var(--primary); /* Đổi màu tím sáng */
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+    align-items: center;
+}
+
+.link-forgot:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+/* --- Căn chỉnh dòng Đăng ký ngay --- */
+.register-prompt {
+    text-align: center !important;
+    margin-top: 20px;
+    margin-bottom: 24px; /* Tạo khoảng cách với nút Quay lại */
+    font-size: 14px;
+    color: var(--text-muted);
+    width: 100%;
+}
+
+.link-register {
+    color: var(--primary); /* Đổi màu tím sáng */
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: 4px;
+    transition: all 0.3s ease;
+}
+
+.link-register:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}

@@ -56,6 +56,18 @@ public class MainController extends HttpServlet {
     private static final String BUY_NOW = "BuyNow";
     private static final String BUY_NOW_CONTROLLER = "BuyNowController";
 
+    //Designer 
+    private static final String DESIGNER_HOME = "DesignerHome";
+    private static final String DESIGNER_HOME_CONTROLLER = "DesignerHomeController";
+    private static final String MANAGE_TEMPLATE = "ManageTemplate";
+    private static final String MANAGE_TEMPLATE_CONTROLLER = "ManageTemplateController";
+    private static final String EDIT_TEMPLATE = "EditTemplate";
+    private static final String EDIT_TEMPLATE_CONTROLLER = "EditTemplateController";
+    private static final String DELETE_TEMPLATE = "DeleteTemplate";
+    private static final String DELETE_TEMPLATE_CONTROLLER = "DeleteTemplateController";
+    private static final String CREATE_TEMPLATE = "CreateTemplateForm";
+    private static final String CREATE_TEMPLATE_CONTROLLER = "CreateTemplateController";
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -64,15 +76,15 @@ public class MainController extends HttpServlet {
             String action = request.getParameter("action");
             if (action == null) {
                 url = WELCOME;
-            } else if (LOGIN.equals(action)) { // Nhánh xử lý đăng nhap
+            } else if (LOGIN.equals(action)) {
                 url = LOGIN_CONTROLLER;
-            } else if (LOGOUT.equals(action)) { // Nhánh xử lý đăng xuất
+            } else if (LOGOUT.equals(action)) {
                 url = LOGOUT_CONTROLLER;
-            } else if (REGISTER.equals(action)) { // Nhánh xử lý Đăng ký
+            } else if (REGISTER.equals(action)) {
                 url = REGISTER_CONTROLLER;
             } else if (SHOP.equals(action)) {
                 url = SHOP_CONTROLLER;
-            } else if (TEMPLATE_DETAIL.equals(action)) { // Chỉ điều phối, không xử lý logic tại đây
+            } else if (TEMPLATE_DETAIL.equals(action)) {
                 url = TEMPLATE_DETAIL_CONTROLLER;
             } else if (DESIGNER_HUB.equals(action)) {
                 url = DESIGNER_HUB_CONTROLLER;
@@ -106,6 +118,16 @@ public class MainController extends HttpServlet {
                 url = SUBMIT_REVIEW_CONTROLLER;
             } else if (BUY_NOW.equals(action)) {
                 url = BUY_NOW_CONTROLLER;
+            } else if (DESIGNER_HOME.equals(action)) {
+                url = DESIGNER_HOME_CONTROLLER;
+            } else if (MANAGE_TEMPLATE.equals(action)) {
+                url = MANAGE_TEMPLATE_CONTROLLER;
+            } else if (EDIT_TEMPLATE.equals(action)) {
+                url = EDIT_TEMPLATE_CONTROLLER;
+            } else if (DELETE_TEMPLATE.equals(action)) {
+                url = DELETE_TEMPLATE_CONTROLLER;
+            } else if (CREATE_TEMPLATE.equals(action)) {
+                url = CREATE_TEMPLATE_CONTROLLER;
             }
         } catch (Exception e) {
             log("Error at MainController: " + e.toString());

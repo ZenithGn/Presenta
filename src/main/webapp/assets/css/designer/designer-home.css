@@ -1,0 +1,300 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : Jun 2, 2026, 10:45:15 AM
+    Author     : lehan
+*/
+/* File: assets/css/designer/designer-home.css */
+/* File: assets/css/designer/designer-home.css */
+
+/* File: assets/css/designer/designer-home.css */
+
+.designer-body {
+    background: linear-gradient(135deg, #11052C 0%, #3B185F 50%, #150E56 100%) !important;
+    background-attachment: fixed !important; 
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    color: var(--on-surface);
+    min-height: 100vh;
+    font-family: var(--font-main);
+}
+
+/* ========================================= */
+/* DESIGNER NAVBAR (GIỮ NGUYÊN)              */
+/* ========================================= */
+.designer-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 40px;
+    background: rgba(17, 5, 44, 0.2) !important; 
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.designer-brand {
+    font-family: 'Pacifico', cursive;
+    font-size: 28px;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.designer-brand span {
+    font-family: var(--font-main);
+    font-size: 10px;
+    font-weight: 800;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 4px 8px;
+    background: #0075FF; /* Điểm nhấn Cyan */
+    border-radius: 4px;
+}
+
+.designer-nav-links {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+}
+
+.designer-nav-links a {
+    color: #A0AEC0;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    padding-bottom: 4px;
+    transition: all 0.3s ease;
+}
+
+.designer-nav-links a:hover, .designer-nav-links a.active {
+    color: white;
+    border-bottom: 2px solid #0075FF; /* Điểm nhấn Cyan */
+}
+
+/* ========================================= */
+/* DASHBOARD VISION UI STYLE                 */
+/* ========================================= */
+.designer-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+}
+
+/* Card Style chuẩn Vision UI */
+.vision-card {
+    background: linear-gradient(127.09deg, rgba(6, 11, 40, 0.74) 19.41%, rgba(10, 14, 35, 0.49) 76.65%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    padding: 24px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* STATS GRID (Hàng 4 cục nhỏ) */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #A0AEC0;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.stat-trend {
+    font-size: 12px;
+    color: #01B574; /* Xanh lá neon */
+    font-weight: 700;
+}
+
+.stat-icon {
+    width: 45px;
+    height: 45px;
+    background: #0075FF; /* Xanh Cyan */
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 117, 255, 0.4);
+}
+
+/* MAIN DASHBOARD GRID */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.welcome-card {
+    /* Các thuộc tính bên dưới giữ nguyên */
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 250px;
+}
+
+.welcome-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(90deg, rgba(6,11,40,0.9) 0%, rgba(6,11,40,0.4) 100%);
+    z-index: 1;
+}
+
+.welcome-content {
+    position: relative;
+    z-index: 2;
+}
+
+.welcome-content p { color: #A0AEC0; font-size: 14px; margin-bottom: 4px; }
+.welcome-content h2 { font-size: 32px; font-weight: 700; color: white; margin-bottom: 16px; }
+.welcome-content .sub-text { font-size: 14px; max-width: 250px; color: #E2E8F0; line-height: 1.5; }
+
+/* TABLE STYLES */
+.panel-header {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.custom-table th {
+    text-align: left;
+    padding: 12px 16px;
+    color: #A0AEC0;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-table td {
+    padding: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.custom-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status Badges - Kiểu dáng mới mỏng hơn */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+}
+.status-completed, .status-approved { background: transparent; color: #01B574; border: 1px solid #01B574; }
+.status-pending { background: transparent; color: #F59E0B; border: 1px solid #F59E0B; }
+.status-rejected { background: transparent; color: #E53E3E; border: 1px solid #E53E3E; }
+
+/* Nút bấm mới */
+.btn-vision {
+    background: #0075FF;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+    transition: all 0.3s;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0, 117, 255, 0.3);
+}
+.btn-vision:hover { background: #2b8cff; transform: translateY(-2px); }
+
+@media (max-width: 1024px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+/* ========================================= */
+/* VISION UI PAGINATION STYLE                */
+/* ========================================= */
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 32px;
+}
+
+.page-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #A0AEC0;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.page-link:hover {
+    color: white;
+    border-color: #0075FF;
+    background: rgba(0, 117, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.page-link.active-page {
+    background: #0075FF;
+    color: white;
+    border-color: #0075FF;
+    box-shadow: 0 4px 15px rgba(0, 117, 255, 0.3);
+}

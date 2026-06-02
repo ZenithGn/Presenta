@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.controller.web;
+package com.controller.designer;
 
+import com.model.DesignerDAO;
 import com.model.User;
-import com.model.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -19,54 +19,50 @@ import javax.servlet.http.HttpSession;
  *
  * @author lehan
  */
-@WebServlet(name = "LoginController", urlPatterns = {"/LoginController"})
-public class LoginController extends HttpServlet {
-
-    private static final String ERROR_PAGE = "views/web/login.jsp";
-    private static final String ADMIN_DASHBOARD = "views/admin/dashboard.jsp"; // Đường dẫn tạm
-    private static final String HOME_PAGE = "views/web/home.jsp";
-    private static final String DESIGNER_HOME = "DesignerHomeController";
+@WebServlet(name = "DeleteTemplateController", urlPatterns = {"/DeleteTemplateController"})
+public class DeleteTemplateController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         response.setContentType("text/html;charset=UTF-8");
-        String url = ERROR_PAGE;
+        String pageParam = request.getParameter("page");
+        if (pageParam == null || pageParam.trim().isEmpty()) {
+            pageParam = "1";
+        }
 
         try {
-            // Lấy dữ liệu từ form
-            String user = request.getParameter("username");
-            String pass = request.getParameter("password");
+            HttpSession session = request.getSession();
+            User loginUser = (User) session.getAttribute("LOGIN_USER");
 
-            // FIX LỖI: Kiểm tra xem user có đang thực sự submit form hay không
-            // Nếu user và pass khác null, tức là họ đã bấm nút "Đăng Nhập"
-            if (user != null && pass != null) {
+            // 1. Kiểm tra quyền truy cập an toàn hệ thống
+            if (loginUser == null || loginUser.getRoleId() != 3) {
+                response.sendRedirect(request.getContextPath() + "/MainController?action=Login");
+                return;
+            }
 
-                UserDAO dao = new UserDAO();
-                User loginUser = dao.checkLogin(user, pass);
+            // 2. Lấy ID sản phẩm cần xóa
+            String idParam = request.getParameter("id");
+            if (idParam != null && !idParam.trim().isEmpty()) {
+                int templateId = Integer.parseInt(idParam);
+                DesignerDAO dao = new DesignerDAO();
 
-                if (loginUser != null) {
-                    HttpSession session = request.getSession();
-                    session.setAttribute("LOGIN_USER", loginUser);
+                // 3. Thực thi xóa trong Database
+                boolean isDeleted = dao.deleteTemplate(templateId);
 
-                    // Phân quyền điều hướng
-                    if (loginUser.getRoleId() == 1) {
-                        url = ADMIN_DASHBOARD;
-                    } else if (loginUser.getRoleId() == 3) {
-                        url = DESIGNER_HOME; 
-                    } else {
-                        url = HOME_PAGE;
-                    }
+                // 4. Thiết lập thông báo trạng thái lên session (Dùng cho component Toast hiển thị)
+                if (isDeleted) {
+                    session.setAttribute("toastMessage", "Xóa thiết kế thành công!");
                 } else {
-                    request.setAttribute("errorMessage", "Tài khoản hoặc mật khẩu không chính xác!");
+                    session.setAttribute("toastMessage", "Không thể xóa! Thiết kế này đã có khách hàng mua hoặc đánh giá.");
                 }
             }
-            // Nếu user và pass là null (mới click vào trang) -> Bỏ qua khối lệnh trên, chỉ load url = ERROR_PAGE (login.jsp) bình thường
 
         } catch (Exception e) {
-            log("Error at LoginController: " + e.toString());
+            log("Error at DeleteTemplateController: " + e.getMessage());
+            e.printStackTrace();
         } finally {
-            request.getRequestDispatcher(url).forward(request, response);
+            // 5. Điều hướng ngược về trang danh sách và giữ nguyên số trang hiện tại
+            response.sendRedirect("MainController?action=ManageTemplate&page=" + pageParam);
         }
     }
 

@@ -1,7 +1,7 @@
 <%--
     Document   : profile
     Author     : lehan
-    Admin Profile — email change + password change only
+    Admin Profile — avatar change, email change + password change only
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="com.model.User" %>
@@ -164,22 +164,30 @@
             </div>
 
             <div class="profile-layout">
-                <%-- ============ CHANGE USERNAME ============ --%>
-                <div class="vision-card" style="padding: 28px;">
-                    <div class="panel-header" style="margin-bottom: 20px;">✏️ Change Username</div>
+                <%-- ============ CHANGE AVATAR ============ --%>
+                <div class="vision-card" style="padding: 28px; text-align: center;">
+                    <div class="panel-header" style="margin-bottom: 20px;">🖼️ Change Avatar</div>
+
+                    <%
+                        String currentAvatar = loginUser.getAvatarUrl();
+                        String avatarSrc = (currentAvatar != null && !currentAvatar.trim().isEmpty())
+                            ? currentAvatar
+                            : "https://ui-avatars.com/api/?name=" + loginUser.getUsername() + "&background=7C3AED&color=fff&size=128";
+                    %>
+                    <img src="<%= avatarSrc%>" alt="Avatar"
+                         style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.2); margin-bottom: 20px;">
+
                     <form action="${pageContext.request.contextPath}/MainController" method="POST">
                         <input type="hidden" name="action" value="AdminProfile">
-                        <input type="hidden" name="method" value="changeUsername">
+                        <input type="hidden" name="method" value="changeAvatar">
 
-                        <div class="form-group">
-                            <label>Current Username</label>
-                            <input type="text" class="form-control" value="<%= loginUser.getUsername()%>" disabled>
+                        <div class="form-group" style="text-align: left;">
+                            <label>Avatar Image URL</label>
+                            <input type="text" name="avatarURL" class="form-control"
+                                   placeholder="https://example.com/avatar.jpg"
+                                   value="<%= currentAvatar != null ? currentAvatar : ""%>">
                         </div>
-                        <div class="form-group">
-                            <label>New Username <span style="color: #E53E3E;">*</span></label>
-                            <input type="text" name="newUsername" class="form-control" placeholder="Enter new username (min 3 chars)" required minlength="3">
-                        </div>
-                        <button type="submit" class="btn-save" style="width: 100%;">Update Username</button>
+                        <button type="submit" class="btn-save" style="width: 100%;">Update Avatar</button>
                     </form>
                 </div>
 

@@ -16,7 +16,7 @@ import java.util.Properties;
 
 public class DBUtils {
 
-private static final Properties props = new Properties();
+    private static final Properties props = new Properties();
 
     static {
         try (InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(".env")) {
@@ -31,7 +31,8 @@ private static final Properties props = new Properties();
         }
     }
 
-    // Hàm đa năng: Tìm trên Render trước, nếu không có mới tìm trong file .env local
+    // Hàm đa năng: Tìm trên Render trước, nếu không có mới tìm trong file .env
+    // local
     private static String getEnv(String key) {
         String value = System.getenv(key);
         if (value != null && !value.isEmpty()) {
@@ -49,8 +50,8 @@ private static final Properties props = new Properties();
         Connection conn = null;
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         String url = "jdbc:sqlserver://" + DB_HOST + ":1433;"
-                   + "databaseName=" + DB_NAME + ";"
-                   + "encrypt=true;trustServerCertificate=true;";
+                + "databaseName=" + DB_NAME + ";"
+                + "encrypt=true;trustServerCertificate=true;";
         conn = DriverManager.getConnection(url, USER_NAME, PASSWORD);
         return conn;
     }

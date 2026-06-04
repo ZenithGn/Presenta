@@ -23,9 +23,8 @@ import javax.servlet.http.Part;
  *
  * @author lehan
  */
-@WebServlet(name = "AccountController", urlPatterns = {"/AccountController"})
-@MultipartConfig(
-        fileSizeThreshold = 1024 * 1024 * 1, // 1 MB - bộ nhớ tạm
+@WebServlet(name = "AccountController", urlPatterns = { "/AccountController" })
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 1, // 1 MB - bộ nhớ tạm
         maxFileSize = 1024 * 1024 * 10, // 10 MB - kích thước tối đa 1 file
         maxRequestSize = 1024 * 1024 * 15 // 15 MB - tổng kích thước request
 )
@@ -84,7 +83,8 @@ public class AccountController extends HttpServlet {
                         // Lấy phần mở rộng (ví dụ: .jpg)
                         String fileExt = fileName.substring(fileName.lastIndexOf("."));
                         // Sinh tên mới: user_1_uuid.jpg
-                        String uniqueFileName = "user_" + loginUser.getUserId() + "_" + UUID.randomUUID().toString() + fileExt;
+                        String uniqueFileName = "user_" + loginUser.getUserId() + "_" + UUID.randomUUID().toString()
+                                + fileExt;
 
                         // C. Ghi file vật lý xuống ổ đĩa server
                         filePart.write(uploadFilePath + File.separator + uniqueFileName);
@@ -136,14 +136,15 @@ public class AccountController extends HttpServlet {
         return "";
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -154,10 +155,10 @@ public class AccountController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

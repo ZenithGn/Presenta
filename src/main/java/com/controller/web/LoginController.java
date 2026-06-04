@@ -19,11 +19,11 @@ import javax.servlet.http.HttpSession;
  *
  * @author lehan
  */
-@WebServlet(name = "LoginController", urlPatterns = {"/LoginController"})
+@WebServlet(name = "LoginController", urlPatterns = { "/LoginController" })
 public class LoginController extends HttpServlet {
 
     private static final String ERROR_PAGE = "views/web/login.jsp";
-    private static final String ADMIN_DASHBOARD = "views/admin/dashboard.jsp"; // Đường dẫn tạm
+    private static final String ADMIN_DASHBOARD = "AdminDashboardController";
     private static final String HOME_PAGE = "views/web/home.jsp";
     private static final String DESIGNER_HOME = "DesignerHomeController";
 
@@ -61,7 +61,8 @@ public class LoginController extends HttpServlet {
                     request.setAttribute("errorMessage", "Email hoặc mật khẩu không chính xác!");
                 }
             }
-            // Nếu email và pass là null (mới click vào trang) -> Bỏ qua khối lệnh trên, chỉ load url = ERROR_PAGE (login.jsp) bình thường
+            // Nếu email và pass là null (mới click vào trang) -> Bỏ qua khối lệnh trên, chỉ
+            // load url = ERROR_PAGE (login.jsp) bình thường
 
         } catch (Exception e) {
             log("Error at LoginController: " + e.toString());
@@ -70,14 +71,15 @@ public class LoginController extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -88,10 +90,10 @@ public class LoginController extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

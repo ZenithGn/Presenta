@@ -48,7 +48,7 @@
             <a href="${pageContext.request.contextPath}/MainController" class="nav-brand" style="font-family: 'Pacifico', cursive; font-size: 28px;">Presenta</a>
             <div class="nav-links">
                 <a href="${pageContext.request.contextPath}/MainController">HOME</a>
-                <a href="${pageContext.request.contextPath}/MainController?action=Shop" style="border-bottom: 2px solid white; font-weight: 700;">SHOP</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=Shop" class="active">SHOP</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerHub">DESIGNER HUB</a>
                 <% if (roleId == 2) { %>
                 <a href="${pageContext.request.contextPath}/MainController?action=ViewCart">CART</a>

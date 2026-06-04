@@ -34,7 +34,7 @@
         <nav class="navbar" style="border-bottom: none; background: transparent;">
             <a href="${pageContext.request.contextPath}/MainController" class="nav-brand" style="font-family: 'Pacifico', cursive; font-size: 28px;">Presenta</a>
             <div class="nav-links">
-                <a href="${pageContext.request.contextPath}/MainController" style="border-bottom: 2px solid white; font-weight: 700;">HOME</a>
+                <a href="${pageContext.request.contextPath}/MainController" class="active">HOME</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=Shop">SHOP</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerHub">DESIGNER HUB</a>
                 <% if (roleId == 2) { %>

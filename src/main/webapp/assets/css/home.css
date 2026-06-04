@@ -40,6 +40,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
 .nav-links a:hover {
     opacity: 1;
 }
+.nav-links a.active {
+    color: white;
+    border-bottom: 2px solid white;
+    font-weight: 700;
+    opacity: 1;
+}
 .nav-actions {
     display: flex;
     align-items: center;

@@ -49,7 +49,7 @@
             <div class="nav-links">
                 <a href="${pageContext.request.contextPath}/MainController">HOME</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=Shop">SHOP</a>
-                <a href="${pageContext.request.contextPath}/MainController?action=DesignerHub" style="border-bottom: 2px solid white; font-weight: 700;">DESIGNER HUB</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=DesignerHub" class="active">DESIGNER HUB</a>
                 <% if (roleId == 2) { %>
                 <a href="${pageContext.request.contextPath}/MainController?action=ViewCart">CART</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=Profile">PROFILE</a>

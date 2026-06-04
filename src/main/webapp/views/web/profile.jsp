@@ -54,7 +54,7 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=Shop" style="color:white;">SHOP</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerHub" style="color:white;">DESIGNER HUB</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=ViewCart" style="color:white;">CART</a>
-                <a href="${pageContext.request.contextPath}/MainController?action=Profile " style="border-bottom: 2px solid white; font-weight: 700;">PROFILE</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=Profile" class="active">PROFILE</a>
             </div>
             <div class="nav-actions">
                 <span style="color: #dae2fd; font-size: 14px; margin-right: 10px;">Welcome, <b><%= loginUser.getUsername()%></b></span>

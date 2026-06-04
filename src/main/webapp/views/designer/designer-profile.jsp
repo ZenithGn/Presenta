@@ -54,7 +54,7 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerHome" class="active">Dashboard</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=ManageTemplate">Manage Templates</a>
                 <a href="#">Withdrawals</a>
-                <a href="#">Orders</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=CustomerBooking">Customer Booking</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerProfile" style="border-bottom: 2px solid white; font-weight: 700; color:white;">Profile</a>
             </div>
             <div class="nav-actions">

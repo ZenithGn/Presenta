@@ -49,8 +49,8 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerHome">Dashboard</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=ManageTemplate" class="active">Manage Templates</a>
                 <a href="#">Withdrawals</a>
-                <a href="#">Orders</a>
-                <a href="#">Profile</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=CustomerBooking">Customer Booking</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=DesignerProfile">Profile</a>
             </div>
 
             <div style="display: flex; align-items: center; gap: 20px;">

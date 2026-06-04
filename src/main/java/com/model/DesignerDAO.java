@@ -12,6 +12,8 @@ import com.util.DBUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -516,6 +518,194 @@ public class DesignerDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return list;
+    }
+
+    // ============================================================
+    // BOOKING / HIRE_DESIGNER METHODS
+    // ============================================================
+
+    public String getDesignerPhone(int designerId) {
+        String sql = "SELECT phone FROM Designer_Profiles WHERE userID = ?";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, designerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getString("phone");
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return "";
+    }
+
+    public int createBookingOrder(int customerId, int designerId) {
+        String sql = "INSERT INTO Orders (customerID, designerID, orderType, totalPrice, status) "
+                   + "OUTPUT INSERTED.orderID VALUES (?, ?, 'HIRE_DESIGNER', 0, 'Pending')";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, customerId);
+            ps.setInt(2, designerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return -1;
+    }
+
+    public boolean updateBookingStatus(int orderId, String status) {
+        String sql = "UPDATE Orders SET status = ? WHERE orderID = ? AND orderType = 'HIRE_DESIGNER'";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setInt(2, orderId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) { e.printStackTrace(); }
+        return false;
+    }
+
+    public boolean completeBookingAndSetPayment(int orderId, double price, String fileURL, int designerId) {
+        Connection conn = null;
+        PreparedStatement psTemplate = null, psDetail = null, psOrder = null;
+        ResultSet rs = null;
+        try {
+            conn = DBUtils.getConnection();
+            conn.setAutoCommit(false);
+
+            // 1. Insert Template
+            String insertTemplate = "INSERT INTO Templates (designerID, categoryID, title, description, price, fileURL) "
+                                  + "VALUES (?, 1, ?, ?, ?, ?)";
+            psTemplate = conn.prepareStatement(insertTemplate, Statement.RETURN_GENERATED_KEYS);
+            psTemplate.setInt(1, designerId);
+            psTemplate.setString(2, "Custom Design #" + orderId);
+            psTemplate.setString(3, "Thiết kế riêng theo đơn đặt hàng #" + orderId);
+            psTemplate.setDouble(4, price);
+            psTemplate.setString(5, fileURL);
+            psTemplate.executeUpdate();
+
+            int templateId;
+            rs = psTemplate.getGeneratedKeys();
+            if (!rs.next()) { conn.rollback(); return false; }
+            templateId = rs.getInt(1);
+            rs.close();
+            psTemplate.close();
+
+            // 2. Insert OrderDetails
+            String insertDetail = "INSERT INTO OrderDetails (orderID, templateID, price) VALUES (?, ?, ?)";
+            psDetail = conn.prepareStatement(insertDetail);
+            psDetail.setInt(1, orderId);
+            psDetail.setInt(2, templateId);
+            psDetail.setDouble(3, price);
+            psDetail.executeUpdate();
+            psDetail.close();
+
+            // 3. Update Orders
+            String updateOrder = "UPDATE Orders SET totalPrice = ?, status = 'Completed_Design' WHERE orderID = ?";
+            psOrder = conn.prepareStatement(updateOrder);
+            psOrder.setDouble(1, price);
+            psOrder.setInt(2, orderId);
+            psOrder.executeUpdate();
+
+            conn.commit();
+            return true;
+        } catch (Exception e) {
+            try { if (conn != null) conn.rollback(); } catch (SQLException se) { se.printStackTrace(); }
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) { }
+            try { if (psTemplate != null) psTemplate.close(); } catch (SQLException e) { }
+            try { if (psDetail != null) psDetail.close(); } catch (SQLException e) { }
+            try { if (psOrder != null) psOrder.close(); } catch (SQLException e) { }
+            try { if (conn != null) { conn.setAutoCommit(true); conn.close(); } } catch (SQLException e) { }
+        }
+        return false;
+    }
+
+    public List<Map<String, Object>> getCustomerBookings(int customerId) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        String sql = "SELECT o.orderID, o.designerID, u.userName AS designerName, o.totalPrice, o.status, o.createAt "
+                   + "FROM Orders o JOIN Users u ON o.designerID = u.userID "
+                   + "WHERE o.customerID = ? AND o.orderType = 'HIRE_DESIGNER' "
+                   + "ORDER BY o.createAt DESC";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, customerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> map = new LinkedHashMap<>();
+                    map.put("orderID", rs.getInt("orderID"));
+                    map.put("designerID", rs.getInt("designerID"));
+                    map.put("designerName", rs.getString("designerName"));
+                    map.put("totalPrice", rs.getDouble("totalPrice"));
+                    map.put("status", rs.getString("status"));
+                    map.put("createAt", rs.getTimestamp("createAt"));
+                    list.add(map);
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
+
+    public List<Map<String, Object>> getDesignerBookings(int designerId) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        String sql = "SELECT o.orderID, o.customerID, u.userName AS customerName, o.totalPrice, o.status, o.createAt "
+                   + "FROM Orders o JOIN Users u ON o.customerID = u.userID "
+                   + "WHERE o.designerID = ? AND o.orderType = 'HIRE_DESIGNER' "
+                   + "ORDER BY o.createAt DESC";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, designerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> map = new LinkedHashMap<>();
+                    map.put("orderID", rs.getInt("orderID"));
+                    map.put("customerID", rs.getInt("customerID"));
+                    map.put("customerName", rs.getString("customerName"));
+                    map.put("totalPrice", rs.getDouble("totalPrice"));
+                    map.put("status", rs.getString("status"));
+                    map.put("createAt", rs.getTimestamp("createAt"));
+                    list.add(map);
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
+
+    public int getDesignerBookingCount(int designerId) {
+        String sql = "SELECT COUNT(*) FROM Orders WHERE designerID = ? AND orderType = 'HIRE_DESIGNER'";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, designerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
+
+    public List<Map<String, Object>> getDesignerBookingsPaged(int designerId, int pageIndex, int pageSize) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        String sql = "SELECT o.orderID, o.customerID, u.userName AS customerName, o.totalPrice, o.status, o.createAt "
+                   + "FROM Orders o JOIN Users u ON o.customerID = u.userID "
+                   + "WHERE o.designerID = ? AND o.orderType = 'HIRE_DESIGNER' "
+                   + "ORDER BY o.createAt DESC "
+                   + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, designerId);
+            ps.setInt(2, (pageIndex - 1) * pageSize);
+            ps.setInt(3, pageSize);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> map = new LinkedHashMap<>();
+                    map.put("orderID", rs.getInt("orderID"));
+                    map.put("customerID", rs.getInt("customerID"));
+                    map.put("customerName", rs.getString("customerName"));
+                    map.put("totalPrice", rs.getDouble("totalPrice"));
+                    map.put("status", rs.getString("status"));
+                    map.put("createAt", rs.getTimestamp("createAt"));
+                    list.add(map);
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
         return list;
     }
 }

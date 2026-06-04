@@ -48,6 +48,105 @@ public class MomoController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         User loginUser = (User) session.getAttribute("LOGIN_USER");
+        String orderType = request.getParameter("orderType"); // "HIRE_DESIGNER" or null (= BUY_TEMPLATE)
+
+        // ===== HIRE_DESIGNER FLOW: Pay for existing booking =====
+        if ("HIRE_DESIGNER".equals(orderType)) {
+            if (loginUser == null) {
+                response.sendRedirect(request.getContextPath() + "/MainController?action=Login");
+                return;
+            }
+            String orderIdStr = request.getParameter("orderId");
+            int orderIdInt;
+            try { orderIdInt = Integer.parseInt(orderIdStr); }
+            catch (NumberFormatException e) {
+                request.setAttribute("message", "Mã đơn hàng không hợp lệ!");
+                request.getRequestDispatcher("views/web/payment-return/payment-failed.jsp").forward(request, response);
+                return;
+            }
+
+            com.model.OrderDAO orderCheckDao = new com.model.OrderDAO();
+            com.model.Order existingOrder = orderCheckDao.getCustomOrderById(orderIdInt);
+            if (existingOrder == null || existingOrder.getCustomerId() != loginUser.getUserId()
+                    || !"Completed_Design".equals(existingOrder.getStatus())) {
+                request.setAttribute("message", "Đơn hàng không tồn tại hoặc chưa sẵn sàng thanh toán!");
+                request.getRequestDispatcher("views/web/payment-return/payment-failed.jsp").forward(request, response);
+                return;
+            }
+
+            long amount = (long) existingOrder.getTotalPrice();
+            String orderId = String.valueOf(orderIdInt);
+            String requestId = String.valueOf(System.currentTimeMillis());
+            String orderInfo = "Thanh toan thiet ke rieng Presenta #" + orderId;
+            String returnUrl = MomoConfig.RETURN_URL;
+            String notifyUrl = MomoConfig.IPN_URL;
+            String requestType = "captureWallet";
+            String extraData = "";
+
+            String rawHash = "accessKey=" + MomoConfig.ACCESS_KEY
+                    + "&amount=" + amount
+                    + "&extraData=" + extraData
+                    + "&ipnUrl=" + notifyUrl
+                    + "&orderId=" + orderId
+                    + "&orderInfo=" + orderInfo
+                    + "&partnerCode=" + MomoConfig.PARTNER_CODE
+                    + "&redirectUrl=" + returnUrl
+                    + "&requestId=" + requestId
+                    + "&requestType=" + requestType;
+            String signature = MomoConfig.hmacSHA256(rawHash, MomoConfig.SECRET_KEY);
+
+            JsonObject jsonReq = new JsonObject();
+            jsonReq.addProperty("partnerCode", MomoConfig.PARTNER_CODE);
+            jsonReq.addProperty("partnerName", "Presenta");
+            jsonReq.addProperty("storeId", "PresentaStore");
+            jsonReq.addProperty("requestId", requestId);
+            jsonReq.addProperty("amount", amount);
+            jsonReq.addProperty("orderId", orderId);
+            jsonReq.addProperty("orderInfo", orderInfo);
+            jsonReq.addProperty("redirectUrl", returnUrl);
+            jsonReq.addProperty("ipnUrl", notifyUrl);
+            jsonReq.addProperty("lang", "vi");
+            jsonReq.addProperty("extraData", extraData);
+            jsonReq.addProperty("requestType", requestType);
+            jsonReq.addProperty("signature", signature);
+
+            try {
+                URL url = new URL(MomoConfig.ENDPOINT);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                connection.setDoOutput(true);
+
+                try (OutputStream os = connection.getOutputStream()) {
+                    byte[] input = jsonReq.toString().getBytes(StandardCharsets.UTF_8);
+                    os.write(input, 0, input.length);
+                }
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+                StringBuilder responseStrBuilder = new StringBuilder();
+                String inputStr;
+                while ((inputStr = br.readLine()) != null) {
+                    responseStrBuilder.append(inputStr);
+                }
+                br.close();
+
+                JsonObject jsonRes = JsonParser.parseString(responseStrBuilder.toString()).getAsJsonObject();
+                if (jsonRes.has("payUrl")) {
+                    String payUrl = jsonRes.get("payUrl").getAsString();
+                    response.sendRedirect(payUrl);
+                } else {
+                    request.setAttribute("message", "Lỗi cấu hình MoMo: " + jsonRes.get("message").getAsString());
+                    request.getRequestDispatcher("views/web/payment-return/payment-failed.jsp").forward(request, response);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("message", "Không thể kết nối đến MoMo Server.");
+                request.getRequestDispatcher("views/web/payment-return/payment-failed.jsp").forward(request, response);
+            }
+            return;
+        }
+
+        // ===== BUY_TEMPLATE FLOW (original) =====
         Map<Integer, CartItem> cart = (Map<Integer, CartItem>) session.getAttribute("CART");
         Voucher appliedVoucher = (Voucher) session.getAttribute("APPLIED_VOUCHER");
 

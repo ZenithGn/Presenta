@@ -11,6 +11,8 @@ import com.model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -56,8 +58,18 @@ public class ProfileController extends HttpServlet {
                 List<Template> purchasedTemplates = orderDao.getPurchasedTemplates(loginUser.getUserId(), offset, pageSize);
                 List<Order> customOrders = orderDao.getCustomOrders(loginUser.getUserId());
 
+                // Load template fileURLs for completed custom orders (for download links)
+                Map<Integer, Template> customOrderTemplates = new HashMap<>();
+                for (Order co : customOrders) {
+                    Template t = orderDao.getTemplateByCustomOrder(co.getOrderId());
+                    if (t != null) {
+                        customOrderTemplates.put(co.getOrderId(), t);
+                    }
+                }
+
                 request.setAttribute("purchasedTemplates", purchasedTemplates);
                 request.setAttribute("customOrders", customOrders);
+                request.setAttribute("customOrderTemplates", customOrderTemplates);
                 request.setAttribute("tag", pageIndex);
                 request.setAttribute("endPage", endPage);
             }

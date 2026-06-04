@@ -69,6 +69,14 @@ public class MainController extends HttpServlet {
     private static final String CREATE_TEMPLATE_CONTROLLER = "CreateTemplateController";
     private static final String DESIGNER_PROFILE = "DesignerProfile";
     private static final String DESIGNER_PROFILE_CONTROLLER = "DesignerProfileController";
+    private static final String BOOK_DESIGNER = "BookDesigner";
+    private static final String BOOK_DESIGNER_CONTROLLER = "BookDesignerController";
+    private static final String ACCEPT_BOOKING = "AcceptBooking";
+    private static final String ACCEPT_BOOKING_CONTROLLER = "AcceptBookingController";
+    private static final String REQUEST_PAYMENT = "RequestPayment";
+    private static final String REQUEST_PAYMENT_CONTROLLER = "RequestPaymentController";
+    private static final String CUSTOMER_BOOKING = "CustomerBooking";
+    private static final String CUSTOMER_BOOKING_CONTROLLER = "CustomerBookingController";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -132,6 +140,14 @@ public class MainController extends HttpServlet {
                 url = CREATE_TEMPLATE_CONTROLLER;
             } else if (DESIGNER_PROFILE.equals(action)) {
                 url = DESIGNER_PROFILE_CONTROLLER;
+            } else if (BOOK_DESIGNER.equals(action)) {
+                url = BOOK_DESIGNER_CONTROLLER;
+            } else if (ACCEPT_BOOKING.equals(action)) {
+                url = ACCEPT_BOOKING_CONTROLLER;
+            } else if (REQUEST_PAYMENT.equals(action)) {
+                url = REQUEST_PAYMENT_CONTROLLER;
+            } else if (CUSTOMER_BOOKING.equals(action)) {
+                url = CUSTOMER_BOOKING_CONTROLLER;
             }
         } catch (Exception e) {
             log("Error at MainController: " + e.toString());

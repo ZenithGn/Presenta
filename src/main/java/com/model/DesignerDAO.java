@@ -681,6 +681,74 @@ public class DesignerDAO {
         return 0;
     }
 
+    // ============================================================
+    // REVENUE SHARING: Credit 70% of order price to designer(s)
+    // ============================================================
+    /**
+     * Credits 70% of the order amount to the respective designer(s).
+     * For BUY_TEMPLATE: iterates OrderDetails, credits each template's designer.
+     * For HIRE_DESIGNER: credits the single designer on the order.
+     */
+    public void creditDesignerRevenue(int orderId) {
+        Connection conn = null;
+        PreparedStatement psOrder = null;
+        PreparedStatement psDetails = null;
+        PreparedStatement psCredit = null;
+        ResultSet rs = null;
+        try {
+            conn = DBUtils.getConnection();
+            conn.setAutoCommit(false);
+
+            // 1. Get order info
+            String orderSql = "SELECT orderType, designerID, totalPrice FROM Orders WHERE orderID = ?";
+            psOrder = conn.prepareStatement(orderSql);
+            psOrder.setInt(1, orderId);
+            rs = psOrder.executeQuery();
+            if (!rs.next()) { conn.rollback(); return; }
+            String orderType = rs.getString("orderType");
+            int hireDesignerId = rs.getInt("designerID");
+            double totalPrice = rs.getDouble("totalPrice");
+
+            String creditSql = "UPDATE Designer_Profiles SET balance = balance + ? WHERE userID = ?";
+            psCredit = conn.prepareStatement(creditSql);
+
+            if ("HIRE_DESIGNER".equals(orderType) && hireDesignerId > 0) {
+                double share = totalPrice * 0.70;
+                psCredit.setDouble(1, share);
+                psCredit.setInt(2, hireDesignerId);
+                psCredit.executeUpdate();
+            } else if ("BUY_TEMPLATE".equals(orderType)) {
+                // Get OrderDetails + Template designer
+                String detailSql = "SELECT od.price, t.designerID FROM OrderDetails od "
+                                 + "JOIN Templates t ON od.templateID = t.templateID "
+                                 + "WHERE od.orderID = ?";
+                psDetails = conn.prepareStatement(detailSql);
+                psDetails.setInt(1, orderId);
+                try (ResultSet rsDet = psDetails.executeQuery()) {
+                    while (rsDet.next()) {
+                        double itemPrice = rsDet.getDouble("price");
+                        int dId = rsDet.getInt("designerID");
+                        double share = itemPrice * 0.70;
+                        psCredit.setDouble(1, share);
+                        psCredit.setInt(2, dId);
+                        psCredit.executeUpdate();
+                    }
+                }
+            }
+
+            conn.commit();
+        } catch (Exception e) {
+            try { if (conn != null) conn.rollback(); } catch (SQLException se) { se.printStackTrace(); }
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) { }
+            try { if (psOrder != null) psOrder.close(); } catch (SQLException e) { }
+            try { if (psDetails != null) psDetails.close(); } catch (SQLException e) { }
+            try { if (psCredit != null) psCredit.close(); } catch (SQLException e) { }
+            try { if (conn != null) { conn.setAutoCommit(true); conn.close(); } } catch (SQLException e) { }
+        }
+    }
+
     public List<Map<String, Object>> getDesignerBookingsPaged(int designerId, int pageIndex, int pageSize) {
         List<Map<String, Object>> list = new ArrayList<>();
         String sql = "SELECT o.orderID, o.customerID, u.userName AS customerName, o.totalPrice, o.status, o.createAt "

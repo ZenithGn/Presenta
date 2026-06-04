@@ -6,8 +6,13 @@ package com.controller.designer;
 
 import com.model.DesignerDAO;
 import com.model.User;
+import com.util.DBUtils;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -18,21 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- *
+ * Designer Dashboard — loads stats, recent sales, withdrawals, and daily activity chart.
  * @author lehan
  */
 @WebServlet(name = "DesignerHomeController", urlPatterns = {"/DesignerHomeController"})
 public class DesignerHomeController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -40,7 +36,6 @@ public class DesignerHomeController extends HttpServlet {
             HttpSession session = request.getSession();
             User loginUser = (User) session.getAttribute("LOGIN_USER");
 
-            // 1. Kiểm tra đăng nhập và phân quyền (Bảo mật)
             if (loginUser == null || loginUser.getRoleId() != 3) {
                 response.sendRedirect(request.getContextPath() + "/MainController?action=Login");
                 return;
@@ -49,75 +44,119 @@ public class DesignerHomeController extends HttpServlet {
             int designerId = loginUser.getUserId();
             DesignerDAO dao = new DesignerDAO();
 
-            // 2. Lấy dữ liệu 4 chỉ số thống kê
+            // Stats
             double balance = dao.getBalance(designerId);
             int activeTemplates = dao.getActiveTemplatesCount(designerId);
             int templatesSold = dao.getTemplatesSoldDashboard(designerId);
             double pendingPayouts = dao.getPendingPayouts(designerId);
 
-            // 3. Lấy dữ liệu cho 2 bảng (Recent Sales & Withdrawals)
+            // Tables
             List<Map<String, Object>> recentSales = dao.getRecentSales(designerId);
             List<Map<String, Object>> withdrawalHistory = dao.getWithdrawalHistory(designerId);
 
-            // 4. Gắn dữ liệu vào Request để trang JSP hứng
+            // Daily activity chart data (last 30 days)
+            Map<String, Object> dailyStats = getDailyActivityStats(designerId);
+
             request.setAttribute("DESIGNER_BALANCE", balance);
             request.setAttribute("ACTIVE_TEMPLATES", activeTemplates);
             request.setAttribute("TEMPLATES_SOLD", templatesSold);
             request.setAttribute("PENDING_PAYOUTS", pendingPayouts);
             request.setAttribute("RECENT_SALES", recentSales);
             request.setAttribute("WITHDRAWAL_HISTORY", withdrawalHistory);
+            request.setAttribute("DAILY_LABELS", dailyStats.get("labels"));
+            request.setAttribute("DAILY_BUY", dailyStats.get("buyData"));
+            request.setAttribute("DAILY_HIRE", dailyStats.get("hireData"));
 
-            // 5. Điều hướng sang file JSP
             request.getRequestDispatcher("views/designer/designer-home.jsp").forward(request, response);
 
         } catch (Exception e) {
-            // Ghi log lỗi ra server
             log("Lỗi tại DesignerHomeController: " + e.getMessage());
             e.printStackTrace();
-
-            // Có thể đẩy một thông báo lỗi sang JSP nếu muốn
             request.setAttribute("errorMessage", "Đã xảy ra lỗi khi tải dữ liệu Dashboard: " + e.getMessage());
             request.getRequestDispatcher("views/designer/designer-home.jsp").forward(request, response);
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Query daily BUY_TEMPLATE purchases and HIRE_DESIGNER bookings for last 30 days.
      */
+    private Map<String, Object> getDailyActivityStats(int designerId) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        List<String> labels = new ArrayList<>();
+        List<Integer> buyData = new ArrayList<>();
+        List<Integer> hireData = new ArrayList<>();
+
+        // BUY_TEMPLATE: count completed orders per day via OrderDetails
+        String buySql = "SELECT CAST(o.createAt AS DATE) AS d, COUNT(DISTINCT o.orderID) AS cnt "
+                      + "FROM Orders o "
+                      + "JOIN OrderDetails od ON o.orderID = od.orderID "
+                      + "JOIN Templates t ON od.templateID = t.templateID "
+                      + "WHERE t.designerID = ? AND o.orderType = 'BUY_TEMPLATE' AND o.status = 'Completed' "
+                      + "AND o.createAt >= DATEADD(DAY, -30, GETDATE()) "
+                      + "GROUP BY CAST(o.createAt AS DATE) ORDER BY d";
+
+        // HIRE_DESIGNER: count bookings per day
+        String hireSql = "SELECT CAST(o.createAt AS DATE) AS d, COUNT(*) AS cnt "
+                       + "FROM Orders o "
+                       + "WHERE o.designerID = ? AND o.orderType = 'HIRE_DESIGNER' "
+                       + "AND o.createAt >= DATEADD(DAY, -30, GETDATE()) "
+                       + "GROUP BY CAST(o.createAt AS DATE) ORDER BY d";
+
+        Map<String, Integer> buyMap = new LinkedHashMap<>();
+        Map<String, Integer> hireMap = new LinkedHashMap<>();
+
+        // Pre-fill last 30 days
+        for (int i = 29; i >= 0; i--) {
+            String label = java.time.LocalDate.now().minusDays(i).toString();
+            labels.add(label);
+            buyMap.put(label, 0);
+            hireMap.put(label, 0);
+        }
+
+        try (Connection conn = DBUtils.getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement(buySql)) {
+                ps.setInt(1, designerId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        buyMap.put(rs.getString("d"), rs.getInt("cnt"));
+                    }
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement(hireSql)) {
+                ps.setInt(1, designerId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        hireMap.put(rs.getString("d"), rs.getInt("cnt"));
+                    }
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+
+        for (String label : labels) {
+            buyData.add(buyMap.getOrDefault(label, 0));
+            hireData.add(hireMap.getOrDefault(label, 0));
+        }
+
+        result.put("labels", labels);
+        result.put("buyData", buyData);
+        result.put("hireData", hireData);
+        return result;
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Designer Dashboard Controller";
+    }
 }

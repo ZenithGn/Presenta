@@ -29,6 +29,7 @@ public class AccountController extends HttpServlet {
 
     public static final String PROFILE_INFO_REDIRECT = "MainController?action=Profile&tab=info";
     public static final String DESIGNER_PROFILE_REDIRECT = "MainController?action=DesignerProfile&tab=info";
+    public static final String ADMIN_PROFILE_REDIRECT = "MainController?action=AdminProfile&tab=info";
     public static final String AUTH_ACTION = "MainController";
 
     private static final String UPLOAD_SUB_DIR = "avatars";
@@ -59,6 +60,8 @@ public class AccountController extends HttpServlet {
                     }
                     if (loginUser.getRoleId() == 3) {
                         url = DESIGNER_PROFILE_REDIRECT;
+                    } else if (loginUser.getRoleId() == 1) {
+                        url = ADMIN_PROFILE_REDIRECT;
                     }
 
                 } else if ("avatar".equals(updateType)) {
@@ -69,6 +72,8 @@ public class AccountController extends HttpServlet {
                     }
                     if (loginUser.getRoleId() == 3) {
                         url = DESIGNER_PROFILE_REDIRECT;
+                    } else if (loginUser.getRoleId() == 1) {
+                        url = ADMIN_PROFILE_REDIRECT;
                     }
 
                 } else if ("designer_profile".equals(updateType)) {
@@ -104,6 +109,8 @@ public class AccountController extends HttpServlet {
                     }
                     if (loginUser.getRoleId() == 3) {
                         url = DESIGNER_PROFILE_REDIRECT;
+                    } else if (loginUser.getRoleId() == 1) {
+                        url = ADMIN_PROFILE_REDIRECT;
                     }
                 }
             }

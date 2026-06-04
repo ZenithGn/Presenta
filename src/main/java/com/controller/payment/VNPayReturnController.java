@@ -68,6 +68,9 @@ public class VNPayReturnController extends HttpServlet {
                     com.model.PaymentDAO paymentDao = new com.model.PaymentDAO();
                     paymentDao.insertPayment(orderId, "VNPay", transactionNo, amount, "Success");
 
+                    // Revenue sharing: credit 70% to designer(s)
+                    new com.model.DesignerDAO().creditDesignerRevenue(orderId);
+
                     // =======================================================
                     // THÊM MỚI: Lấy danh sách sản phẩm đã mua giao sang cho JSP
                     // =======================================================

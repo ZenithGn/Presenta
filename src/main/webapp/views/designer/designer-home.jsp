@@ -15,6 +15,9 @@
     }
     List<Map<String, Object>> recentSales = (List<Map<String, Object>>) request.getAttribute("RECENT_SALES");
     List<Map<String, Object>> withdrawalHistory = (List<Map<String, Object>>) request.getAttribute("WITHDRAWAL_HISTORY");
+    List<String> dailyLabels = (List<String>) request.getAttribute("DAILY_LABELS");
+    List<Integer> dailyBuy = (List<Integer>) request.getAttribute("DAILY_BUY");
+    List<Integer> dailyHire = (List<Integer>) request.getAttribute("DAILY_HIRE");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,6 +34,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/designer/designer-home.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     </head>
 
     <body class="designer-body">
@@ -43,7 +47,7 @@
             <div class="designer-nav-links">
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerHome" class="active">Dashboard</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=ManageTemplate">Manage Templates</a>
-                <a href="#">Withdrawals</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=DesignerWithdrawals">Withdrawals</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=CustomerBooking">Customer Booking</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerProfile">Profile</a>
             </div>
@@ -122,13 +126,12 @@
 
                 </div>
 
-                <div class="vision-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                    <div style="width: 80px; height: 80px; background: rgba(0, 117, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
-                        <span style="font-size: 32px;">💸</span>
+                <div class="vision-card" style="padding: 24px;">
+                    <h3 style="color: white; margin: 0 0 4px 0; font-size: 18px;">📈 Daily Activity (Last 30 Days)</h3>
+                    <p style="color: #A0AEC0; font-size: 12px; margin-bottom: 16px;">Template sales vs Booking requests per day</p>
+                    <div style="height: 250px;">
+                        <canvas id="dailyActivityChart"></canvas>
                     </div>
-                    <h3 style="color: white; margin-bottom: 8px; font-size: 20px;">Need a Payout?</h3>
-                    <p style="color: #A0AEC0; font-size: 14px; margin-bottom: 24px;">Withdraw your earnings directly to your bank account securely.</p>
-                    <a href="#" class="btn-vision" style="width: 80%;">Create New Request</a>
                 </div>
             </div>
 
@@ -233,6 +236,73 @@
             </div>
 
         </div>
+
+        <%-- ============ CHART.JS: DAILY ACTIVITY LINE CHART ============ --%>
+        <%
+            StringBuilder dlJson = new StringBuilder("[");
+            StringBuilder dbJson = new StringBuilder("[");
+            StringBuilder dhJson = new StringBuilder("[");
+            if (dailyLabels != null) {
+                for (int i = 0; i < dailyLabels.size(); i++) {
+                    if (i > 0) { dlJson.append(","); dbJson.append(","); dhJson.append(","); }
+                    dlJson.append("\"").append(dailyLabels.get(i)).append("\"");
+                    dbJson.append(dailyBuy != null && i < dailyBuy.size() ? dailyBuy.get(i) : 0);
+                    dhJson.append(dailyHire != null && i < dailyHire.size() ? dailyHire.get(i) : 0);
+                }
+            }
+            dlJson.append("]"); dbJson.append("]"); dhJson.append("]");
+        %>
+        <script>
+            const ctx = document.getElementById('dailyActivityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: <%= dlJson.toString()%>,
+                    datasets: [
+                        {
+                            label: 'Template Sales',
+                            data: <%= dbJson.toString()%>,
+                            borderColor: '#0075FF',
+                            backgroundColor: 'rgba(0,117,255,0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 1,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Bookings (Hire)',
+                            data: <%= dhJson.toString()%>,
+                            borderColor: '#D8B4FF',
+                            backgroundColor: 'rgba(216,180,255,0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 1,
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#A0AEC0', stepSize: 1 },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
+                        },
+                        x: {
+                            ticks: { color: '#A0AEC0', maxTicksLimit: 7, maxRotation: 45 },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#A0AEC0', usePointStyle: true, padding: 20 }
+                        }
+                    }
+                }
+            });
+        </script>
 
         <footer class="main-footer">
             <div class="footer-container">

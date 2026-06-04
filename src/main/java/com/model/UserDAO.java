@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserDAO {
@@ -75,6 +76,20 @@ public class UserDAO {
             e.printStackTrace();
         }
         return exist;
+    }
+
+    public boolean checkUsernameExists(String username, int excludeUserId) {
+        String sql = "SELECT userID FROM Users WHERE userName = ? AND userID != ?";
+        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setInt(2, excludeUserId);
+            try ( ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public boolean registerUser(User user, String phone, String portfolioURL, String bio) {
@@ -174,6 +189,31 @@ public class UserDAO {
         return false;
     }
 
+    public boolean updateUsername(int userId, String username) {
+        String sql = "UPDATE Users SET userName = ? WHERE userID = ?";
+        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /*public boolean changePassword(int userId, String oldPassword, String newPassword) {
+        String sql = "UPDATE Users SET password = ? WHERE userID = ? AND password = ?";
+        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, newPassword);
+            ps.setInt(2, userId);
+            ps.setString(3, oldPassword);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }*/
+
     public boolean updateAvatar(int userId, String avatarUrl) {
         String sql = "UPDATE Users SET avatarURL = ? WHERE userID = ?";
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -215,6 +255,134 @@ public class UserDAO {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return false;
+    }
+
+    // ============================================================
+    // ADMIN METHODS
+    // ============================================================
+
+    /**
+     * Get users with paging, search, and role filter.
+     */
+    public List<User> getUsersPaged(String search, String roleFilter, int pageIndex, int pageSize) {
+        List<User> list = new java.util.ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+            "SELECT userID, userName, email, roleID, status, avatarURL, "
+          + "CASE roleID WHEN 1 THEN 'Admin' WHEN 2 THEN 'Customer' WHEN 3 THEN 'Designer' END AS roleName "
+          + "FROM Users WHERE 1=1 "
+        );
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append("AND (userName LIKE ? OR email LIKE ?) ");
+        }
+        if (roleFilter != null && !roleFilter.isEmpty() && !"All".equals(roleFilter)) {
+            int roleId = "Admin".equals(roleFilter) ? 1 : ("Customer".equals(roleFilter) ? 2 : 3);
+            sql.append("AND roleID = ? ");
+        }
+        sql.append("ORDER BY userID DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            int idx = 1;
+            if (search != null && !search.trim().isEmpty()) {
+                ps.setString(idx++, "%" + search.trim() + "%");
+                ps.setString(idx++, "%" + search.trim() + "%");
+            }
+            if (roleFilter != null && !roleFilter.isEmpty() && !"All".equals(roleFilter)) {
+                int roleId = "Admin".equals(roleFilter) ? 1 : ("Customer".equals(roleFilter) ? 2 : 3);
+                ps.setInt(idx++, roleId);
+            }
+            ps.setInt(idx++, (pageIndex - 1) * pageSize);
+            ps.setInt(idx, pageSize);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    User u = new User();
+                    u.setUserId(rs.getInt("userID"));
+                    u.setUsername(rs.getString("userName"));
+                    u.setEmail(rs.getString("email"));
+                    u.setRoleId(rs.getInt("roleID"));
+                    u.setStatus(rs.getBoolean("status"));
+                    u.setAvatarUrl(rs.getString("avatarURL"));
+                    list.add(u);
+                }
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
+
+    /**
+     * Count users with search and role filter.
+     */
+    public int getUsersCount(String search, String roleFilter) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Users WHERE 1=1 ");
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append("AND (userName LIKE ? OR email LIKE ?) ");
+        }
+        if (roleFilter != null && !roleFilter.isEmpty() && !"All".equals(roleFilter)) {
+            sql.append("AND roleID = ? ");
+        }
+
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            int idx = 1;
+            if (search != null && !search.trim().isEmpty()) {
+                ps.setString(idx++, "%" + search.trim() + "%");
+                ps.setString(idx++, "%" + search.trim() + "%");
+            }
+            if (roleFilter != null && !roleFilter.isEmpty() && !"All".equals(roleFilter)) {
+                int roleId = "Admin".equals(roleFilter) ? 1 : ("Customer".equals(roleFilter) ? 2 : 3);
+                ps.setInt(idx++, roleId);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
+
+    /**
+     * Toggle user status (ban/unban).
+     * Returns the new status (true = active, false = banned).
+     */
+    public boolean toggleUserStatus(int userId) {
+        Connection conn = null;
+        PreparedStatement psGet = null;
+        PreparedStatement psSet = null;
+        try {
+            conn = DBUtils.getConnection();
+            conn.setAutoCommit(false);
+
+            // Get current status
+            psGet = conn.prepareStatement("SELECT status FROM Users WHERE userID = ?");
+            psGet.setInt(1, userId);
+            boolean currentStatus = true;
+            try (ResultSet rs = psGet.executeQuery()) {
+                if (rs.next()) {
+                    currentStatus = rs.getBoolean("status");
+                } else {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            // Toggle
+            int newStatus = currentStatus ? 0 : 1;
+            psSet = conn.prepareStatement("UPDATE Users SET status = ? WHERE userID = ?");
+            psSet.setInt(1, newStatus);
+            psSet.setInt(2, userId);
+            psSet.executeUpdate();
+
+            conn.commit();
+            return newStatus == 1;
+        } catch (Exception e) {
+            try { if (conn != null) conn.rollback(); } catch (SQLException se) { se.printStackTrace(); }
+            e.printStackTrace();
+        } finally {
+            try { if (psGet != null) psGet.close(); } catch (SQLException e) { }
+            try { if (psSet != null) psSet.close(); } catch (SQLException e) { }
+            try { if (conn != null) { conn.setAutoCommit(true); conn.close(); } } catch (SQLException e) { }
         }
         return false;
     }

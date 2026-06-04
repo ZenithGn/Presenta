@@ -67,6 +67,32 @@ public class MainController extends HttpServlet {
     private static final String DELETE_TEMPLATE_CONTROLLER = "DeleteTemplateController";
     private static final String CREATE_TEMPLATE = "CreateTemplateForm";
     private static final String CREATE_TEMPLATE_CONTROLLER = "CreateTemplateController";
+    private static final String DESIGNER_PROFILE = "DesignerProfile";
+    private static final String DESIGNER_PROFILE_CONTROLLER = "DesignerProfileController";
+    private static final String BOOK_DESIGNER = "BookDesigner";
+    private static final String BOOK_DESIGNER_CONTROLLER = "BookDesignerController";
+    private static final String ACCEPT_BOOKING = "AcceptBooking";
+    private static final String ACCEPT_BOOKING_CONTROLLER = "AcceptBookingController";
+    private static final String REQUEST_PAYMENT = "RequestPayment";
+    private static final String REQUEST_PAYMENT_CONTROLLER = "RequestPaymentController";
+    private static final String CUSTOMER_BOOKING = "CustomerBooking";
+    private static final String CUSTOMER_BOOKING_CONTROLLER = "CustomerBookingController";
+
+    // Designer Withdrawal
+    private static final String DESIGNER_WITHDRAWALS = "DesignerWithdrawals";
+    private static final String DESIGNER_WITHDRAWALS_CONTROLLER = "DesignerWithdrawalController";
+    private static final String WITHDRAWAL_REQUEST = "WithdrawalRequest";
+    private static final String WITHDRAWAL_CONTROLLER = "WithdrawalController";
+
+    // Admin
+    private static final String ADMIN_DASHBOARD = "AdminDashboard";
+    private static final String ADMIN_DASHBOARD_CONTROLLER = "AdminDashboardController";
+    private static final String ADMIN_WITHDRAWALS = "AdminWithdrawals";
+    private static final String ADMIN_WITHDRAWALS_CONTROLLER = "AdminWithdrawalController";
+    private static final String ADMIN_USERS = "AdminUsers";
+    private static final String ADMIN_USERS_CONTROLLER = "AdminUserListController";
+    private static final String ADMIN_PROFILE = "AdminProfile";
+    private static final String ADMIN_PROFILE_CONTROLLER = "AdminProfileController";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -128,6 +154,28 @@ public class MainController extends HttpServlet {
                 url = DELETE_TEMPLATE_CONTROLLER;
             } else if (CREATE_TEMPLATE.equals(action)) {
                 url = CREATE_TEMPLATE_CONTROLLER;
+            } else if (DESIGNER_PROFILE.equals(action)) {
+                url = DESIGNER_PROFILE_CONTROLLER;
+            } else if (BOOK_DESIGNER.equals(action)) {
+                url = BOOK_DESIGNER_CONTROLLER;
+            } else if (ACCEPT_BOOKING.equals(action)) {
+                url = ACCEPT_BOOKING_CONTROLLER;
+            } else if (REQUEST_PAYMENT.equals(action)) {
+                url = REQUEST_PAYMENT_CONTROLLER;
+            } else if (CUSTOMER_BOOKING.equals(action)) {
+                url = CUSTOMER_BOOKING_CONTROLLER;
+            } else if (DESIGNER_WITHDRAWALS.equals(action)) {
+                url = DESIGNER_WITHDRAWALS_CONTROLLER;
+            } else if (WITHDRAWAL_REQUEST.equals(action)) {
+                url = WITHDRAWAL_CONTROLLER;
+            } else if (ADMIN_DASHBOARD.equals(action)) {
+                url = ADMIN_DASHBOARD_CONTROLLER;
+            } else if (ADMIN_WITHDRAWALS.equals(action)) {
+                url = ADMIN_WITHDRAWALS_CONTROLLER;
+            } else if (ADMIN_USERS.equals(action)) {
+                url = ADMIN_USERS_CONTROLLER;
+            } else if (ADMIN_PROFILE.equals(action)) {
+                url = ADMIN_PROFILE_CONTROLLER;
             }
         } catch (Exception e) {
             log("Error at MainController: " + e.toString());

@@ -39,7 +39,7 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=Shop">SHOP</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerHub">DESIGNER HUB</a>
                 <% if (roleId == 2) { %>
-                <a href="${pageContext.request.contextPath}/MainController?action=ViewCart" style="border-bottom: 2px solid white; font-weight: 700;">CART</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=ViewCart" class="active">CART</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=Profile">PROFILE</a>
                 <% } %>
             </div>

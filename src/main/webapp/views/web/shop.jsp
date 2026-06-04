@@ -48,7 +48,7 @@
             <a href="${pageContext.request.contextPath}/MainController" class="nav-brand" style="font-family: 'Pacifico', cursive; font-size: 28px;">Presenta</a>
             <div class="nav-links">
                 <a href="${pageContext.request.contextPath}/MainController">HOME</a>
-                <a href="${pageContext.request.contextPath}/MainController?action=Shop" style="border-bottom: 2px solid white; font-weight: 700;">SHOP</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=Shop" class="active">SHOP</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerHub">DESIGNER HUB</a>
                 <% if (roleId == 2) { %>
                 <a href="${pageContext.request.contextPath}/MainController?action=ViewCart">CART</a>
@@ -133,6 +133,8 @@
                     int categoryID = request.getAttribute("saveCategoryID") != null ? (Integer) request.getAttribute("saveCategoryID") : 0;
                     int endPage = request.getAttribute("endPage") != null ? (Integer) request.getAttribute("endPage") : 0;
                     int tag = request.getAttribute("tag") != null ? (Integer) request.getAttribute("tag") : 1;
+                    String priceSort = (String) request.getAttribute("savePriceSort");
+                    if (priceSort == null) priceSort = "";
 
                     List<Template> listTemplates = (List<Template>) request.getAttribute("listTemplates");
                 %>
@@ -141,13 +143,14 @@
                     <form action="MainController" method="GET" style="width: 100%; max-width: 600px; display: flex; gap: 12px; margin-bottom: 24px;">
                         <input type="hidden" name="action" value="Shop">
                         <input type="hidden" name="categoryID" value="<%= categoryID%>">
+                        <input type="hidden" name="priceSort" value="<%= priceSort%>">
 
                         <input type="text" name="keyword" value="<%= keyword%>" class="shop-search-bar" placeholder="Search templates... 🔍" style="margin-bottom: 0; flex: 1;">
                         <button type="submit" class="btn-primary" style="border-radius: 999px; padding: 0 32px;">Search</button>
                     </form>
 
                     <div class="shop-category-chips">
-                        <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=0" 
+                        <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=0&priceSort=<%= priceSort%>"
                            class="chip-btn <%= (categoryID == 0) ? "active" : ""%>" style="text-decoration: none;">
                             All Templates
                         </a>
@@ -156,7 +159,7 @@
                             if (listCategories != null && !listCategories.isEmpty()) {
                                 for (Category cat : listCategories) {
                         %>
-                        <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=<%= cat.getCategoryID()%>" 
+                        <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=<%= cat.getCategoryID()%>&priceSort=<%= priceSort%>"
                            class="chip-btn <%= (categoryID == cat.getCategoryID()) ? "active" : ""%>" style="text-decoration: none;">
                             <%= cat.getCategoryName()%>
                         </a>
@@ -164,6 +167,19 @@
                                 }
                             }
                         %>
+                    </div>
+
+                    <%-- SORT BUTTONS --%>
+                    <div style="display: flex; gap: 8px; margin-top: 16px;">
+                        <span style="color: #A0AEC0; font-size: 13px; align-self: center;">Sort by price:</span>
+                        <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=<%= categoryID%>&priceSort=asc"
+                           class="chip-btn <%= "asc".equals(priceSort) ? "active" : ""%>" style="text-decoration: none;">
+                            ⬆ Ascending
+                        </a>
+                        <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=<%= categoryID%>&priceSort=desc"
+                           class="chip-btn <%= "desc".equals(priceSort) ? "active" : ""%>" style="text-decoration: none;">
+                            ⬇ Descending
+                        </a>
                     </div>
                 </section>
 
@@ -227,12 +243,12 @@
                     <div class="pagination-container" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 40px;">
 
                         <% if (tag > 1) {%>
-                        <a href="MainController?action=Shop&index=<%= tag - 1%>&keyword=<%= keyword%>&categoryID=<%= categoryID%>" 
+                        <a href="MainController?action=Shop&priceSort=<%= priceSort%>&index=<%= tag - 1%>&keyword=<%= keyword%>&categoryID=<%= categoryID%>" 
                            class="btn-outline" style="padding: 8px 16px; border-radius: 8px; font-size: 14px; text-decoration: none;">&laquo; Prev</a>
                         <% } %>
 
                         <% for (int i = 1; i <= endPage; i++) {%>
-                        <a href="MainController?action=Shop&index=<%= i%>&keyword=<%= keyword%>&categoryID=<%= categoryID%>" 
+                        <a href="MainController?action=Shop&priceSort=<%= priceSort%>&index=<%= i%>&keyword=<%= keyword%>&categoryID=<%= categoryID%>" 
                            class="<%= (i == tag) ? "btn-primary" : "btn-outline"%>" 
                            style="padding: 8px 16px; border-radius: 8px; font-size: 14px; text-decoration: none;">
                             <%= i%>
@@ -240,7 +256,7 @@
                         <% } %>
 
                         <% if (tag < endPage) {%>
-                        <a href="MainController?action=Shop&index=<%= tag + 1%>&keyword=<%= keyword%>&categoryID=<%= categoryID%>" 
+                        <a href="MainController?action=Shop&priceSort=<%= priceSort%>&index=<%= tag + 1%>&keyword=<%= keyword%>&categoryID=<%= categoryID%>" 
                            class="btn-outline" style="padding: 8px 16px; border-radius: 8px; font-size: 14px; text-decoration: none;">Next &raquo;</a>
                         <% } %>
                     </div>

@@ -238,4 +238,53 @@ public class OrderDAO {
         }
         return list;
     }
+
+    public Order getCustomOrderById(int orderId) {
+        String sql = "SELECT orderID, customerID, designerID, orderType, totalPrice, status, createAt "
+                   + "FROM Orders WHERE orderID = ?";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Order o = new Order();
+                    o.setOrderId(rs.getInt("orderID"));
+                    o.setCustomerId(rs.getInt("customerID"));
+                    o.setDesignerId(rs.getInt("designerID"));
+                    o.setOrderType(rs.getString("orderType"));
+                    o.setTotalPrice(rs.getDouble("totalPrice"));
+                    o.setStatus(rs.getString("status"));
+                    o.setCreateAt(rs.getTimestamp("createAt"));
+                    return o;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Template getTemplateByCustomOrder(int orderId) {
+        String sql = "SELECT t.templateID, t.title, t.price, t.fileURL, t.thumbnailURL "
+                   + "FROM OrderDetails od JOIN Templates t ON od.templateID = t.templateID "
+                   + "WHERE od.orderID = ?";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Template t = new Template();
+                    t.setTemplateID(rs.getInt("templateID"));
+                    t.setTitle(rs.getString("title"));
+                    t.setPrice(rs.getDouble("price"));
+                    t.setFileURL(rs.getString("fileURL"));
+                    t.setThumbnailURL(rs.getString("thumbnailURL"));
+                    return t;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

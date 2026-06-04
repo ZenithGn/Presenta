@@ -101,20 +101,4 @@ Presenta/
   4. Chọn **Run** để khởi chạy Tomcat server. Trình duyệt sẽ tự động mở trang chủ tại địa chỉ `http://localhost:8080/EXE202_Maven/`.
 
 ---
-
-## 🔐 Danh Sách Tài Khoản Thử Nghiệm (Mock Accounts)
-
-Sau khi chạy xong file SQL, mật khẩu đăng nhập mặc định của tất cả các tài khoản test dưới đây đều là **`123`**:
-
-* **Quản trị viên (Admin)**:
-  * Email: `admin@system.com`
-  * Mật khẩu: `123`
-* **Khách hàng (Customer)**:
-  * Email: `customer1@gmail.com`
-  * Mật khẩu: `123`
-* **Nhà thiết kế (Designer)**:
-  * Email: `designer1@gmail.com`
-  * Mật khẩu: `123`
-
----
 *Chúc bạn có những trải nghiệm phát triển tuyệt vời cùng dự án **Presenta**!* 🚀

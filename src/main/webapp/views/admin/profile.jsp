@@ -1,7 +1,7 @@
 <%--
     Document   : profile
     Author     : lehan
-    Admin Profile — avatar change, email change + password change only
+    Admin Profile — same layout as customer/designer, account settings only
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="com.model.User" %>
@@ -13,14 +13,13 @@
     }
 
     String toastMsg = (String) session.getAttribute("toastMessage");
-    String toastType = (String) session.getAttribute("toastType");
 %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>Admin Profile - Presenta</title>
-        <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
         <link rel="apple-touch-icon" sizes="180x180" href="${pageContext.request.contextPath}/assets/images/favicon/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="${pageContext.request.contextPath}/assets/images/favicon/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="${pageContext.request.contextPath}/assets/images/favicon/favicon-16x16.png">
@@ -29,223 +28,169 @@
 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/designer/designer-home.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
-
-        <style>
-            .profile-layout {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 24px;
-            }
-            @media (max-width: 768px) {
-                .profile-layout { grid-template-columns: 1fr; }
-            }
-            .form-group {
-                margin-bottom: 20px;
-            }
-            .form-group label {
-                display: block;
-                font-size: 13px;
-                font-weight: 600;
-                color: #A0AEC0;
-                margin-bottom: 6px;
-            }
-            .form-control {
-                width: 100%;
-                padding: 12px 16px;
-                background: rgba(255,255,255,0.06);
-                border: 1px solid rgba(255,255,255,0.15);
-                border-radius: 10px;
-                color: white;
-                font-size: 14px;
-                box-sizing: border-box;
-                font-family: 'Be Vietnam Pro', sans-serif;
-                transition: border-color 0.3s;
-            }
-            .form-control:focus {
-                outline: none;
-                border-color: #0075FF;
-            }
-            .btn-save {
-                background: #0075FF;
-                color: white;
-                border: none;
-                padding: 12px 28px;
-                border-radius: 10px;
-                font-weight: 700;
-                font-size: 14px;
-                cursor: pointer;
-                transition: background 0.3s;
-                font-family: 'Be Vietnam Pro', sans-serif;
-            }
-            .btn-save:hover { background: #0056cc; }
-            .profile-info-row {
-                display: flex;
-                align-items: center;
-                gap: 16px;
-                padding: 12px 0;
-                border-bottom: 1px solid rgba(255,255,255,0.06);
-            }
-            .profile-info-row .label {
-                font-size: 13px;
-                color: #A0AEC0;
-                min-width: 100px;
-                font-weight: 600;
-            }
-            .profile-info-row .value {
-                color: white;
-                font-size: 14px;
-                font-weight: 500;
-            }
-        </style>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/profile.css">
     </head>
-    <body class="designer-body">
 
-        <%-- ============ ADMIN NAVBAR ============ --%>
-        <nav class="designer-navbar">
-            <a href="${pageContext.request.contextPath}/MainController?action=AdminDashboard" class="designer-brand">
-                Presenta <span>ADMIN</span>
+    <body class="landing-body">
+
+        <%-- NAVBAR --%>
+        <nav class="navbar" style="border-bottom: none; background: transparent;">
+            <a href="${pageContext.request.contextPath}/MainController?action=AdminDashboard" class="nav-brand" style="font-family: 'Pacifico', cursive; font-size: 28px; color:white;">
+                Presenta <span style="font-size:12px; color:#dc3545; font-family: Inter;">ADMIN</span>
             </a>
-            <div class="designer-nav-links">
+            <div class="nav-links">
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminDashboard">Dashboard</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminWithdrawals">Withdrawals</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminUsers">User List</a>
-                <a href="${pageContext.request.contextPath}/MainController?action=AdminProfile" class="active">Profile</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=AdminProfile" style="border-bottom: 2px solid white; font-weight: 700; color:white;">Profile</a>
             </div>
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <span style="font-size: 14px; color: #A0AEC0;">Welcome, <b style="color: white;"><%= loginUser.getUsername()%></b></span>
-                <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin: 0;">
+            <div class="nav-actions">
+                <span style="color: #dae2fd; font-size: 14px; margin-right: 10px;">Welcome, <b><%= loginUser.getUsername()%></b></span>
+                <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin:0; display: inline-block;">
                     <input type="hidden" name="action" value="Logout">
-                    <button type="submit" style="background: transparent; border: none; color: #A0AEC0; font-weight: 700; cursor: pointer;">Sign Out</button>
+                    <button type="submit" class="btn-outline" style="padding: 6px 16px; font-size: 12px; border-radius: 999px; color:white; border-color:white;">Logout</button>
                 </form>
             </div>
         </nav>
 
-        <div class="designer-container">
+        <%-- MAIN LAYOUT --%>
+        <main class="profile-container">
+            <%-- SIDEBAR --%>
+            <aside class="profile-sidebar">
+                <div style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
 
-            <div class="vision-card" style="padding: 24px; margin-bottom: 24px;">
-                <h2 style="color: white; margin: 0 0 4px 0; font-size: 22px;">👤 Admin Profile</h2>
-                <p style="color: #A0AEC0; margin: 0; font-size: 14px;">Manage your account settings</p>
-            </div>
+                    <div class="avatar-wrapper" onclick="document.getElementById('avatar-file-input').click()" title="Click to change avatar">
+                        <%
+                            String userAvatar = loginUser.getAvatarUrl();
+                            String avatarSrc = (userAvatar != null && !userAvatar.isEmpty()) ? userAvatar : "";
 
-            <%-- ============ ACCOUNT INFO CARDS ============ --%>
-            <div class="stats-grid" style="margin-bottom: 24px;">
-                <div class="vision-card stat-card">
-                    <div class="stat-info">
-                        <span class="stat-title">Username</span>
-                        <div class="stat-value" style="font-size: 18px;"><%= loginUser.getUsername()%></div>
+                            if (!avatarSrc.isEmpty()) {
+                        %>
+                        <img src="<%= avatarSrc%>" id="main-avatar-img" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                        <% } else {%>
+                        <div class="user-avatar" id="main-avatar-placeholder"><%= loginUser.getUsername().substring(0, 1).toUpperCase()%></div>
+                        <img src="" id="main-avatar-img" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                        <% }%>
+                        <div class="avatar-hover-overlay">&#x1F4F7;</div>
                     </div>
-                    <div class="stat-icon">👤</div>
+
+                    <h3 class="user-name"><%= loginUser.getUsername()%></h3>
+                    <p style="text-align:center; color:#dc3545; font-size:12px; margin-top:4px; font-weight:600;">Administrator</p>
                 </div>
-                <div class="vision-card stat-card">
-                    <div class="stat-info">
-                        <span class="stat-title">Email</span>
-                        <div class="stat-value" style="font-size: 14px;"><%= loginUser.getEmail() != null ? loginUser.getEmail() : "—"%></div>
+                <ul class="sidebar-menu">
+                    <li class="menu-item active" id="nav-tab-info">&#x2699;&#xFE0F; Account Settings</li>
+                </ul>
+            </aside>
+
+            <%-- CONTENT AREA --%>
+            <section class="profile-content-area">
+
+                <div id="tab-info" class="tab-pane active">
+                    <h2 class="tab-title">Account Settings</h2>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+
+                        <div style="display: flex; flex-direction: column; gap: 30px;">
+
+                            <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                                <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Personal Info</h4>
+                                <form action="${pageContext.request.contextPath}/AccountController" method="POST">
+                                    <input type="hidden" name="updateType" value="profile">
+
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Username</label>
+                                    <input type="text" value="<%= loginUser.getUsername()%>" disabled
+                                           style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:15px; background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.4); cursor: not-allowed; box-sizing: border-box; font-weight: bold;">
+
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Email</label>
+                                    <input type="email" name="email" value="<%= loginUser.getEmail() != null ? loginUser.getEmail() : ""%>" required
+                                           style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
+
+                                    <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding: 10px 20px; width: 100%;">Save</button>
+                                </form>
+                            </div>
+
+                            <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                                <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Change Password</h4>
+                                <form action="${pageContext.request.contextPath}/AccountController" method="POST">
+                                    <input type="hidden" name="updateType" value="password">
+
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Current Password</label>
+                                    <input type="password" name="oldPass" required style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:15px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
+
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">New Password</label>
+                                    <input type="password" name="newPass" required style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
+
+                                    <button type="submit" class="btn-action" style="background: transparent; color:#D8B4FF; border: 1px solid #D8B4FF; padding: 10px 20px; width: 100%;">Change Password</button>
+                                </form>
+                            </div>
+
+                        </div>
+
+                        <div>
+                            <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); height: 100%; box-sizing: border-box; display: flex; flex-direction: column;">
+                                <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Change Avatar</h4>
+                                <p style="font-size: 13px; color: #cbd5e1; margin-top: 0; line-height: 1.5; flex-grow: 1;">
+                                    Click the avatar circle in the sidebar or choose a file below.
+                                    <br><br>
+                                    <span style="color: #ffc107;">* Max file size: 10MB (JPG, PNG, GIF)</span>
+                                </p>
+
+                                <form action="${pageContext.request.contextPath}/AccountController" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+                                    <input type="hidden" name="updateType" value="avatar">
+
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Choose Image File</label>
+                                    <input type="file" name="avatarFile" id="avatar-file-input" accept="image/png, image/jpeg, image/gif" required
+                                           style="width:100%; padding:10px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box; font-size: 12px;">
+
+                                    <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding: 12px 24px; width: 100%;">Upload New Avatar</button>
+                                </form>
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="stat-icon">📧</div>
                 </div>
-                <div class="vision-card stat-card">
-                    <div class="stat-info">
-                        <span class="stat-title">Role</span>
-                        <div class="stat-value" style="font-size: 18px; color: #dc3545;">Admin</div>
-                    </div>
-                    <div class="stat-icon">🔑</div>
-                </div>
-                <div class="vision-card stat-card">
-                    <div class="stat-info">
-                        <span class="stat-title">Status</span>
-                        <div class="stat-value" style="font-size: 18px; color: <%= loginUser.isStatus() ? "#28a745" : "#dc3545"%>;">
-                            <%= loginUser.isStatus() ? "Active" : "Banned"%>
+
+            </section>
+        </main>
+
+        <%-- TOAST --%>
+        <% if (toastMsg != null) {%>
+        <div id="toastAlert" class="toast-msg"><%= toastMsg%></div>
+        <% session.removeAttribute("toastMessage");
+        }%>
+
+        <footer class="main-footer">
+            <div class="footer-container">
+                <div class="footer-col brand-col">
+                    <div class="brand-logo-desc-wrapper">
+                        <img src="${pageContext.request.contextPath}/assets/images/logo.jpg" alt="Presenta Logo" class="footer-image-logo">
+                        <div class="brand-text-content">
+                            <a href="#" class="footer-logo" style="margin-bottom: 4px;">Presenta</a>
+                            <p class="footer-desc" style="margin-bottom: 0;">The next generation template marketplace for academic visionaries and creative professionals.</p>
                         </div>
                     </div>
-                    <div class="stat-icon">🟢</div>
+                    <div class="footer-socials">
+                        <a href="https://www.facebook.com/profile.php?id=61590550761077" target="_blank" class="social-icon">&#x1F310;</a>
+                        <a href="#" class="social-icon">&#x1F4AC;</a>
+                        <a href="mailto:presentaproject05@gmail.com" target="_blank" class="social-icon">&#x1F4E7;</a>
+                    </div>
+                </div>
+                <div class="footer-col contact-col">
+                    <h4>GET IN TOUCH</h4>
+                    <ul class="contact-info-list">
+                        <li><span class="contact-icon">&#x1F4CD;</span><span>FPT University, District 9, Ho Chi Minh City</span></li>
+                        <li><span class="contact-icon">&#x1F4E7;</span><span>presentaproject05@gmail.com</span></li>
+                        <li><span class="contact-icon">&#x1F4DE;</span><span>+84 (28) 7300 5588</span></li>
+                        <li><span class="contact-icon">&#x23F1;</span><span>Mon - Fri: 8:00 AM - 5:00 PM</span></li>
+                    </ul>
                 </div>
             </div>
-
-            <div class="profile-layout">
-                <%-- ============ CHANGE AVATAR ============ --%>
-                <div class="vision-card" style="padding: 28px; text-align: center;">
-                    <div class="panel-header" style="margin-bottom: 20px;">🖼️ Change Avatar</div>
-
-                    <%
-                        String currentAvatar = loginUser.getAvatarUrl();
-                        String avatarSrc = (currentAvatar != null && !currentAvatar.trim().isEmpty())
-                            ? currentAvatar
-                            : "https://ui-avatars.com/api/?name=" + loginUser.getUsername() + "&background=7C3AED&color=fff&size=128";
-                    %>
-                    <img src="<%= avatarSrc%>" alt="Avatar"
-                         style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.2); margin-bottom: 20px;">
-
-                    <form action="${pageContext.request.contextPath}/MainController" method="POST">
-                        <input type="hidden" name="action" value="AdminProfile">
-                        <input type="hidden" name="method" value="changeAvatar">
-
-                        <div class="form-group" style="text-align: left;">
-                            <label>Avatar Image URL</label>
-                            <input type="text" name="avatarURL" class="form-control"
-                                   placeholder="https://example.com/avatar.jpg"
-                                   value="<%= currentAvatar != null ? currentAvatar : ""%>">
-                        </div>
-                        <button type="submit" class="btn-save" style="width: 100%;">Update Avatar</button>
-                    </form>
-                </div>
-
-                <%-- ============ CHANGE EMAIL ============ --%>
-                <div class="vision-card" style="padding: 28px;">
-                    <div class="panel-header" style="margin-bottom: 20px;">📧 Change Email</div>
-                    <form action="${pageContext.request.contextPath}/MainController" method="POST">
-                        <input type="hidden" name="action" value="AdminProfile">
-                        <input type="hidden" name="method" value="changeEmail">
-
-                        <div class="form-group">
-                            <label>Current Email</label>
-                            <input type="email" class="form-control" value="<%= loginUser.getEmail() != null ? loginUser.getEmail() : ""%>" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label>New Email <span style="color: #E53E3E;">*</span></label>
-                            <input type="email" name="newEmail" class="form-control" placeholder="Enter new email" required>
-                        </div>
-                        <button type="submit" class="btn-save" style="width: 100%;">Update Email</button>
-                    </form>
+            <div class="footer-bottom">
+                <div class="footer-bottom-container">
+                    <p>&copy; 2026 Presenta. All rights reserved.</p>
                 </div>
             </div>
-
-            <%-- ============ CHANGE PASSWORD ============ --%>
-            <div class="vision-card" style="padding: 28px; margin-top: 24px;">
-                <div class="panel-header" style="margin-bottom: 20px;">🔒 Change Password</div>
-                <form action="${pageContext.request.contextPath}/MainController" method="POST" style="max-width: 500px;">
-                    <input type="hidden" name="action" value="AdminProfile">
-                    <input type="hidden" name="method" value="changePassword">
-
-                    <div class="form-group">
-                        <label>Current Password <span style="color: #E53E3E;">*</span></label>
-                        <input type="password" name="oldPassword" class="form-control" placeholder="Enter current password" required>
-                    </div>
-                    <div class="form-group">
-                        <label>New Password <span style="color: #E53E3E;">*</span></label>
-                        <input type="password" name="newPassword" class="form-control" placeholder="At least 6 characters" required minlength="6">
-                    </div>
-                    <div class="form-group">
-                        <label>Confirm New Password <span style="color: #E53E3E;">*</span></label>
-                        <input type="password" name="confirmPassword" class="form-control" placeholder="Re-enter new password" required minlength="6">
-                    </div>
-                    <button type="submit" class="btn-save">Change Password</button>
-                </form>
-            </div>
-
-        </div>
-
-        <%-- ============ TOAST ============ --%>
-        <% if (toastMsg != null) { %>
-        <div id="custom-toast" class="show" style="<%= "error".equals(toastType) ? "background: #dc3545;" : ""%>">
-            <span class="toast-icon"><%= "error".equals(toastType) ? "❌" : "✔️"%></span>
-            <span class="toast-text"><%= toastMsg%></span>
-        </div>
-        <%
-            session.removeAttribute("toastMessage");
-            session.removeAttribute("toastType");
-        } %>
+        </footer>
 
         <script src="${pageContext.request.contextPath}/assets/js/toast.js"></script>
     </body>

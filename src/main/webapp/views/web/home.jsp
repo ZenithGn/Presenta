@@ -217,7 +217,7 @@
                         <p style="max-width: 300px; margin-bottom: 24px; font-weight: 500;">
                             The Creative Mind Behind Polished, Standout Slides That Help You Present With Confidence.
                         </p>
-                        <a href="#" class="btn-pill">Review</a>
+                        <a href="${pageContext.request.contextPath}/MainController?action=DesignerHub" class="btn-pill">Review</a>
                     </div>
 
                     <img src="${pageContext.request.contextPath}/assets/images/designer.png" alt="Designer Image" class="designer-banner-img">

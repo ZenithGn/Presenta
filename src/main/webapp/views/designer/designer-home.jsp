@@ -44,7 +44,7 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=ManageTemplate">Manage Templates</a>
                 <a href="#">Withdrawals</a>
                 <a href="#">Orders</a>
-                <a href="#">Profile</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=DesignerProfile">Profile</a>
             </div>
 
             <div style="display: flex; align-items: center; gap: 20px;">

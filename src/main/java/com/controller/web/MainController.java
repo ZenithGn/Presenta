@@ -67,6 +67,8 @@ public class MainController extends HttpServlet {
     private static final String DELETE_TEMPLATE_CONTROLLER = "DeleteTemplateController";
     private static final String CREATE_TEMPLATE = "CreateTemplateForm";
     private static final String CREATE_TEMPLATE_CONTROLLER = "CreateTemplateController";
+    private static final String DESIGNER_PROFILE = "DesignerProfile";
+    private static final String DESIGNER_PROFILE_CONTROLLER = "DesignerProfileController";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -128,6 +130,8 @@ public class MainController extends HttpServlet {
                 url = DELETE_TEMPLATE_CONTROLLER;
             } else if (CREATE_TEMPLATE.equals(action)) {
                 url = CREATE_TEMPLATE_CONTROLLER;
+            } else if (DESIGNER_PROFILE.equals(action)) {
+                url = DESIGNER_PROFILE_CONTROLLER;
             }
         } catch (Exception e) {
             log("Error at MainController: " + e.toString());

@@ -74,6 +74,9 @@ public class MomoReturnController extends HttpServlet {
                     PaymentDAO paymentDao = new PaymentDAO();
                     paymentDao.insertPayment(orderId, "Momo", transId, amount, "Success");
 
+                    // Revenue sharing: credit 70% to designer(s)
+                    new com.model.DesignerDAO().creditDesignerRevenue(orderId);
+
                     // 2. Lấy link sản phẩm
                     java.util.List<com.model.Template> purchasedTemplates = orderDao.getPurchasedTemplatesByOrderId(orderId);
                     request.setAttribute("purchasedTemplates", purchasedTemplates);

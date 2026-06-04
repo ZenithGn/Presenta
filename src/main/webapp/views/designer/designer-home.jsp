@@ -43,7 +43,7 @@
             <div class="designer-nav-links">
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerHome" class="active">Dashboard</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=ManageTemplate">Manage Templates</a>
-                <a href="#">Withdrawals</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=DesignerHome#payout">Withdrawals</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=CustomerBooking">Customer Booking</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerProfile">Profile</a>
             </div>
@@ -122,13 +122,38 @@
 
                 </div>
 
-                <div class="vision-card" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                    <div style="width: 80px; height: 80px; background: rgba(0, 117, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
-                        <span style="font-size: 32px;">💸</span>
-                    </div>
-                    <h3 style="color: white; margin-bottom: 8px; font-size: 20px;">Need a Payout?</h3>
-                    <p style="color: #A0AEC0; font-size: 14px; margin-bottom: 24px;">Withdraw your earnings directly to your bank account securely.</p>
-                    <a href="#" class="btn-vision" style="width: 80%;">Create New Request</a>
+                <div class="vision-card" style="display: flex; flex-direction: column; text-align: left; padding: 32px;">
+                    <h3 style="color: white; margin-bottom: 4px; font-size: 20px;">💸 Need a Payout?</h3>
+                    <p style="color: #A0AEC0; font-size: 13px; margin-bottom: 20px;">Withdraw your earnings directly to your bank account.</p>
+                    <form action="${pageContext.request.contextPath}/MainController" method="POST">
+                        <input type="hidden" name="action" value="WithdrawalRequest">
+                        <div style="margin-bottom: 12px;">
+                            <label style="display:block; color:#A0AEC0; font-size:12px; margin-bottom:4px;">Amount (VND)</label>
+                            <input type="number" name="amount" required placeholder="e.g. 500000"
+                                   style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.15);
+                                          background: rgba(255,255,255,0.06); color: white; font-size:14px; box-sizing:border-box;"
+                                   min="10000" step="1000">
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <label style="display:block; color:#A0AEC0; font-size:12px; margin-bottom:4px;">Bank Name</label>
+                            <input type="text" name="bankName" required placeholder="e.g. Vietcombank"
+                                   style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.15);
+                                          background: rgba(255,255,255,0.06); color: white; font-size:14px; box-sizing:border-box;">
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <label style="display:block; color:#A0AEC0; font-size:12px; margin-bottom:4px;">Account Number</label>
+                            <input type="text" name="bankAccountNumber" required placeholder="e.g. 1234567890"
+                                   style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.15);
+                                          background: rgba(255,255,255,0.06); color: white; font-size:14px; box-sizing:border-box;">
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display:block; color:#A0AEC0; font-size:12px; margin-bottom:4px;">Account Holder Name</label>
+                            <input type="text" name="accountName" required placeholder="e.g. Nguyen Van A"
+                                   style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.15);
+                                          background: rgba(255,255,255,0.06); color: white; font-size:14px; box-sizing:border-box;">
+                        </div>
+                        <button type="submit" class="btn-vision" style="width:100%; cursor:pointer;">Submit Withdrawal Request</button>
+                    </form>
                 </div>
             </div>
 

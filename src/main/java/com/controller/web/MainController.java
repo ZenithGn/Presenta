@@ -78,6 +78,18 @@ public class MainController extends HttpServlet {
     private static final String CUSTOMER_BOOKING = "CustomerBooking";
     private static final String CUSTOMER_BOOKING_CONTROLLER = "CustomerBookingController";
 
+    // Designer Withdrawal
+    private static final String WITHDRAWAL_REQUEST = "WithdrawalRequest";
+    private static final String WITHDRAWAL_CONTROLLER = "WithdrawalController";
+
+    // Admin
+    private static final String ADMIN_DASHBOARD = "AdminDashboard";
+    private static final String ADMIN_DASHBOARD_CONTROLLER = "AdminDashboardController";
+    private static final String ADMIN_WITHDRAWALS = "AdminWithdrawals";
+    private static final String ADMIN_WITHDRAWALS_CONTROLLER = "AdminWithdrawalController";
+    private static final String ADMIN_USERS = "AdminUsers";
+    private static final String ADMIN_USERS_CONTROLLER = "AdminUserListController";
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -148,6 +160,14 @@ public class MainController extends HttpServlet {
                 url = REQUEST_PAYMENT_CONTROLLER;
             } else if (CUSTOMER_BOOKING.equals(action)) {
                 url = CUSTOMER_BOOKING_CONTROLLER;
+            } else if (WITHDRAWAL_REQUEST.equals(action)) {
+                url = WITHDRAWAL_CONTROLLER;
+            } else if (ADMIN_DASHBOARD.equals(action)) {
+                url = ADMIN_DASHBOARD_CONTROLLER;
+            } else if (ADMIN_WITHDRAWALS.equals(action)) {
+                url = ADMIN_WITHDRAWALS_CONTROLLER;
+            } else if (ADMIN_USERS.equals(action)) {
+                url = ADMIN_USERS_CONTROLLER;
             }
         } catch (Exception e) {
             log("Error at MainController: " + e.toString());

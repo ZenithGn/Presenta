@@ -48,7 +48,7 @@
             <div class="designer-nav-links">
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerHome">Dashboard</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=ManageTemplate" class="active">Manage Templates</a>
-                <a href="${pageContext.request.contextPath}/MainController?action=DesignerHome#payout">Withdrawals</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=DesignerWithdrawals">Withdrawals</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=CustomerBooking">Customer Booking</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerProfile">Profile</a>
             </div>

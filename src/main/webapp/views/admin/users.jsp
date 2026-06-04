@@ -40,6 +40,10 @@
             }
             .filter-bar input { min-width: 200px; }
             .filter-bar input::placeholder { color: #A0AEC0; }
+            .filter-bar select option {
+                background-color: #1e1b4b;
+                color: white;
+            }
             .filter-bar .btn-search {
                 background: #0075FF;
                 border-color: #0075FF;

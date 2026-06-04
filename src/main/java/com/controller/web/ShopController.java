@@ -44,33 +44,37 @@ public class ShopController extends HttpServlet {
             String indexStr = request.getParameter("index");
             int index = (indexStr != null && !indexStr.isEmpty()) ? Integer.parseInt(indexStr) : 1;
             
+            String priceSort = request.getParameter("priceSort");
+            if (priceSort == null) priceSort = ""; // "" = default sort, "asc" or "desc"
+
             // 2. Cấu hình phân trang
             int pageSize = 9; // Số sản phẩm trên 1 trang (bạn có thể đổi thành 9, 12 tùy ý)
             int totalTemplates = dao.countTotalTemplates(keyword, categoryID);
-            
+
             // Tính toán tổng số trang (endPage)
             int endPage = totalTemplates / pageSize;
             if (totalTemplates % pageSize != 0) {
                 endPage++;
             }
-            
+
             // 3. Lấy dữ liệu theo các tham số
             List<Category> listCategories = dao.getAllCategories();
-            List<Template> listTemplates = dao.searchAndPagingTemplates(keyword, categoryID, index, pageSize);
+            List<Template> listTemplates = dao.searchAndPagingTemplates(keyword, categoryID, index, pageSize, priceSort);
             List<Template> recommendTemplates = dao.getRecommendations();
             Template bestTemplate = dao.getBestTemplateOfTheWeek();
-            
+
             // 4. Đẩy dữ liệu về lại JSP
             request.setAttribute("listCategories", listCategories);
             request.setAttribute("listTemplates", listTemplates); // Đổi tên từ historyTemplates thành listTemplates cho chuẩn nghĩa
             request.setAttribute("recommendTemplates", recommendTemplates);
             request.setAttribute("bestTemplate", bestTemplate);
-            
+
             // Trả về các tham số trạng thái để JSP giữ nguyên trạng thái khi bấm chuyển trang
             request.setAttribute("endPage", endPage);
             request.setAttribute("tag", index); // tag là trang hiện tại đang đứng
             request.setAttribute("saveKeyword", keyword);
             request.setAttribute("saveCategoryID", categoryID);
+            request.setAttribute("savePriceSort", priceSort);
 
         } catch (Exception e) {
             log("Error at ShopController: " + e.toString());

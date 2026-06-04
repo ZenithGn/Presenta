@@ -66,6 +66,17 @@ public class AdminDashboardController extends HttpServlet {
             request.setAttribute("MONTH_LABELS", monthLabels);
             request.setAttribute("MONTH_DATA", monthData);
 
+            // --- Template Upload Histogram (with time filter) ---
+            String uploadFilter = request.getParameter("uploadFilter");
+            if (uploadFilter == null) uploadFilter = "month";
+            request.setAttribute("UPLOAD_FILTER", uploadFilter);
+
+            Map<String, Integer> uploadStats = getTemplateUploadStats(uploadFilter);
+            List<String> uploadLabels = new ArrayList<>(uploadStats.keySet());
+            List<Integer> uploadData = new ArrayList<>(uploadStats.values());
+            request.setAttribute("UPLOAD_LABELS", uploadLabels);
+            request.setAttribute("UPLOAD_DATA", uploadData);
+
         } catch (Exception e) {
             log("Error at AdminDashboardController: " + e.getMessage());
             e.printStackTrace();
@@ -144,6 +155,74 @@ public class AdminDashboardController extends HttpServlet {
                 map.put(rs.getString("month"), rs.getDouble("revenue"));
             }
         } catch (Exception e) { e.printStackTrace(); }
+        return map;
+    }
+
+    private Map<String, Integer> getTemplateUploadStats(String filter) {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        String sql;
+
+        if ("week".equals(filter)) {
+            // Last 7 days, grouped by day of week abbreviation
+            sql = "SELECT FORMAT(createAt, 'ddd') AS period, COUNT(*) AS cnt "
+                + "FROM Templates "
+                + "WHERE createAt >= DATEADD(DAY, -6, GETDATE()) "
+                + "GROUP BY FORMAT(createAt, 'ddd'), CAST(createAt AS DATE) "
+                + "ORDER BY MIN(createAt)";
+            // Pre-fill last 7 days
+            java.time.LocalDate today = java.time.LocalDate.now();
+            for (int i = 6; i >= 0; i--) {
+                java.time.LocalDate d = today.minusDays(i);
+                String label = d.getDayOfWeek().toString().substring(0, 3);
+                map.put(label, 0);
+            }
+        } else if ("year".equals(filter)) {
+            // Last 12 months, grouped by month
+            sql = "SELECT FORMAT(createAt, 'yyyy-MM') AS period, COUNT(*) AS cnt "
+                + "FROM Templates "
+                + "WHERE createAt >= DATEADD(MONTH, -11, GETDATE()) "
+                + "GROUP BY FORMAT(createAt, 'yyyy-MM') "
+                + "ORDER BY period";
+            // Pre-fill last 12 months
+            java.time.LocalDate today = java.time.LocalDate.now();
+            for (int i = 11; i >= 0; i--) {
+                java.time.LocalDate d = today.minusMonths(i);
+                String label = d.getMonth().toString().substring(0, 3) + " " + d.getYear();
+                map.put(label, 0);
+            }
+        } else {
+            // Default: this month — group by day
+            sql = "SELECT CAST(createAt AS DATE) AS period, COUNT(*) AS cnt "
+                + "FROM Templates "
+                + "WHERE MONTH(createAt) = MONTH(GETDATE()) AND YEAR(createAt) = YEAR(GETDATE()) "
+                + "GROUP BY CAST(createAt AS DATE) "
+                + "ORDER BY period";
+            // Pre-fill all days of current month up to today
+            java.time.LocalDate today = java.time.LocalDate.now();
+            java.time.LocalDate firstOfMonth = today.withDayOfMonth(1);
+            for (java.time.LocalDate d = firstOfMonth; !d.isAfter(today); d = d.plusDays(1)) {
+                map.put(String.valueOf(d.getDayOfMonth()), 0);
+            }
+        }
+
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String key = rs.getString("period");
+                int cnt = rs.getInt("cnt");
+                // For "month" filter, key comes as "yyyy-MM-dd" — extract just the day
+                if (!"week".equals(filter) && !"year".equals(filter)) {
+                    try {
+                        java.time.LocalDate d = java.time.LocalDate.parse(key);
+                        key = String.valueOf(d.getDayOfMonth());
+                    } catch (Exception e) { /* keep original */ }
+                }
+                map.put(key, cnt);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return map;
     }
 

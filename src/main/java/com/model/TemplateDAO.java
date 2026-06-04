@@ -156,11 +156,16 @@ public class TemplateDAO {
     }
 
     // Đếm tổng số lượng sản phẩm phục vụ cho thuật toán phân trang của Shop
+    // Loại trừ các template thuộc đơn HIRE_DESIGNER (thiết kế riêng)
     public int countTotalTemplates(String keyword, int categoryID) {
         int count = 0;
-        String sql = "SELECT COUNT(*) FROM Templates WHERE title LIKE ? ";
+        String sql = "SELECT COUNT(*) FROM Templates t WHERE t.templateID NOT IN "
+                   + "(SELECT od.templateID FROM OrderDetails od "
+                   + "JOIN Orders o ON od.orderID = o.orderID "
+                   + "WHERE o.orderType = 'HIRE_DESIGNER' AND od.templateID IS NOT NULL) "
+                   + "AND t.title LIKE ? ";
         if (categoryID > 0) {
-            sql += " AND categoryID = ? ";
+            sql += " AND t.categoryID = ? ";
         }
 
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -179,14 +184,27 @@ public class TemplateDAO {
         return count;
     }
 
-    // Truy vấn danh sách sản phẩm có áp dụng bộ lọc Tìm kiếm, Danh mục và Phân trang (Offset / Fetch)
-    public List<Template> searchAndPagingTemplates(String keyword, int categoryID, int index, int pageSize) {
+    // Truy vấn danh sách sản phẩm có áp dụng bộ lọc Tìm kiếm, Danh mục, Phân trang và Sắp xếp giá
+    // Loại trừ các template thuộc đơn HIRE_DESIGNER (thiết kế riêng)
+    public List<Template> searchAndPagingTemplates(String keyword, int categoryID, int index, int pageSize, String priceSort) {
         List<Template> list = new ArrayList<>();
-        String sql = "SELECT * FROM Templates WHERE title LIKE ? ";
+        String sql = "SELECT * FROM Templates t WHERE t.templateID NOT IN "
+                   + "(SELECT od.templateID FROM OrderDetails od "
+                   + "JOIN Orders o ON od.orderID = o.orderID "
+                   + "WHERE o.orderType = 'HIRE_DESIGNER' AND od.templateID IS NOT NULL) "
+                   + "AND t.title LIKE ? ";
         if (categoryID > 0) {
-            sql += " AND categoryID = ? ";
+            sql += " AND t.categoryID = ? ";
         }
-        sql += " ORDER BY templateID DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        // Sắp xếp theo giá nếu có, mặc định theo templateID
+        if ("asc".equals(priceSort)) {
+            sql += " ORDER BY t.price ASC ";
+        } else if ("desc".equals(priceSort)) {
+            sql += " ORDER BY t.price DESC ";
+        } else {
+            sql += " ORDER BY t.templateID DESC ";
+        }
+        sql += " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + keyword + "%");

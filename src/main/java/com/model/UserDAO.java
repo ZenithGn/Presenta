@@ -178,6 +178,19 @@ public class UserDAO {
         return false;
     }
 
+    public boolean changePassword(int userId, String oldPassword, String newPassword) {
+        String sql = "UPDATE Users SET password = ? WHERE userID = ? AND password = ?";
+        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, newPassword);
+            ps.setInt(2, userId);
+            ps.setString(3, oldPassword);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean updateAvatar(int userId, String avatarUrl) {
         String sql = "UPDATE Users SET avatarURL = ? WHERE userID = ?";
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {

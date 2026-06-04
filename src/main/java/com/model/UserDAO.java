@@ -21,18 +21,18 @@ import org.mindrot.jbcrypt.BCrypt;
 public class UserDAO {
 
     // Khai báo Query là hằng số ở đầu Class
-    public static final String CHECK_LOGIN_QUERY = "SELECT * FROM Users WHERE userName = ? AND status = 1";
+    public static final String CHECK_LOGIN_QUERY = "SELECT * FROM Users WHERE email = ? AND status = 1";
     public static final String CHECK_DUPLICATE_QUERY = "SELECT userID FROM Users WHERE userName = ? OR email = ?";
     public static final String INSERT_USER_QUERY = "INSERT INTO Users (userName, password, email, roleID, status) VALUES (?, ?, ?, ?, 1)";
     public static final String INSERT_DESIGNER_PROFILE_QUERY = "INSERT INTO Designer_Profiles (userID, bio, phone, porfolioURL) VALUES (?, ?, ?, ?)";
 
-    public User checkLogin(String username, String plainPassword) {
+    public User checkLogin(String email, String plainPassword) {
         User user = null;
 
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(CHECK_LOGIN_QUERY)) {
 
-            // Chỉ truyền vào username
-            ps.setString(1, username);
+            // Truyền email thay vì username
+            ps.setString(1, email);
 
             try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {

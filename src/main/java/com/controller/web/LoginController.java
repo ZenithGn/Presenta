@@ -35,15 +35,15 @@ public class LoginController extends HttpServlet {
 
         try {
             // Lấy dữ liệu từ form
-            String user = request.getParameter("username");
+            String email = request.getParameter("email");
             String pass = request.getParameter("password");
 
             // FIX LỖI: Kiểm tra xem user có đang thực sự submit form hay không
-            // Nếu user và pass khác null, tức là họ đã bấm nút "Đăng Nhập"
-            if (user != null && pass != null) {
+            // Nếu email và pass khác null, tức là họ đã bấm nút "Đăng Nhập"
+            if (email != null && pass != null) {
 
                 UserDAO dao = new UserDAO();
-                User loginUser = dao.checkLogin(user, pass);
+                User loginUser = dao.checkLogin(email, pass);
 
                 if (loginUser != null) {
                     HttpSession session = request.getSession();
@@ -53,15 +53,15 @@ public class LoginController extends HttpServlet {
                     if (loginUser.getRoleId() == 1) {
                         url = ADMIN_DASHBOARD;
                     } else if (loginUser.getRoleId() == 3) {
-                        url = DESIGNER_HOME; 
+                        url = DESIGNER_HOME;
                     } else {
                         url = HOME_PAGE;
                     }
                 } else {
-                    request.setAttribute("errorMessage", "Tài khoản hoặc mật khẩu không chính xác!");
+                    request.setAttribute("errorMessage", "Email hoặc mật khẩu không chính xác!");
                 }
             }
-            // Nếu user và pass là null (mới click vào trang) -> Bỏ qua khối lệnh trên, chỉ load url = ERROR_PAGE (login.jsp) bình thường
+            // Nếu email và pass là null (mới click vào trang) -> Bỏ qua khối lệnh trên, chỉ load url = ERROR_PAGE (login.jsp) bình thường
 
         } catch (Exception e) {
             log("Error at LoginController: " + e.toString());

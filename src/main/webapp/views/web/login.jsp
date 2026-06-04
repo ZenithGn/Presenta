@@ -36,8 +36,8 @@
                     <input type="hidden" name="action" value="Login">
 
                     <div class="form-group">
-                        <label for="username">Tên đăng nhập</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="example@email.com" required>
                     </div>
 
                     <div class="form-group">

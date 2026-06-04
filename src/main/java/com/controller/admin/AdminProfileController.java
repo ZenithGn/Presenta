@@ -35,7 +35,29 @@ public class AdminProfileController extends HttpServlet {
         String toastMessage = null;
         String toastType = "success";
 
-        if ("changeEmail".equals(method)) {
+        if ("changeUsername".equals(method)) {
+            String newUsername = request.getParameter("newUsername");
+            if (newUsername == null || newUsername.trim().isEmpty()) {
+                toastMessage = "Username cannot be empty.";
+                toastType = "error";
+            } else if (newUsername.trim().length() < 3) {
+                toastMessage = "Username must be at least 3 characters.";
+                toastType = "error";
+            } else if (dao.checkUsernameExists(newUsername.trim(), loginUser.getUserId())) {
+                toastMessage = "Username already taken.";
+                toastType = "error";
+            } else {
+                boolean ok = dao.updateUsername(loginUser.getUserId(), newUsername.trim());
+                if (ok) {
+                    loginUser.setUsername(newUsername.trim());
+                    session.setAttribute("LOGIN_USER", loginUser);
+                    toastMessage = "Username updated successfully!";
+                } else {
+                    toastMessage = "Failed to update username.";
+                    toastType = "error";
+                }
+            }
+        } else if ("changeEmail".equals(method)) {
             String newEmail = request.getParameter("newEmail");
             if (newEmail != null && !newEmail.trim().isEmpty()) {
                 boolean ok = dao.updateEmail(loginUser.getUserId(), newEmail.trim());

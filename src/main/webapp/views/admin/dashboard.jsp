@@ -115,6 +115,7 @@
                             <a href="${pageContext.request.contextPath}/MainController?action=AdminDashboard" class="active">Dashboard</a>
                             <a href="${pageContext.request.contextPath}/MainController?action=AdminWithdrawals">Withdrawals</a>
                             <a href="${pageContext.request.contextPath}/MainController?action=AdminUsers">User List</a>
+                            <a href="${pageContext.request.contextPath}/MainController?action=AdminProfile">Profile</a>
                         </div>
 
                         <div style="display: flex; align-items: center; gap: 20px;">

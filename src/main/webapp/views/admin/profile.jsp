@@ -129,34 +129,63 @@
                 <p style="color: #A0AEC0; margin: 0; font-size: 14px;">Manage your account settings</p>
             </div>
 
-            <div class="profile-layout">
-                <%-- ============ ACCOUNT INFO ============ --%>
-                <div class="vision-card" style="padding: 28px;">
-                    <div class="panel-header" style="margin-bottom: 20px;">Account Information</div>
-
-                    <div class="profile-info-row">
-                        <span class="label">Username</span>
-                        <span class="value"><%= loginUser.getUsername()%></span>
+            <%-- ============ ACCOUNT INFO CARDS ============ --%>
+            <div class="stats-grid" style="margin-bottom: 24px;">
+                <div class="vision-card stat-card">
+                    <div class="stat-info">
+                        <span class="stat-title">Username</span>
+                        <div class="stat-value" style="font-size: 18px;"><%= loginUser.getUsername()%></div>
                     </div>
-                    <div class="profile-info-row">
-                        <span class="label">Email</span>
-                        <span class="value"><%= loginUser.getEmail() != null ? loginUser.getEmail() : "—"%></span>
+                    <div class="stat-icon">👤</div>
+                </div>
+                <div class="vision-card stat-card">
+                    <div class="stat-info">
+                        <span class="stat-title">Email</span>
+                        <div class="stat-value" style="font-size: 14px;"><%= loginUser.getEmail() != null ? loginUser.getEmail() : "—"%></div>
                     </div>
-                    <div class="profile-info-row">
-                        <span class="label">Role</span>
-                        <span class="value" style="color: #dc3545; font-weight: 700;">Admin</span>
+                    <div class="stat-icon">📧</div>
+                </div>
+                <div class="vision-card stat-card">
+                    <div class="stat-info">
+                        <span class="stat-title">Role</span>
+                        <div class="stat-value" style="font-size: 18px; color: #dc3545;">Admin</div>
                     </div>
-                    <div class="profile-info-row" style="border-bottom: none;">
-                        <span class="label">Status</span>
-                        <span class="value" style="color: <%= loginUser.isStatus() ? "#28a745" : "#dc3545"%>;">
+                    <div class="stat-icon">🔑</div>
+                </div>
+                <div class="vision-card stat-card">
+                    <div class="stat-info">
+                        <span class="stat-title">Status</span>
+                        <div class="stat-value" style="font-size: 18px; color: <%= loginUser.isStatus() ? "#28a745" : "#dc3545"%>;">
                             <%= loginUser.isStatus() ? "Active" : "Banned"%>
-                        </span>
+                        </div>
                     </div>
+                    <div class="stat-icon">🟢</div>
+                </div>
+            </div>
+
+            <div class="profile-layout">
+                <%-- ============ CHANGE USERNAME ============ --%>
+                <div class="vision-card" style="padding: 28px;">
+                    <div class="panel-header" style="margin-bottom: 20px;">✏️ Change Username</div>
+                    <form action="${pageContext.request.contextPath}/MainController" method="POST">
+                        <input type="hidden" name="action" value="AdminProfile">
+                        <input type="hidden" name="method" value="changeUsername">
+
+                        <div class="form-group">
+                            <label>Current Username</label>
+                            <input type="text" class="form-control" value="<%= loginUser.getUsername()%>" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>New Username <span style="color: #E53E3E;">*</span></label>
+                            <input type="text" name="newUsername" class="form-control" placeholder="Enter new username (min 3 chars)" required minlength="3">
+                        </div>
+                        <button type="submit" class="btn-save" style="width: 100%;">Update Username</button>
+                    </form>
                 </div>
 
                 <%-- ============ CHANGE EMAIL ============ --%>
                 <div class="vision-card" style="padding: 28px;">
-                    <div class="panel-header" style="margin-bottom: 20px;">Change Email</div>
+                    <div class="panel-header" style="margin-bottom: 20px;">📧 Change Email</div>
                     <form action="${pageContext.request.contextPath}/MainController" method="POST">
                         <input type="hidden" name="action" value="AdminProfile">
                         <input type="hidden" name="method" value="changeEmail">

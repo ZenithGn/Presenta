@@ -81,6 +81,20 @@ public class UserDAO {
         return exist;
     }
 
+    public boolean checkUsernameExists(String username, int excludeUserId) {
+        String sql = "SELECT userID FROM Users WHERE userName = ? AND userID != ?";
+        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setInt(2, excludeUserId);
+            try ( ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean registerUser(User user, String phone, String portfolioURL, String bio) {
         boolean check = false;
         Connection conn = null;
@@ -170,6 +184,18 @@ public class UserDAO {
         String sql = "UPDATE Users SET email = ? WHERE userID = ?";
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateUsername(int userId, String username) {
+        String sql = "UPDATE Users SET userName = ? WHERE userID = ?";
+        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
             ps.setInt(2, userId);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {

@@ -178,7 +178,7 @@ public class UserDAO {
         return false;
     }
 
-    public boolean changePassword(int userId, String oldPassword, String newPassword) {
+    /*public boolean changePassword(int userId, String oldPassword, String newPassword) {
         String sql = "UPDATE Users SET password = ? WHERE userID = ? AND password = ?";
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, newPassword);
@@ -189,7 +189,7 @@ public class UserDAO {
             e.printStackTrace();
         }
         return false;
-    }
+    }*/
 
     public boolean updateAvatar(int userId, String avatarUrl) {
         String sql = "UPDATE Users SET avatarURL = ? WHERE userID = ?";

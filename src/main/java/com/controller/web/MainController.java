@@ -75,6 +75,8 @@ public class MainController extends HttpServlet {
     private static final String ACCEPT_BOOKING_CONTROLLER = "AcceptBookingController";
     private static final String REQUEST_PAYMENT = "RequestPayment";
     private static final String REQUEST_PAYMENT_CONTROLLER = "RequestPaymentController";
+    private static final String CUSTOMER_BOOKING = "CustomerBooking";
+    private static final String CUSTOMER_BOOKING_CONTROLLER = "CustomerBookingController";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -144,6 +146,8 @@ public class MainController extends HttpServlet {
                 url = ACCEPT_BOOKING_CONTROLLER;
             } else if (REQUEST_PAYMENT.equals(action)) {
                 url = REQUEST_PAYMENT_CONTROLLER;
+            } else if (CUSTOMER_BOOKING.equals(action)) {
+                url = CUSTOMER_BOOKING_CONTROLLER;
             }
         } catch (Exception e) {
             log("Error at MainController: " + e.toString());

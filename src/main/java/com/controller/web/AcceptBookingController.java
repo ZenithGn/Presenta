@@ -44,7 +44,7 @@ public class AcceptBookingController extends HttpServlet {
         } catch (Exception e) {
             log("Error at AcceptBookingController: " + e.toString());
         }
-        response.sendRedirect("MainController?action=DesignerHome");
+        response.sendRedirect("MainController?action=CustomerBooking");
     }
 
     @Override

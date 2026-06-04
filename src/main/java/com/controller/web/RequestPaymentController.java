@@ -35,12 +35,12 @@ public class RequestPaymentController extends HttpServlet {
             // Validate inputs
             if (price <= 0) {
                 session.setAttribute("toastMessage", "Vui lòng nhập giá tiền hợp lệ (> 0)!");
-                response.sendRedirect("MainController?action=DesignerHome");
+                response.sendRedirect("MainController?action=CustomerBooking");
                 return;
             }
             if (fileURL == null || fileURL.trim().isEmpty()) {
                 session.setAttribute("toastMessage", "Vui lòng nhập đường dẫn file thiết kế!");
-                response.sendRedirect("MainController?action=DesignerHome");
+                response.sendRedirect("MainController?action=CustomerBooking");
                 return;
             }
 
@@ -59,7 +59,7 @@ public class RequestPaymentController extends HttpServlet {
             log("Error at RequestPaymentController: " + e.toString());
             request.getSession().setAttribute("toastMessage", "Lỗi hệ thống!");
         }
-        response.sendRedirect("MainController?action=DesignerHome");
+        response.sendRedirect("MainController?action=CustomerBooking");
     }
 
     @Override

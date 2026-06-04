@@ -59,9 +59,6 @@ public class DesignerHomeController extends HttpServlet {
             List<Map<String, Object>> recentSales = dao.getRecentSales(designerId);
             List<Map<String, Object>> withdrawalHistory = dao.getWithdrawalHistory(designerId);
 
-            // 3.5 Lấy danh sách Booking Requests (HIRE_DESIGNER)
-            List<Map<String, Object>> bookingRequests = dao.getDesignerBookings(designerId);
-
             // 4. Gắn dữ liệu vào Request để trang JSP hứng
             request.setAttribute("DESIGNER_BALANCE", balance);
             request.setAttribute("ACTIVE_TEMPLATES", activeTemplates);
@@ -69,7 +66,6 @@ public class DesignerHomeController extends HttpServlet {
             request.setAttribute("PENDING_PAYOUTS", pendingPayouts);
             request.setAttribute("RECENT_SALES", recentSales);
             request.setAttribute("WITHDRAWAL_HISTORY", withdrawalHistory);
-            request.setAttribute("BOOKING_REQUESTS", bookingRequests);
 
             // 5. Điều hướng sang file JSP
             request.getRequestDispatcher("views/designer/designer-home.jsp").forward(request, response);

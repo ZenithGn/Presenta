@@ -29,6 +29,7 @@
         <link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/images/favicon/favicon.ico">
 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/designer/designer-home.css">
     </head>
 
@@ -44,7 +45,7 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=ManageTemplate">Manage Templates</a>
                 <a href="#">Withdrawals</a>
                 <a href="#">Orders</a>
-                <a href="#">Profile</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=DesignerProfile">Profile</a>
             </div>
 
             <div style="display: flex; align-items: center; gap: 20px;">
@@ -232,5 +233,38 @@
             </div>
 
         </div>
+
+        <footer class="main-footer">
+            <div class="footer-container">
+                <div class="footer-col brand-col">
+                    <div class="brand-logo-desc-wrapper">
+                        <img src="${pageContext.request.contextPath}/assets/images/logo.jpg" alt="Presenta Logo" class="footer-image-logo">
+                        <div class="brand-text-content">
+                            <a href="${pageContext.request.contextPath}/MainController" class="footer-logo" style="margin-bottom: 4px;">Presenta</a>
+                            <p class="footer-desc" style="margin-bottom: 0;">The next generation template marketplace for academic visionaries and creative professionals. Empowering students and designers worldwide.</p>
+                        </div>
+                    </div>
+                    <div class="footer-socials">
+                        <a href="https://www.facebook.com/profile.php?id=61590550761077" target="_blank" class="social-icon">🌐</a>
+                        <a href="#" class="social-icon">💬</a>
+                        <a href="mailto:presentaproject05@gmail.com" target="_blank" class="social-icon">📧</a>
+                    </div>
+                </div>
+                <div class="footer-col contact-col">
+                    <h4>GET IN TOUCH</h4>
+                    <ul class="contact-info-list">
+                        <li><span class="contact-icon">📍</span><span>FPT University, District 9, Ho Chi Minh City</span></li>
+                        <li><span class="contact-icon">📧</span><span>presentaproject05@gmail.com</span></li>
+                        <li><span class="contact-icon">📞</span><span>+84 (28) 7300 5588</span></li>
+                        <li><span class="contact-icon">⏱</span><span>Mon - Fri: 8:00 AM - 5:00 PM</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-container">
+                    <p>&copy; 2026 Presenta. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
     </body>
 </html>

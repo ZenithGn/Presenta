@@ -440,4 +440,82 @@ public class DesignerDAO {
         }
         return false;
     }
+
+    // ============================================================
+    // DESIGNER PROFILE METHODS
+    // ============================================================
+
+    // Get full designer profile from Users + Designer_Profiles
+    public Designer getFullDesignerProfile(int designerId) {
+        String sql = "SELECT u.userID, u.userName, u.email, u.avatarURL, "
+                   + "dp.bio, dp.phone, dp.porfolioURL, dp.balance "
+                   + "FROM Users u "
+                   + "JOIN Designer_Profiles dp ON u.userID = dp.userID "
+                   + "WHERE u.userID = ? AND u.roleID = 3 AND u.status = 1";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, designerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Designer d = new Designer();
+                    d.setUserID(rs.getInt("userID"));
+                    d.setUserName(rs.getString("userName"));
+                    d.setAvatarURL(rs.getString("avatarURL"));
+                    d.setBio(rs.getString("bio"));
+                    d.setPhone(rs.getString("phone"));
+                    d.setPortfolioURL(rs.getString("porfolioURL"));
+                    d.setBalance(rs.getDouble("balance"));
+                    d.setSpecialty("Academic Presentation Designer");
+                    return d;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Update designer public profile (Designer_Profiles table)
+    public boolean updateDesignerProfile(int designerId, String bio, String phone, String portfolioURL) {
+        String sql = "UPDATE Designer_Profiles SET bio = ?, phone = ?, porfolioURL = ? WHERE userID = ?";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, bio);
+            ps.setString(2, phone);
+            ps.setString(3, portfolioURL);
+            ps.setInt(4, designerId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Get orders for designer (hire_designer orders for this designer)
+    public List<Map<String, Object>> getDesignerOrders(int designerId) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        String sql = "SELECT o.orderID, u.userName AS customerName, o.totalPrice, o.status, o.createAt "
+                   + "FROM Orders o "
+                   + "JOIN Users u ON o.customerID = u.userID "
+                   + "WHERE o.designerID = ? AND o.orderType = 'HIRE_DESIGNER' "
+                   + "ORDER BY o.createAt DESC";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, designerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> map = new LinkedHashMap<>();
+                    map.put("orderID", rs.getInt("orderID"));
+                    map.put("customerName", rs.getString("customerName"));
+                    map.put("totalPrice", rs.getDouble("totalPrice"));
+                    map.put("status", rs.getString("status"));
+                    map.put("createAt", rs.getTimestamp("createAt"));
+                    list.add(map);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

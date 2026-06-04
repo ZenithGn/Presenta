@@ -14,16 +14,19 @@ public class Designer {
     private String userName;
     private String avatarURL;
     private String bio;
-    private String specialty; // Ví dụ: Motion Design, Branding...
+    private String specialty; // Computed field: e.g. Motion Design, Branding...
+    private String phone;           // from Designer_Profiles
+    private String portfolioURL;    // from Designer_Profiles (porfolioURL in DB)
+    private double balance;         // from Designer_Profiles
 
     // Constructors
     public Designer() {
     }
 
-    
     public Designer(int userID, String userName, String avatarURL, String bio, String specialty) {
         this.userID = userID;
         this.userName = userName;
+        this.avatarURL = avatarURL;
         this.bio = bio;
         this.specialty = specialty;
     }
@@ -45,6 +48,14 @@ public class Designer {
         this.userName = userName;
     }
 
+    public String getAvatarURL() {
+        return avatarURL;
+    }
+
+    public void setAvatarURL(String avatarURL) {
+        this.avatarURL = avatarURL;
+    }
+
     public String getBio() {
         return bio;
     }
@@ -61,11 +72,27 @@ public class Designer {
         this.specialty = specialty;
     }
 
-    public String getAvatarURL() {
-        return avatarURL;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setAvatarURL(String avatarURL) {
-        this.avatarURL = avatarURL;
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getPortfolioURL() {
+        return portfolioURL;
+    }
+
+    public void setPortfolioURL(String portfolioURL) {
+        this.portfolioURL = portfolioURL;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 }

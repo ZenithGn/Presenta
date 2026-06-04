@@ -15,6 +15,8 @@
     }
     List<Map<String, Object>> recentSales = (List<Map<String, Object>>) request.getAttribute("RECENT_SALES");
     List<Map<String, Object>> withdrawalHistory = (List<Map<String, Object>>) request.getAttribute("WITHDRAWAL_HISTORY");
+    List<Map<String, Object>> bookingRequests = (List<Map<String, Object>>) request.getAttribute("BOOKING_REQUESTS");
+    String toastMsg2 = (String) session.getAttribute("toastMessage");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,6 +33,22 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/designer/designer-home.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css">
+        <style>
+            .modal-overlay {
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.7); display: flex; align-items: center;
+                justify-content: center; z-index: 9999;
+            }
+            .modal-content {
+                background: #1a1033; border-radius: 16px; padding: 32px;
+                width: 90%; border: 1px solid rgba(255,255,255,0.1);
+            }
+            .status-processing { background: rgba(0, 117, 255, 0.15); color: #0075FF; }
+            .status-completed { background: rgba(1, 181, 116, 0.15); color: #01B574; }
+            .status-pending { background: rgba(251, 191, 36, 0.15); color: #FBBF24; }
+            .status-rejected { background: rgba(239, 68, 68, 0.15); color: #EF4444; }
+        </style>
     </head>
 
     <body class="designer-body">
@@ -232,6 +250,121 @@
                 </div>
             </div>
 
+            <%-- ================================================ --%>
+            <%-- BOOKING REQUESTS PANEL (HIRE_DESIGNER)             --%>
+            <%-- ================================================ --%>
+            <div class="vision-card" style="margin-top: 24px;">
+                <div class="panel-header">
+                    Booking Requests
+                    <span style="font-size: 14px; color: #D8B4FF; font-weight: normal;">
+                        <% if (bookingRequests != null) { %><%= bookingRequests.size()%> requests<% } else { %>0 requests<% } %>
+                    </span>
+                </div>
+
+                <% if (bookingRequests != null && !bookingRequests.isEmpty()) { %>
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (Map<String, Object> br : bookingRequests) {
+                            int orderId = (Integer) br.get("orderID");
+                            String customerName = (String) br.get("customerName");
+                            String status = (String) br.get("status");
+                            double price = br.get("totalPrice") != null ? (Double) br.get("totalPrice") : 0.0;
+                            java.sql.Timestamp createAt = (java.sql.Timestamp) br.get("createAt");
+                            String dateStr = createAt != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(createAt) : "N/A";
+
+                            String badgeClass = "status-pending";
+                            if (status.equals("Processing")) badgeClass = "status-processing";
+                            else if (status.equals("Completed_Design") || status.equals("Completed")) badgeClass = "status-completed";
+                            else if (status.equals("Cancelled")) badgeClass = "status-rejected";
+                        %>
+                        <tr>
+                            <td style="font-weight: 700; color: white;">#<%= orderId%></td>
+                            <td style="color: white;"><%= customerName%></td>
+                            <td style="color: #A0AEC0; font-size: 13px;"><%= dateStr%></td>
+                            <td style="color: #D8B4FF; font-weight: 600;">
+                                <%= price > 0 ? String.format("%,.0f₫", price) : "—"%>
+                            </td>
+                            <td><span class="status-badge <%= badgeClass%>"><%= status%></span></td>
+                            <td>
+                                <% if (status.equals("Pending")) { %>
+                                <div style="display: flex; gap: 6px;">
+                                    <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin: 0;">
+                                        <input type="hidden" name="action" value="AcceptBooking">
+                                        <input type="hidden" name="orderID" value="<%= orderId%>">
+                                        <input type="hidden" name="actionType" value="accept">
+                                        <button type="submit" style="background: #01B574; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">Chấp Nhận</button>
+                                    </form>
+                                    <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin: 0;">
+                                        <input type="hidden" name="action" value="AcceptBooking">
+                                        <input type="hidden" name="orderID" value="<%= orderId%>">
+                                        <input type="hidden" name="actionType" value="reject">
+                                        <button type="submit" style="background: #ef4444; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">Từ Chối</button>
+                                    </form>
+                                </div>
+                                <% } else if (status.equals("Processing")) { %>
+                                <button onclick="openPaymentModal(<%= orderId%>)"
+                                        style="background: #D8B4FF; color: #11052C; border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">
+                                    Gửi File & Yêu Cầu Thanh Toán
+                                </button>
+                                <% } else if (status.equals("Completed_Design")) { %>
+                                <span style="color: #fbbf24; font-size: 12px;">⏳ Chờ khách thanh toán</span>
+                                <% } else if (status.equals("Completed")) { %>
+                                <span style="color: #01B574; font-size: 12px; font-weight: 700;">✓ Hoàn thành</span>
+                                <% } else if (status.equals("Cancelled")) { %>
+                                <span style="color: #ef4444; font-size: 12px;">✕ Đã hủy</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+                <% } else { %>
+                <div style="text-align: center; padding: 40px; color: #A0AEC0;">
+                    <p style="font-size: 15px; margin: 0;">Chưa có yêu cầu đặt thiết kế nào.</p>
+                </div>
+                <% } %>
+            </div>
+
+        </div>
+
+        <%-- ================================================ --%>
+        <%-- PAYMENT REQUEST MODAL (Send File + Request $$$)  --%>
+        <%-- ================================================ --%>
+        <div id="paymentModal" class="modal-overlay" style="display: none;">
+            <div class="modal-content" style="max-width: 460px;">
+                <h3 style="margin-top: 0; color: #ffffff;">Gửi File & Yêu Cầu Thanh Toán</h3>
+                <form action="${pageContext.request.contextPath}/MainController" method="POST">
+                    <input type="hidden" name="action" value="RequestPayment">
+                    <input type="hidden" name="orderID" id="modalOrderID">
+
+                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Giá thiết kế (VNĐ)</label>
+                    <input type="number" name="price" id="modalPrice" min="1000" step="1000" required
+                           placeholder="VD: 500000"
+                           style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:16px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
+
+                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Đường dẫn file thiết kế (URL)</label>
+                    <input type="url" name="fileURL" id="modalFileURL" required
+                           placeholder="VD: https://drive.google.com/..."
+                           style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
+
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button type="button" onclick="closePaymentModal()"
+                                style="background: rgba(255,255,255,0.1); color: #ffffff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Hủy</button>
+                        <button type="submit"
+                                style="background: #D8B4FF; color: #11052C; padding: 10px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700;">Gửi & Yêu Cầu Thanh Toán</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <footer class="main-footer">
@@ -266,5 +399,24 @@
                 </div>
             </div>
         </footer>
+
+        <% if (toastMsg2 != null) { %>
+        <div id="toastAlert" class="toast-msg"><%= toastMsg2%></div>
+        <% session.removeAttribute("toastMessage"); } %>
+
+        <script>
+            function openPaymentModal(orderId) {
+                document.getElementById('modalOrderID').value = orderId;
+                document.getElementById('paymentModal').style.display = 'flex';
+            }
+            function closePaymentModal() {
+                document.getElementById('paymentModal').style.display = 'none';
+            }
+            // Close modal when clicking outside
+            document.getElementById('paymentModal').addEventListener('click', function(e) {
+                if (e.target === this) closePaymentModal();
+            });
+        </script>
+        <script src="${pageContext.request.contextPath}/assets/js/toast.js"></script>
     </body>
 </html>

@@ -7,7 +7,10 @@
 <%@ page import="com.model.User" %>
 <%@ page import="com.model.Template" %>
 <%@ page import="com.model.Order" %>
+<%@ page import="com.model.Template" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.HashMap" %>
 
 <%
     User loginUser = (User) session.getAttribute("LOGIN_USER");
@@ -17,6 +20,8 @@
     }
     List<Template> purchasedTemplates = (List<Template>) request.getAttribute("purchasedTemplates");
     List<Order> customOrders = (List<Order>) request.getAttribute("customOrders");
+    Map<Integer, Template> customOrderTemplates = (Map<Integer, Template>) request.getAttribute("customOrderTemplates");
+    if (customOrderTemplates == null) customOrderTemplates = new HashMap<>();
 
     String toastMsg = (String) session.getAttribute("toastMessage");
 %>
@@ -141,6 +146,111 @@
                 </div>
 
                 <div id="tab-custom" class="tab-pane">
+                    <h2 class="tab-title">Đơn Thiết Kế Riêng (Customize)</h2>
+
+                    <% if (customOrders != null && !customOrders.isEmpty()) { %>
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <%
+                            for (Order co : customOrders) {
+                                String status = co.getStatus() != null ? co.getStatus() : "Pending";
+                                // Determine progress step classes
+                                String step1Class = "step-active"; // Pending reached
+                                String step2Class = (status.equals("Processing") || status.equals("Completed_Design") || status.equals("Completed")) ? "step-active" : "step-inactive";
+                                String step3Class = status.equals("Completed") ? "step-active" : "step-inactive";
+
+                                String statusLabel = "";
+                                if (status.equals("Pending")) statusLabel = "Đang chờ Designer xác nhận...";
+                                else if (status.equals("Processing")) statusLabel = "Designer đang thực hiện...";
+                                else if (status.equals("Completed_Design")) statusLabel = "Đã hoàn thành thiết kế, chờ thanh toán";
+                                else if (status.equals("Completed")) statusLabel = "Đã thanh toán";
+                                else if (status.equals("Cancelled")) statusLabel = "Đã hủy";
+                        %>
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <div>
+                                    <span style="font-weight: 700; color: white; font-size: 15px;">Đơn #<%= co.getOrderId()%></span>
+                                    <span style="color: #94a3b8; font-size: 13px; margin-left: 12px;">
+                                        <%= co.getCreateAt() != null ? new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(co.getCreateAt()) : "N/A"%>
+                                    </span>
+                                </div>
+                                <div>
+                                    <span style="color: #D8B4FF; font-weight: 600; font-size: 14px;">
+                                        <%= co.getTotalPrice() > 0 ? String.format("%,.0f₫", co.getTotalPrice()) : "Chưa định giá"%>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <%-- PROGRESS BAR --%>
+                            <div style="display: flex; align-items: center; gap: 0; margin-bottom: 16px;">
+                                <%-- Step 1: Pending --%>
+                                <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+                                    <div style="width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;
+                                         <%= step1Class.equals("step-active") ? "background: #01B574; color: white;" : "background: rgba(255,255,255,0.1); color: #64748b;"%>">
+                                        <%= step1Class.equals("step-active") ? "✓" : "1"%>
+                                    </div>
+                                    <span style="font-size: 12px; color: #cbd5e1; white-space: nowrap;">Đã đặt</span>
+                                </div>
+                                <%-- Line 1 --%>
+                                <div style="height: 2px; flex: 1; min-width: 20px;
+                                     <%= step2Class.equals("step-active") ? "background: #01B574;" : "background: rgba(255,255,255,0.1);"%>"></div>
+                                <%-- Step 2: Processing --%>
+                                <div style="display: flex; align-items: center; gap: 8px; flex: 1; justify-content: center;">
+                                    <div style="width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;
+                                         <%= step2Class.equals("step-active") ? "background: #01B574; color: white;" : "background: rgba(255,255,255,0.1); color: #64748b;"%>">
+                                        <%= step2Class.equals("step-active") ? "✓" : "2"%>
+                                    </div>
+                                    <span style="font-size: 12px; color: #cbd5e1; white-space: nowrap;">Đang thiết kế</span>
+                                </div>
+                                <%-- Line 2 --%>
+                                <div style="height: 2px; flex: 1; min-width: 20px;
+                                     <%= step3Class.equals("step-active") ? "background: #01B574;" : "background: rgba(255,255,255,0.1);"%>"></div>
+                                <%-- Step 3: Completed --%>
+                                <div style="display: flex; align-items: center; gap: 8px; flex: 1; justify-content: flex-end;">
+                                    <div style="width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;
+                                         <%= step3Class.equals("step-active") ? "background: #01B574; color: white;" : "background: rgba(255,255,255,0.1); color: #64748b;"%>">
+                                        <%= step3Class.equals("step-active") ? "✓" : "3"%>
+                                    </div>
+                                    <span style="font-size: 12px; color: #cbd5e1; white-space: nowrap;">Hoàn thành</span>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: <%= status.equals("Cancelled") ? "#ef4444" : "#94a3b8"%>; font-size: 13px;">
+                                    📋 <%= statusLabel%>
+                                </span>
+
+                                <div style="display: flex; gap: 10px;">
+                                    <% if (status.equals("Completed_Design")) { %>
+                                        <a href="${pageContext.request.contextPath}/MainController?action=ProcessOrder&paymentMethod=VNPAY&orderType=HIRE_DESIGNER&orderId=<%= co.getOrderId()%>"
+                                           style="background: #D8B4FF; color: #11052C; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                                            💳 VNPay
+                                        </a>
+                                        <a href="${pageContext.request.contextPath}/MainController?action=ProcessOrder&paymentMethod=MOMO&orderType=HIRE_DESIGNER&orderId=<%= co.getOrderId()%>"
+                                           style="background: #FF5E7A; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                                            💖 MoMo
+                                        </a>
+                                    <% } else if (status.equals("Completed")) {
+                                        Template ct = customOrderTemplates.get(co.getOrderId());
+                                        if (ct != null && ct.getFileURL() != null && !ct.getFileURL().isEmpty()) {
+                                    %>
+                                        <a href="<%= ct.getFileURL()%>" target="_blank"
+                                           style="background: #01B574; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                                            📥 Download File
+                                        </a>
+                                    <% } %>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                    </div>
+                    <% } else { %>
+                    <div style="text-align: center; padding: 60px 20px; color: #94a3b8;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🎨</div>
+                        <p style="font-size: 16px; margin-bottom: 8px;">Bạn chưa có đơn thiết kế riêng nào.</p>
+                        <p style="font-size: 14px;">Khám phá <a href="${pageContext.request.contextPath}/MainController?action=DesignerHub" style="color: #D8B4FF;">Designer Hub</a> để thuê designer thiết kế theo yêu cầu!</p>
+                    </div>
+                    <% } %>
                 </div>
 
                 <div id="tab-info" class="tab-pane">

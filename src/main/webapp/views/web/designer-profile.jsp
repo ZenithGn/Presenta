@@ -50,6 +50,9 @@
         Integer satisfactionRateObj = (Integer) request.getAttribute("satisfactionRate");
         int satisfactionRate = (satisfactionRateObj != null) ? satisfactionRateObj : 0;
 
+        String designerPhone = (String) request.getAttribute("designerPhone");
+        if (designerPhone == null) designerPhone = "";
+
         if (designer == null) {
             response.sendRedirect("MainController?action=DesignerList");
             return;
@@ -112,8 +115,20 @@
                     </p>
 
                     <div style="display: flex; gap: 16px; margin-bottom: 32px;">
-                        <a href="#" class="btn-primary" style="padding: 12px 32px; border-radius: 999px;">Book</a>
-                        <a href="#" class="btn-outline" style="padding: 12px 32px; border-radius: 999px; border-color: white;">Contact</a>
+                        <% if (roleId == 2) { %>
+                        <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin: 0;">
+                            <input type="hidden" name="action" value="BookDesigner">
+                            <input type="hidden" name="designerID" value="<%= designer.getUserID()%>">
+                            <button type="submit" class="btn-primary" style="padding: 12px 32px; border-radius: 999px;">Book</button>
+                        </form>
+                        <% } else if (roleId == 0) { %>
+                        <a href="${pageContext.request.contextPath}/MainController?action=Login" class="btn-primary" style="padding: 12px 32px; border-radius: 999px;">Book</a>
+                        <% } %>
+                        <% if (!designerPhone.isEmpty()) { %>
+                        <a href="https://zalo.me/<%= designerPhone.replaceAll("[^0-9]", "")%>" target="_blank" class="btn-outline" style="padding: 12px 32px; border-radius: 999px; border-color: white;">Contact</a>
+                        <% } else { %>
+                        <a href="#" class="btn-outline" style="padding: 12px 32px; border-radius: 999px; border-color: white; opacity: 0.5;">Contact</a>
+                        <% } %>
                     </div>
 
                     <h4 style="color: white; margin-bottom: 8px;">About</h4>

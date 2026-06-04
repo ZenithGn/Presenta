@@ -53,10 +53,14 @@ public class DesignerDetailController extends HttpServlet {
             }
 
             // Đẩy toàn bộ thuộc tính sang tầng giao diện
+            // Lấy số điện thoại designer từ Designer_Profiles
+            String designerPhone = dao.getDesignerPhone(designerId);
+
             request.setAttribute("designer", designer);
             request.setAttribute("templates", templates);
             request.setAttribute("reviews", reviews);
             request.setAttribute("templatesSold", templatesSold);
+            request.setAttribute("designerPhone", designerPhone);
             request.setAttribute("avgRating", avgRating);
             request.setAttribute("totalReviews", totalReviews);
             request.setAttribute("satisfactionRate", satisfactionRate);

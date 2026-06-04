@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
 public class LoginController extends HttpServlet {
 
     private static final String ERROR_PAGE = "views/web/login.jsp";
-    private static final String ADMIN_DASHBOARD = "views/admin/dashboard.jsp"; // Đường dẫn tạm
+    private static final String ADMIN_DASHBOARD = "AdminDashboardController";
     private static final String HOME_PAGE = "views/web/home.jsp";
     private static final String DESIGNER_HOME = "DesignerHomeController";
 

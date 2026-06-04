@@ -63,10 +63,14 @@
                 return;
             }
 
-            int totalUsers = (Integer) request.getAttribute("TOTAL_USERS");
-            double totalSales = (Double) request.getAttribute("TOTAL_SALES");
-            int totalTemplates = (Integer) request.getAttribute("TOTAL_TEMPLATES");
-            int pendingWithdrawals = (Integer) request.getAttribute("PENDING_WITHDRAWALS");
+            Integer totalUsersObj = (Integer) request.getAttribute("TOTAL_USERS");
+            int totalUsers = (totalUsersObj != null) ? totalUsersObj : 0;
+            Double totalSalesObj = (Double) request.getAttribute("TOTAL_SALES");
+            double totalSales = (totalSalesObj != null) ? totalSalesObj : 0.0;
+            Integer totalTemplatesObj = (Integer) request.getAttribute("TOTAL_TEMPLATES");
+            int totalTemplates = (totalTemplatesObj != null) ? totalTemplatesObj : 0;
+            Integer pendingWithdrawalsObj = (Integer) request.getAttribute("PENDING_WITHDRAWALS");
+            int pendingWithdrawals = (pendingWithdrawalsObj != null) ? pendingWithdrawalsObj : 0;
 
             List<String> roleLabels = (List<String>) request.getAttribute("ROLE_LABELS");
             List<Integer> roleData = (List<Integer>) request.getAttribute("ROLE_DATA");

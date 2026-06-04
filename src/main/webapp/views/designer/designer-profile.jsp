@@ -51,9 +51,11 @@
                 Presenta <span style="font-size:12px; color:#D8B4FF; font-family: Inter;">DESIGNER</span>
             </a>
             <div class="nav-links">
-                <a href="${pageContext.request.contextPath}/MainController?action=DesignerHome" style="color:white;">DASHBOARD</a>
-                <a href="${pageContext.request.contextPath}/MainController?action=ManageTemplate" style="color:white;">TEMPLATES</a>
-                <a href="${pageContext.request.contextPath}/MainController?action=DesignerProfile" style="border-bottom: 2px solid white; font-weight: 700; color:white;">PROFILE</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=DesignerHome" class="active">Dashboard</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=ManageTemplate">Manage Templates</a>
+                <a href="#">Withdrawals</a>
+                <a href="#">Orders</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=DesignerProfile" style="border-bottom: 2px solid white; font-weight: 700; color:white;">Profile</a>
             </div>
             <div class="nav-actions">
                 <span style="color: #dae2fd; font-size: 14px; margin-right: 10px;">Welcome, <b><%= loginUser.getUsername()%></b></span>

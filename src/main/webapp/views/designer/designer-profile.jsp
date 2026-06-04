@@ -16,25 +16,13 @@
     }
 
     Designer designer = (Designer) request.getAttribute("designer");
-    List<Map<String, Object>> recentSales = (List<Map<String, Object>>) request.getAttribute("RECENT_SALES");
-    List<Map<String, Object>> withdrawalHistory = (List<Map<String, Object>>) request.getAttribute("WITHDRAWAL_HISTORY");
     List<Map<String, Object>> designerOrders = (List<Map<String, Object>>) request.getAttribute("DESIGNER_ORDERS");
-
-    Double balance = (Double) request.getAttribute("DESIGNER_BALANCE");
-    Integer activeTemplates = (Integer) request.getAttribute("ACTIVE_TEMPLATES");
-    Integer templatesSold = (Integer) request.getAttribute("TEMPLATES_SOLD");
-    Double pendingPayouts = (Double) request.getAttribute("PENDING_PAYOUTS");
-
-    double displayBalance = (balance != null) ? balance : 0.0;
-    int displayActive = (activeTemplates != null) ? activeTemplates : 0;
-    int displaySold = (templatesSold != null) ? templatesSold : 0;
-    double displayPending = (pendingPayouts != null) ? pendingPayouts : 0.0;
 
     String toastMsg = (String) session.getAttribute("toastMessage");
 
     // Determine active tab
     String activeTab = request.getParameter("tab");
-    if (activeTab == null) activeTab = "dashboard";
+    if (activeTab == null) activeTab = "portfolio";
 %>
 
 <!DOCTYPE html>
@@ -50,6 +38,7 @@
         <link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/images/favicon/favicon.ico">
 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/profile.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/designer/designer-profile.css">
     </head>
@@ -100,7 +89,6 @@
                     <p style="text-align:center; color:#D8B4FF; font-size:12px; margin-top:4px;">Designer</p>
                 </div>
                 <ul class="sidebar-menu">
-                    <li class="menu-item <%= "dashboard".equals(activeTab) ? "active" : ""%>" onclick="switchTab('tab-dashboard', this)" id="nav-tab-dashboard">&#x1F4CA; Dashboard</li>
                     <li class="menu-item <%= "portfolio".equals(activeTab) ? "active" : ""%>" onclick="switchTab('tab-portfolio', this)" id="nav-tab-portfolio">&#x1F3A8; Portfolio Settings</li>
                     <li class="menu-item <%= "info".equals(activeTab) ? "active" : ""%>" onclick="switchTab('tab-info', this)" id="nav-tab-info">&#x2699;&#xFE0F; Account Settings</li>
                     <li class="menu-item <%= "orders".equals(activeTab) ? "active" : ""%>" onclick="switchTab('tab-orders', this)" id="nav-tab-orders">&#x1F4E6; Custom Orders</li>
@@ -109,102 +97,6 @@
 
             <%-- CONTENT AREA --%>
             <section class="profile-content-area">
-
-                <%-- TAB: Dashboard Overview --%>
-                <div id="tab-dashboard" class="tab-pane <%= "dashboard".equals(activeTab) ? "active" : ""%>">
-                    <h2 class="tab-title">Dashboard Overview</h2>
-
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-info">
-                                <span class="stat-title">Wallet Balance</span>
-                                <div class="stat-value"><%= String.format("%,.0f", displayBalance)%>&#x20AB;</div>
-                            </div>
-                            <div class="stat-icon">&#x1F4B0;</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-info">
-                                <span class="stat-title">Active Templates</span>
-                                <div class="stat-value"><%= displayActive%> <span class="stat-trend">items</span></div>
-                            </div>
-                            <div class="stat-icon">&#x1F4C4;</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-info">
-                                <span class="stat-title">Templates Sold</span>
-                                <div class="stat-value"><%= displaySold%> <span class="stat-trend">sales</span></div>
-                            </div>
-                            <div class="stat-icon">&#x1F6D2;</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-info">
-                                <span class="stat-title">Pending Payouts</span>
-                                <div class="stat-value"><%= String.format("%,.0f", displayPending)%>&#x20AB;</div>
-                            </div>
-                            <div class="stat-icon">&#x1F4B3;</div>
-                        </div>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
-                        <%-- Recent Sales --%>
-                        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h4 style="color:#D8B4FF; margin-top:0; margin-bottom:16px;">Recent Template Sales</h4>
-                            <table class="data-table">
-                                <thead>
-                                    <tr><th>Item</th><th>Price</th><th>Status</th></tr>
-                                </thead>
-                                <tbody>
-                                    <% if (recentSales != null && !recentSales.isEmpty()) {
-                                        for (Map<String, Object> s : recentSales) {
-                                            double price = (Double) s.get("price");
-                                            String status = (String) s.get("status");
-                                    %>
-                                    <tr>
-                                        <td><%= s.get("itemName")%></td>
-                                        <td><%= String.format("%,.0f", price)%>&#x20AB;</td>
-                                        <td><span style="color:#28a745; font-weight:700;"><%= status%></span></td>
-                                    </tr>
-                                    <% } } else { %>
-                                    <tr><td colspan="3" style="text-align:center; color:#94a3b8;">No sales yet.</td></tr>
-                                    <% } %>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <%-- Withdrawal History --%>
-                        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h4 style="color:#D8B4FF; margin-top:0; margin-bottom:16px;">Withdrawal History</h4>
-                            <table class="data-table">
-                                <thead>
-                                    <tr><th>Bank</th><th>Amount</th><th>Status</th></tr>
-                                </thead>
-                                <tbody>
-                                    <% if (withdrawalHistory != null && !withdrawalHistory.isEmpty()) {
-                                        for (Map<String, Object> w : withdrawalHistory) {
-                                            double amount = (Double) w.get("amount");
-                                            String status = (String) w.get("status");
-                                            String badgeCls = "status-pending";
-                                            if ("Approved".equals(status)) badgeCls = "status-approved";
-                                            if ("Rejected".equals(status)) badgeCls = "status-rejected";
-                                    %>
-                                    <tr>
-                                        <td><%= w.get("bankName")%></td>
-                                        <td><%= String.format("%,.0f", amount)%>&#x20AB;</td>
-                                        <td>
-                                            <span style="padding:4px 10px; border-radius:12px; font-size:12px; font-weight:700;
-                                                <%= badgeCls.equals("status-approved") ? "background:rgba(40,167,69,0.2); color:#28a745;" : (badgeCls.equals("status-rejected") ? "background:rgba(220,53,69,0.2); color:#dc3545;" : "background:rgba(255,193,7,0.2); color:#ffc107;")%>">
-                                                <%= status%>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                    <% } } else { %>
-                                    <tr><td colspan="3" style="text-align:center; color:#94a3b8;">No withdrawals yet.</td></tr>
-                                    <% } %>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
 
                 <%-- TAB: Portfolio Settings --%>
                 <div id="tab-portfolio" class="tab-pane <%= "portfolio".equals(activeTab) ? "active" : ""%>">

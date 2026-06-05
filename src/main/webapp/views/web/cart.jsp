@@ -76,7 +76,7 @@
         <main class="cart-page">
 
             <div class="cart-header-banner">
-                <h1 class="cart-title-glow">Cart</h1>
+                <h1 class="hub-title-script">Cart</h1>
             </div>
 
             <div class="cart-container">

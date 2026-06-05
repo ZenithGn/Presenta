@@ -31,10 +31,7 @@ public class UserDAO {
         User user = null;
 
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(CHECK_LOGIN_QUERY)) {
-
-            // Truyền email thay vì username
             ps.setString(1, email);
-
             try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     // Lấy chuỗi mật khẩu đã băm từ Database

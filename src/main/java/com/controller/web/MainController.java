@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "MainController", urlPatterns = {"/MainController"})
 public class MainController extends HttpServlet {
 
-    private static final String WELCOME = "HomeController";
+    private static final String WELCOME = "views/web/home.jsp";
     private static final String LOGIN = "Login";
     private static final String LOGIN_CONTROLLER = "LoginController";
     private static final String LOGOUT = "Logout";

@@ -46,9 +46,13 @@ public class MainController extends HttpServlet {
     private static final String APPLY_VOUCHER_CONTROLLER = "ApplyVoucherController";
     private static final String CHECKOUT = "Checkout";
     private static final String CHECKOUT_CONTROLLER = "CheckoutController";
+    
+    //Paymejt
     private static final String PROCESS_ORDER = "ProcessOrder";
     private static final String PROCESS_ORDER_CONTROLLER_VNPAY = "VNPayController";
     private static final String PROCESS_ORDER_CONTROLLER_MOMO = "MomoController";
+    private static final String PROCESS_ORDER_CONTROLLER_PAYOS = "PayOSController";
+    
     private static final String PROFILE = "Profile";
     private static final String PROFILE_CONTROLLER = "ProfileController";
     private static final String SUBMIT_REVIEW = "SubmitReview";
@@ -134,7 +138,9 @@ public class MainController extends HttpServlet {
                     url = PROCESS_ORDER_CONTROLLER_VNPAY;
                 } else if ("MOMO".equals(paymentMethod)) {
                     url = PROCESS_ORDER_CONTROLLER_MOMO;
-                } else {
+                } else if ("PAYOS".equals(paymentMethod)) {
+                    url = PROCESS_ORDER_CONTROLLER_PAYOS;
+                }else {
                     request.setAttribute("errorMessage", "Phương thức thanh toán không hợp lệ!");
                     url = "ViewCartController";
                 }

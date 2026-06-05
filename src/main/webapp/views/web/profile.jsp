@@ -21,7 +21,9 @@
     List<Template> purchasedTemplates = (List<Template>) request.getAttribute("purchasedTemplates");
     List<Order> customOrders = (List<Order>) request.getAttribute("customOrders");
     Map<Integer, Template> customOrderTemplates = (Map<Integer, Template>) request.getAttribute("customOrderTemplates");
-    if (customOrderTemplates == null) customOrderTemplates = new HashMap<>();
+    if (customOrderTemplates == null) {
+        customOrderTemplates = new HashMap<>();
+    }
 
     String toastMsg = (String) session.getAttribute("toastMessage");
 %>
@@ -159,11 +161,16 @@
                                 String step3Class = status.equals("Completed") ? "step-active" : "step-inactive";
 
                                 String statusLabel = "";
-                                if (status.equals("Pending")) statusLabel = "Đang chờ Designer xác nhận...";
-                                else if (status.equals("Processing")) statusLabel = "Designer đang thực hiện...";
-                                else if (status.equals("Completed_Design")) statusLabel = "Đã hoàn thành thiết kế, chờ thanh toán";
-                                else if (status.equals("Completed")) statusLabel = "Đã thanh toán";
-                                else if (status.equals("Cancelled")) statusLabel = "Đã hủy";
+                                if (status.equals("Pending"))
+                                    statusLabel = "Đang chờ Designer xác nhận...";
+                                else if (status.equals("Processing"))
+                                    statusLabel = "Designer đang thực hiện...";
+                                else if (status.equals("Completed_Design"))
+                                    statusLabel = "Đã hoàn thành thiết kế, chờ thanh toán";
+                                else if (status.equals("Completed"))
+                                    statusLabel = "Đã thanh toán";
+                                else if (status.equals("Cancelled"))
+                                    statusLabel = "Đã hủy";
                         %>
                         <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -220,23 +227,26 @@
                                 </span>
 
                                 <div style="display: flex; gap: 10px;">
-                                    <% if (status.equals("Completed_Design")) { %>
-                                        <a href="${pageContext.request.contextPath}/MainController?action=ProcessOrder&paymentMethod=VNPAY&orderType=HIRE_DESIGNER&orderId=<%= co.getOrderId()%>"
-                                           style="background: #D8B4FF; color: #11052C; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
-                                            💳 VNPay
-                                        </a>
-                                        <a href="${pageContext.request.contextPath}/MainController?action=ProcessOrder&paymentMethod=MOMO&orderType=HIRE_DESIGNER&orderId=<%= co.getOrderId()%>"
-                                           style="background: #FF5E7A; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
-                                            💖 MoMo
-                                        </a>
+                                    <% if (status.equals("Completed_Design")) {%>
+                                    <span style="background: rgba(255,255,255,0.1); color: #64748b; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; cursor: not-allowed;" title="VNPay is temporarily disabled">
+                                        💳 VNPay (Bảo trì)
+                                    </span>
+                                    <a href="${pageContext.request.contextPath}/MainController?action=ProcessOrder&paymentMethod=MOMO&orderType=HIRE_DESIGNER&orderId=<%= co.getOrderId()%>"
+                                       style="background: #FF5E7A; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                                        💳 MoMo
+                                    </a>
+                                    <a href="${pageContext.request.contextPath}/MainController?action=ProcessOrder&paymentMethod=PAYOS&orderType=HIRE_DESIGNER&orderId=<%= co.getOrderId()%>"
+                                       style="background: #4ade80; color: #11052C; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                                        💳 PayOS
+                                    </a>
                                     <% } else if (status.equals("Completed")) {
                                         Template ct = customOrderTemplates.get(co.getOrderId());
                                         if (ct != null && ct.getFileURL() != null && !ct.getFileURL().isEmpty()) {
                                     %>
-                                        <a href="<%= ct.getFileURL()%>" target="_blank"
-                                           style="background: #01B574; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
-                                            📥 Download File
-                                        </a>
+                                    <a href="<%= ct.getFileURL()%>" target="_blank"
+                                       style="background: #01B574; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                                        📥 Download File
+                                    </a>
                                     <% } %>
                                     <% } %>
                                 </div>
@@ -250,73 +260,73 @@
                         <p style="font-size: 16px; margin-bottom: 8px;">Bạn chưa có đơn thiết kế riêng nào.</p>
                         <p style="font-size: 14px;">Khám phá <a href="${pageContext.request.contextPath}/MainController?action=DesignerHub" style="color: #D8B4FF;">Designer Hub</a> để thuê designer thiết kế theo yêu cầu!</p>
                     </div>
-                    <% } %>
+                    <% }%>
                 </div>
 
                 <div id="tab-info" class="tab-pane">
-                <h2 class="tab-title">Cài đặt tài khoản</h2>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
-                    
-                    <div style="display: flex; flex-direction: column; gap: 30px;">
-                        
-                        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Thông tin cá nhân</h4>
-                            <form action="${pageContext.request.contextPath}/AccountController" method="POST">
-                                <input type="hidden" name="updateType" value="profile">
-                                
-                                <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Tên đăng nhập (Username)</label>
-                                <input type="text" value="<%= loginUser.getUsername() %>" disabled 
-                                       style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:15px; background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.4); cursor: not-allowed; box-sizing: border-box; font-weight: bold;">
-                                
-                                <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Địa chỉ Email</label>
-                                <input type="email" name="email" value="<%= loginUser.getEmail() %>" required 
-                                       style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
-                                
-                                <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding: 10px 20px; width: 100%;">Lưu thông tin</button>
-                            </form>
+                    <h2 class="tab-title">Cài đặt tài khoản</h2>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+
+                        <div style="display: flex; flex-direction: column; gap: 30px;">
+
+                            <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                                <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Thông tin cá nhân</h4>
+                                <form action="${pageContext.request.contextPath}/AccountController" method="POST">
+                                    <input type="hidden" name="updateType" value="profile">
+
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Tên đăng nhập (Username)</label>
+                                    <input type="text" value="<%= loginUser.getUsername()%>" disabled 
+                                           style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:15px; background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.4); cursor: not-allowed; box-sizing: border-box; font-weight: bold;">
+
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Địa chỉ Email</label>
+                                    <input type="email" name="email" value="<%= loginUser.getEmail()%>" required 
+                                           style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
+
+                                    <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding: 10px 20px; width: 100%;">Lưu thông tin</button>
+                                </form>
+                            </div>
+
+                            <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                                <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Đổi mật khẩu</h4>
+                                <form action="${pageContext.request.contextPath}/AccountController" method="POST">
+                                    <input type="hidden" name="updateType" value="password">
+
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Mật khẩu hiện tại</label>
+                                    <input type="password" name="oldPass" required style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:15px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
+
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Mật khẩu mới</label>
+                                    <input type="password" name="newPass" required style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
+
+                                    <button type="submit" class="btn-action" style="background: transparent; color:#D8B4FF; border: 1px solid #D8B4FF; padding: 10px 20px; width: 100%;">Thay đổi mật khẩu</button>
+                                </form>
+                            </div>
+
                         </div>
 
-                        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                            <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Đổi mật khẩu</h4>
-                            <form action="${pageContext.request.contextPath}/AccountController" method="POST">
-                                <input type="hidden" name="updateType" value="password">
-                                
-                                <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Mật khẩu hiện tại</label>
-                                <input type="password" name="oldPass" required style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:15px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
-                                
-                                <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Mật khẩu mới</label>
-                                <input type="password" name="newPass" required style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
-                                
-                                <button type="submit" class="btn-action" style="background: transparent; color:#D8B4FF; border: 1px solid #D8B4FF; padding: 10px 20px; width: 100%;">Thay đổi mật khẩu</button>
-                            </form>
+                        <div>
+                            <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); height: 100%; box-sizing: border-box; display: flex; flex-direction: column;">
+                                <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Đổi ảnh đại diện</h4>
+                                <p style="font-size: 13px; color: #cbd5e1; margin-top: 0; line-height: 1.5; flex-grow: 1;">
+                                    Bấm trực tiếp vào hình vòng tròn ảnh đại diện ở menu bên trái, hoặc bấm nút bên dưới để chọn một file ảnh (JPG, PNG, GIF) từ máy tính của bạn.
+                                    <br><br>
+                                    <span style="color: #ffc107;">* Lưu ý: Kích thước file không được vượt quá 10MB.</span>
+                                </p>
+
+                                <form action="${pageContext.request.contextPath}/AccountController" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+                                    <input type="hidden" name="updateType" value="avatar">
+
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Chọn file ảnh từ máy</label>
+                                    <input type="file" name="avatarFile" id="avatar-file-input" accept="image/png, image/jpeg, image/gif" required 
+                                           style="width:100%; padding:10px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box; font-size: 12px;">
+
+                                    <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding: 12px 24px; width: 100%;">Lưu Ảnh Đại Diện Mới</button>
+                                </form>
+                            </div>
                         </div>
-                        
+
                     </div>
-
-                    <div>
-                        <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); height: 100%; box-sizing: border-box; display: flex; flex-direction: column;">
-                            <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Đổi ảnh đại diện</h4>
-                            <p style="font-size: 13px; color: #cbd5e1; margin-top: 0; line-height: 1.5; flex-grow: 1;">
-                                Bấm trực tiếp vào hình vòng tròn ảnh đại diện ở menu bên trái, hoặc bấm nút bên dưới để chọn một file ảnh (JPG, PNG, GIF) từ máy tính của bạn.
-                                <br><br>
-                                <span style="color: #ffc107;">* Lưu ý: Kích thước file không được vượt quá 10MB.</span>
-                            </p>
-                            
-                            <form action="${pageContext.request.contextPath}/AccountController" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
-                                <input type="hidden" name="updateType" value="avatar">
-                                
-                                <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Chọn file ảnh từ máy</label>
-                                <input type="file" name="avatarFile" id="avatar-file-input" accept="image/png, image/jpeg, image/gif" required 
-                                       style="width:100%; padding:10px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box; font-size: 12px;">
-                                
-                                <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding: 12px 24px; width: 100%;">Lưu Ảnh Đại Diện Mới</button>
-                            </form>
-                        </div>
-                    </div>
-
                 </div>
-            </div>
 
             </section>
         </main>

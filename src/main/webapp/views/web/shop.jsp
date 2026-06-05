@@ -24,6 +24,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home.css"> 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/shop.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/designer-hub.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/toast.css?v=1.0">
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
     </head>
@@ -93,20 +94,20 @@
         <div class="shop-body-wrapper">
             <div class="shop-container">
 
-                <h1 class="shop-main-title">Shop</h1>
+                <h1 class="hub-title-script" style="margin-bottom: 40px; text-align: center"> Shop</h1>
 
-                <%
-                    // Nhận object bestTemplate từ Controller
-                    Template bestTemplate = (Template) request.getAttribute("bestTemplate");
+                    <%
+                        // Nhận object bestTemplate từ Controller
+                        Template bestTemplate = (Template) request.getAttribute("bestTemplate");
 
-                    // Nếu có sản phẩm hot thì mới render Banner
-                    if (bestTemplate != null) {
-                        // Xử lý ảnh (dùng ảnh mờ nếu thumbnail rỗng)
-                        String heroImg = (bestTemplate.getThumbnailURL() != null && !bestTemplate.getThumbnailURL().trim().isEmpty())
-                                ? bestTemplate.getThumbnailURL()
-                                : "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400";
-                %>
-                <section class="shop-hero-card">
+                        // Nếu có sản phẩm hot thì mới render Banner
+                        if (bestTemplate != null) {
+                            // Xử lý ảnh (dùng ảnh mờ nếu thumbnail rỗng)
+                            String heroImg = (bestTemplate.getThumbnailURL() != null && !bestTemplate.getThumbnailURL().trim().isEmpty())
+                                    ? bestTemplate.getThumbnailURL()
+                                    : "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400";
+                    %>
+                    <section class="shop-hero-card">
                     <div class="hero-content">
                         <h2>Best Of<br>The Week</h2>
                         <h3 style="color: var(--primary); margin-bottom: 8px; font-size: 24px;"><%= bestTemplate.getTitle()%></h3>
@@ -122,146 +123,148 @@
                     <div class="hero-image">
                         <div style="width: 400px; height: 350px; background: url('<%= heroImg%>') center/cover; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);"></div>
                     </div>
-                </section>
-                <%
-                    } // Kết thúc if check null
-                %>
+                    </section>
+                    <%
+                        } // Kết thúc if check null
+                    %>
 
-                <%
-                    // Lấy các tham số trạng thái từ Controller
-                    String keyword = (String) request.getAttribute("saveKeyword");
-                    int categoryID = request.getAttribute("saveCategoryID") != null ? (Integer) request.getAttribute("saveCategoryID") : 0;
-                    int endPage = request.getAttribute("endPage") != null ? (Integer) request.getAttribute("endPage") : 0;
-                    int tag = request.getAttribute("tag") != null ? (Integer) request.getAttribute("tag") : 1;
-                    String priceSort = (String) request.getAttribute("savePriceSort");
-                    if (priceSort == null) priceSort = "";
+                    <%
+                        // Lấy các tham số trạng thái từ Controller
+                        String keyword = (String) request.getAttribute("saveKeyword");
+                        int categoryID = request.getAttribute("saveCategoryID") != null ? (Integer) request.getAttribute("saveCategoryID") : 0;
+                        int endPage = request.getAttribute("endPage") != null ? (Integer) request.getAttribute("endPage") : 0;
+                        int tag = request.getAttribute("tag") != null ? (Integer) request.getAttribute("tag") : 1;
+                        String priceSort = (String) request.getAttribute("savePriceSort");
+                        if (priceSort == null) {
+                            priceSort = "";
+                        }
 
-                    List<Template> listTemplates = (List<Template>) request.getAttribute("listTemplates");
-                %>
+                        List<Template> listTemplates = (List<Template>) request.getAttribute("listTemplates");
+                    %>
 
-                <section class="shop-filter-section" id="shop-content">
-                    <form action="MainController" method="GET" style="width: 100%; max-width: 600px; display: flex; gap: 12px; margin-bottom: 24px;">
-                        <input type="hidden" name="action" value="Shop">
-                        <input type="hidden" name="categoryID" value="<%= categoryID%>">
-                        <input type="hidden" name="priceSort" value="<%= priceSort%>">
+                    <section class="shop-filter-section" id="shop-content">
+                        <form action="MainController" method="GET" style="width: 100%; max-width: 600px; display: flex; gap: 12px; margin-bottom: 24px;">
+                            <input type="hidden" name="action" value="Shop">
+                            <input type="hidden" name="categoryID" value="<%= categoryID%>">
+                            <input type="hidden" name="priceSort" value="<%= priceSort%>">
 
-                        <input type="text" name="keyword" value="<%= keyword%>" class="shop-search-bar" placeholder="Search templates... 🔍" style="margin-bottom: 0; flex: 1;">
-                        <button type="submit" class="btn-primary" style="border-radius: 999px; padding: 0 32px;">Search</button>
-                    </form>
+                            <input type="text" name="keyword" value="<%= keyword%>" class="shop-search-bar" placeholder="Search templates... 🔍" style="margin-bottom: 0; flex: 1;">
+                            <button type="submit" class="btn-primary" style="border-radius: 999px; padding: 0 32px;">Search</button>
+                        </form>
 
-                    <div class="shop-category-chips">
-                        <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=0&priceSort=<%= priceSort%>"
-                           class="chip-btn <%= (categoryID == 0) ? "active" : ""%>" style="text-decoration: none;">
-                            All Templates
-                        </a>
+                        <div class="shop-category-chips">
+                            <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=0&priceSort=<%= priceSort%>"
+                               class="chip-btn <%= (categoryID == 0) ? "active" : ""%>" style="text-decoration: none;">
+                                All Templates
+                            </a>
 
-                        <%
-                            if (listCategories != null && !listCategories.isEmpty()) {
-                                for (Category cat : listCategories) {
-                        %>
-                        <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=<%= cat.getCategoryID()%>&priceSort=<%= priceSort%>"
-                           class="chip-btn <%= (categoryID == cat.getCategoryID()) ? "active" : ""%>" style="text-decoration: none;">
-                            <%= cat.getCategoryName()%>
-                        </a>
-                        <%
+                            <%
+                                if (listCategories != null && !listCategories.isEmpty()) {
+                                    for (Category cat : listCategories) {
+                            %>
+                            <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=<%= cat.getCategoryID()%>&priceSort=<%= priceSort%>"
+                               class="chip-btn <%= (categoryID == cat.getCategoryID()) ? "active" : ""%>" style="text-decoration: none;">
+                                <%= cat.getCategoryName()%>
+                            </a>
+                            <%
+                                    }
                                 }
-                            }
-                        %>
-                    </div>
-
-                    <%-- SORT BUTTONS --%>
-                    <div style="display: flex; gap: 8px; margin-top: 16px;">
-                        <span style="color: #A0AEC0; font-size: 13px; align-self: center;">Sort by price:</span>
-                        <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=<%= categoryID%>&priceSort=asc"
-                           class="chip-btn <%= "asc".equals(priceSort) ? "active" : ""%>" style="text-decoration: none;">
-                            ⬆ Ascending
-                        </a>
-                        <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=<%= categoryID%>&priceSort=desc"
-                           class="chip-btn <%= "desc".equals(priceSort) ? "active" : ""%>" style="text-decoration: none;">
-                            ⬇ Descending
-                        </a>
-                    </div>
-                </section>
-
-                <section class="shop-category-section">
-                    <div class="shop-section-header">
-                        <h2 class="shop-section-title">
-                            <%= (categoryID == 0) ? "All Products" : "Filtered Results"%>
-                            <%= (!keyword.isEmpty()) ? " - Search: '" + keyword + "'" : ""%>
-                        </h2>
-                    </div>
-
-                    <div class="product-grid">
-                        <%
-                            if (listTemplates != null && !listTemplates.isEmpty()) {
-                                for (Template t : listTemplates) {
-                                    String thumb = (t.getThumbnailURL() != null && !t.getThumbnailURL().trim().isEmpty())
-                                            ? t.getThumbnailURL()
-                                            : "https://images.unsplash.com/photo-1505664194779-8beaceb93744?q=80&w=400";
-                        %>
-                        <div class="product-card">
-                            <img src="<%= thumb%>" class="product-img" alt="Template">
-                            <div class="product-info">
-                                <span class="product-title"><%= t.getTitle()%></span>
-                                <span class="product-price"><%= (int) (t.getPrice() / 1000)%>k</span>
-                            </div>
-                            <p class="product-desc"><%= (t.getDescription() != null) ? t.getDescription() : ""%></p>
-
-                            <div class="card-actions" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px;">
-                                <form action="MainController" method="GET" style="flex: 1; min-width: 45%; margin:0;">
-                                    <input type="hidden" name="action" value="TemplateDetail">
-                                    <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
-                                    <button type="submit" class="btn-card btn-dark" style="width:100%;">VIEW DETAIL</button>
-                                </form>
-
-                                <form action="${pageContext.request.contextPath}/MainController?action=AddCart&id=<%= t.getTemplateID()%>" method="POST" style="flex: 1; min-width: 45%; margin:0;">
-                                    <input type="hidden" name="action" value="AddToCart">
-                                    <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
-                                    <button type="submit" class="btn-card btn-dark" style="width:100%;">ADD TO CART</button>
-                                </form>
-
-                                <form action="MainController" method="POST" style="flex: 1; min-width: 100%; margin:0; margin-top: 4px;">
-                                    <input type="hidden" name="action" value="BuyNow">
-                                    <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
-                                    <button type="submit" class="btn-card" style="width:100%; border:none; cursor:pointer;">Buy Now</button>
-                                </form>
-                            </div>
+                            %>
                         </div>
-                        <%
-                            }
-                        } else {
-                        %>
-                        <p style="color: #ccc3d8; text-align: center; width: 100%; grid-column: 1 / -1;">
-                            Không tìm thấy sản phẩm nào phù hợp với yêu cầu của bạn.
-                        </p>
-                        <%
-                            }
-                        %>
-                    </div>
 
-                    <% if (endPage > 1) { %>
-                    <div class="pagination-container" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 40px;">
+                        <%-- SORT BUTTONS --%>
+                        <div style="display: flex; gap: 8px; margin-top: 16px;">
+                            <span style="color: #A0AEC0; font-size: 13px; align-self: center;">Sort by price:</span>
+                            <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=<%= categoryID%>&priceSort=asc"
+                               class="chip-btn <%= "asc".equals(priceSort) ? "active" : ""%>" style="text-decoration: none;">
+                                ⬆ Ascending
+                            </a>
+                            <a href="MainController?action=Shop&keyword=<%= keyword%>&categoryID=<%= categoryID%>&priceSort=desc"
+                               class="chip-btn <%= "desc".equals(priceSort) ? "active" : ""%>" style="text-decoration: none;">
+                                ⬇ Descending
+                            </a>
+                        </div>
+                    </section>
 
-                        <% if (tag > 1) {%>
-                        <a href="MainController?action=Shop&priceSort=<%= priceSort%>&index=<%= tag - 1%>&keyword=<%= keyword%>&categoryID=<%= categoryID%>" 
-                           class="btn-outline" style="padding: 8px 16px; border-radius: 8px; font-size: 14px; text-decoration: none;">&laquo; Prev</a>
-                        <% } %>
+                    <section class="shop-category-section">
+                        <div class="shop-section-header">
+                            <h2 class="shop-section-title">
+                                <%= (categoryID == 0) ? "All Products" : "Filtered Results"%>
+                                <%= (!keyword.isEmpty()) ? " - Search: '" + keyword + "'" : ""%>
+                            </h2>
+                        </div>
 
-                        <% for (int i = 1; i <= endPage; i++) {%>
-                        <a href="MainController?action=Shop&priceSort=<%= priceSort%>&index=<%= i%>&keyword=<%= keyword%>&categoryID=<%= categoryID%>" 
-                           class="<%= (i == tag) ? "btn-primary" : "btn-outline"%>" 
-                           style="padding: 8px 16px; border-radius: 8px; font-size: 14px; text-decoration: none;">
-                            <%= i%>
-                        </a>
-                        <% } %>
+                        <div class="product-grid">
+                            <%
+                                if (listTemplates != null && !listTemplates.isEmpty()) {
+                                    for (Template t : listTemplates) {
+                                        String thumb = (t.getThumbnailURL() != null && !t.getThumbnailURL().trim().isEmpty())
+                                                ? t.getThumbnailURL()
+                                                : "https://images.unsplash.com/photo-1505664194779-8beaceb93744?q=80&w=400";
+                            %>
+                            <div class="product-card">
+                                <img src="<%= thumb%>" class="product-img" alt="Template">
+                                <div class="product-info">
+                                    <span class="product-title"><%= t.getTitle()%></span>
+                                    <span class="product-price"><%= (int) (t.getPrice() / 1000)%>k</span>
+                                </div>
+                                <p class="product-desc"><%= (t.getDescription() != null) ? t.getDescription() : ""%></p>
 
-                        <% if (tag < endPage) {%>
-                        <a href="MainController?action=Shop&priceSort=<%= priceSort%>&index=<%= tag + 1%>&keyword=<%= keyword%>&categoryID=<%= categoryID%>" 
-                           class="btn-outline" style="padding: 8px 16px; border-radius: 8px; font-size: 14px; text-decoration: none;">Next &raquo;</a>
-                        <% } %>
-                    </div>
-                    <% }%>
-                </section>
+                                <div class="card-actions" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px;">
+                                    <form action="MainController" method="GET" style="flex: 1; min-width: 45%; margin:0;">
+                                        <input type="hidden" name="action" value="TemplateDetail">
+                                        <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
+                                        <button type="submit" class="btn-card btn-dark" style="width:100%;">VIEW DETAIL</button>
+                                    </form>
+
+                                    <form action="${pageContext.request.contextPath}/MainController?action=AddCart&id=<%= t.getTemplateID()%>" method="POST" style="flex: 1; min-width: 45%; margin:0;">
+                                        <input type="hidden" name="action" value="AddToCart">
+                                        <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
+                                        <button type="submit" class="btn-card btn-dark" style="width:100%;">ADD TO CART</button>
+                                    </form>
+
+                                    <form action="MainController" method="POST" style="flex: 1; min-width: 100%; margin:0; margin-top: 4px;">
+                                        <input type="hidden" name="action" value="BuyNow">
+                                        <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
+                                        <button type="submit" class="btn-card" style="width:100%; border:none; cursor:pointer;">Buy Now</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <%
+                                }
+                            } else {
+                            %>
+                            <p style="color: #ccc3d8; text-align: center; width: 100%; grid-column: 1 / -1;">
+                                Không tìm thấy sản phẩm nào phù hợp với yêu cầu của bạn.
+                            </p>
+                            <%
+                                }
+                            %>
+                        </div>
+
+                        <% if (endPage > 1) { %>
+                        <div class="pagination-container" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 40px;">
+
+                            <% if (tag > 1) {%>
+                            <a href="MainController?action=Shop&priceSort=<%= priceSort%>&index=<%= tag - 1%>&keyword=<%= keyword%>&categoryID=<%= categoryID%>" 
+                               class="btn-outline" style="padding: 8px 16px; border-radius: 8px; font-size: 14px; text-decoration: none;">&laquo; Prev</a>
+                            <% } %>
+
+                            <% for (int i = 1; i <= endPage; i++) {%>
+                            <a href="MainController?action=Shop&priceSort=<%= priceSort%>&index=<%= i%>&keyword=<%= keyword%>&categoryID=<%= categoryID%>" 
+                               class="<%= (i == tag) ? "btn-primary" : "btn-outline"%>" 
+                               style="padding: 8px 16px; border-radius: 8px; font-size: 14px; text-decoration: none;">
+                                <%= i%>
+                            </a>
+                            <% } %>
+
+                            <% if (tag < endPage) {%>
+                            <a href="MainController?action=Shop&priceSort=<%= priceSort%>&index=<%= tag + 1%>&keyword=<%= keyword%>&categoryID=<%= categoryID%>" 
+                               class="btn-outline" style="padding: 8px 16px; border-radius: 8px; font-size: 14px; text-decoration: none;">Next &raquo;</a>
+                            <% } %>
+                        </div>
+                        <% }%>
+                    </section>
 
             </div>
         </div>

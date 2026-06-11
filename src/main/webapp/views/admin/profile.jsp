@@ -139,8 +139,8 @@
                                     <input type="hidden" name="updateType" value="profile">
 
                                     <label style="display:block; font-size:13px; color:#A0AEC0; font-weight:600; margin-bottom:8px;">Username</label>
-                                    <input type="text" value="<%= loginUser.getUsername()%>" disabled
-                                           style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:15px; background:rgba(255,255,255,0.02); color:rgba(255,255,255,0.4); cursor: not-allowed; box-sizing: border-box; font-weight: 600;">
+                                    <input type="text" name="username" value="<%= loginUser.getUsername()%>" required
+                                           style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:15px; background:rgba(255,255,255,0.02); color:#ffffff; box-sizing: border-box; font-weight: 600;">
 
                                     <label style="display:block; font-size:13px; color:#A0AEC0; font-weight:600; margin-bottom:8px;">Email</label>
                                     <input type="email" name="email" value="<%= loginUser.getEmail() != null ? loginUser.getEmail() : ""%>" required

@@ -7,10 +7,25 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class RedisUtil {
     private static final Logger logger = LogManager.getLogger(RedisUtil.class);
     private static JedisPool jedisPool;
     private static boolean isRedisAvailable = false;
+
+    // Local Fallback Cache in case Redis is not available
+    private static final ConcurrentHashMap<String, CacheEntry> localCache = new ConcurrentHashMap<>();
+
+    private static class CacheEntry {
+        String value;
+        long expireAt;
+
+        CacheEntry(String value, long expireAt) {
+            this.value = value;
+            this.expireAt = expireAt;
+        }
+    }
 
     static {
         try {
@@ -38,7 +53,7 @@ public class RedisUtil {
                 }
             }
         } catch (Exception e) {
-            logger.warn("Could not connect to Redis. Caching will be disabled. Error: {}", e.getMessage());
+            logger.warn("Could not connect to Redis. Local Map Caching will be used as fallback. Error: {}", e.getMessage());
             isRedisAvailable = false;
         }
     }
@@ -56,56 +71,89 @@ public class RedisUtil {
     }
 
     public static boolean isAvailable() {
-        return isRedisAvailable;
+        return true; // We always return true because we have a local fallback
     }
 
     public static void setCache(String key, String value, int expirationInSeconds) {
-        if (!isAvailable()) return;
-        try (Jedis jedis = getJedis()) {
-            if (jedis != null) {
-                jedis.setex(key, expirationInSeconds, value);
+        if (isRedisAvailable) {
+            try (Jedis jedis = getJedis()) {
+                if (jedis != null) {
+                    jedis.setex(key, expirationInSeconds, value);
+                    return;
+                }
+            } catch (Exception e) {
+                logger.error("Error setting cache for key: " + key, e);
             }
-        } catch (Exception e) {
-            logger.error("Error setting cache for key: " + key, e);
         }
+        // Fallback
+        localCache.put(key, new CacheEntry(value, System.currentTimeMillis() + expirationInSeconds * 1000L));
+        logger.debug("Stored in local cache: {}", key);
     }
 
     public static String getCache(String key) {
-        if (!isAvailable()) return null;
-        try (Jedis jedis = getJedis()) {
-            if (jedis != null) {
-                return jedis.get(key);
+        if (isRedisAvailable) {
+            try (Jedis jedis = getJedis()) {
+                if (jedis != null) {
+                    return jedis.get(key);
+                }
+            } catch (Exception e) {
+                logger.error("Error getting cache for key: " + key, e);
             }
-        } catch (Exception e) {
-            logger.error("Error getting cache for key: " + key, e);
+        }
+        // Fallback
+        CacheEntry entry = localCache.get(key);
+        if (entry != null) {
+            if (System.currentTimeMillis() <= entry.expireAt) {
+                return entry.value;
+            } else {
+                localCache.remove(key); // Expired
+            }
         }
         return null;
     }
 
     public static void deleteCache(String... keys) {
-        if (!isAvailable()) return;
-        try (Jedis jedis = getJedis()) {
-            if (jedis != null && keys != null && keys.length > 0) {
-                jedis.del(keys);
-                logger.debug("Deleted cache keys: {}", (Object) keys);
+        if (isRedisAvailable) {
+            try (Jedis jedis = getJedis()) {
+                if (jedis != null && keys != null && keys.length > 0) {
+                    jedis.del(keys);
+                    logger.debug("Deleted cache keys: {}", (Object) keys);
+                    return;
+                }
+            } catch (Exception e) {
+                logger.error("Error deleting cache keys", e);
             }
-        } catch (Exception e) {
-            logger.error("Error deleting cache keys", e);
+        }
+        // Fallback
+        if (keys != null) {
+            for (String k : keys) {
+                localCache.remove(k);
+            }
         }
     }
     
     public static void deleteCacheByPattern(String pattern) {
-        if (!isAvailable()) return;
-        try (Jedis jedis = getJedis()) {
-            if (jedis != null) {
-                java.util.Set<String> keys = jedis.keys(pattern);
-                if (keys != null && !keys.isEmpty()) {
-                    jedis.del(keys.toArray(new String[0]));
-                    logger.debug("Deleted cache keys by pattern: {}", pattern);
+        if (isRedisAvailable) {
+            try (Jedis jedis = getJedis()) {
+                if (jedis != null) {
+                    java.util.Set<String> keys = jedis.keys(pattern);
+                    if (keys != null && !keys.isEmpty()) {
+                        jedis.del(keys.toArray(new String[0]));
+                        logger.debug("Deleted cache keys by pattern: {}", pattern);
+                        return;
+                    }
                 }
+            } catch (Exception e) {
+                logger.error("Error deleting cache by pattern: " + pattern, e);
             }
-        } catch (Exception e) {
-            logger.error("Error deleting cache by pattern: " + pattern, e);
+        }
+        // Fallback (simple implementation since regex matching for maps is complex, 
+        // we'll just match the prefix for '*' ending patterns which is most common)
+        if (pattern.endsWith("*")) {
+            String prefix = pattern.substring(0, pattern.length() - 1);
+            localCache.keySet().removeIf(k -> k.startsWith(prefix));
+        } else {
+            localCache.remove(pattern);
         }
     }
 }

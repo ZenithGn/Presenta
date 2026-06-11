@@ -111,6 +111,8 @@ public class MainController extends HttpServlet {
 
     private static final String FORGOT_PASSWORD = "ForgotPassword";
     private static final String FORGOT_PASSWORD_CONTROLLER = "ForgotPasswordController";
+    private static final String VERIFY_OTP = "VerifyOtp";
+    private static final String VERIFY_OTP_CONTROLLER = "VerifyOtpController";
     private static final String RESET_PASSWORD = "ResetPassword";
     private static final String RESET_PASSWORD_CONTROLLER = "ResetPasswordController";
 
@@ -213,6 +215,8 @@ public class MainController extends HttpServlet {
                 url = ADMIN_REBUILD_INDEX_CONTROLLER;
             } else if (FORGOT_PASSWORD.equals(action)) {
                 url = FORGOT_PASSWORD_CONTROLLER;
+            } else if (VERIFY_OTP.equals(action)) {
+                url = VERIFY_OTP_CONTROLLER;
             } else if (RESET_PASSWORD.equals(action)) {
                 url = RESET_PASSWORD_CONTROLLER;
             }

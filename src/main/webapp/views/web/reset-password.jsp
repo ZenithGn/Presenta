@@ -27,7 +27,7 @@
             <% } else { %>
             <form action="${pageContext.request.contextPath}/MainController" method="POST">
                 <input type="hidden" name="action" value="ResetPassword">
-                <input type="hidden" name="token" value="<%= request.getParameter("token") != null ? request.getParameter("token") : "" %>">
+                <input type="hidden" name="email" value="<%= request.getAttribute("resetEmail") != null ? request.getAttribute("resetEmail") : request.getParameter("email") %>">
 
                 <div class="form-group">
                     <label for="newPassword">Mật khẩu mới</label>

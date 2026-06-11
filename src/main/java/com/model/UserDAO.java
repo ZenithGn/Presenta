@@ -26,6 +26,8 @@ public class UserDAO {
     public static final String CHECK_DUPLICATE_QUERY = "SELECT userID FROM Users WHERE userName = ? OR email = ?";
     public static final String INSERT_USER_QUERY = "INSERT INTO Users (userName, password, email, roleID, status) VALUES (?, ?, ?, ?, 1)";
     public static final String INSERT_DESIGNER_PROFILE_QUERY = "INSERT INTO Designer_Profiles (userID, bio, phone, porfolioURL) VALUES (?, ?, ?, ?)";
+    public static final String CHECK_EMAIL_EXISTS_QUERY = "SELECT 1 FROM Users WHERE email = ?";
+    public static final String UPDATE_PASSWORD_BY_EMAIL_QUERY = "UPDATE Users SET password = ? WHERE email = ?";
 
     public User checkLogin(String email, String plainPassword) {
         User user = null;
@@ -60,56 +62,6 @@ public class UserDAO {
         return user;
     }
 
-    public boolean updateEmail(int userId, String email) {
-        boolean check = false;
-        Connection conn = null;
-        PreparedStatement ptm = null;
-        try {
-            conn = DBUtils.getConnection();
-            if (conn != null) {
-                ptm = conn.prepareStatement(UPDATE_USER_EMAIL_QUERY);
-                ptm.setString(1, email);
-                ptm.setInt(2, userId);
-                check = ptm.executeUpdate() > 0;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (ptm != null) ptm.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return check;
-    }
-
-    public boolean updatePasswordByEmail(String email, String newPassword) {
-        boolean check = false;
-        Connection conn = null;
-        PreparedStatement ptm = null;
-        String sql = "UPDATE Users SET password = ? WHERE email = ?";
-        try {
-            conn = DBUtils.getConnection();
-            if (conn != null) {
-                ptm = conn.prepareStatement(sql);
-                ptm.setString(1, newPassword);
-                ptm.setString(2, email);
-                check = ptm.executeUpdate() > 0;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (ptm != null) ptm.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return check;
-    }
 
     public boolean checkDuplicate(String username, String email) {
         boolean exist = false;
@@ -118,22 +70,6 @@ public class UserDAO {
             ps.setString(1, username);
             ps.setString(2, email);
 
-            try ( ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    exist = true;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return exist;
-    }
-
-    public boolean checkEmailExists(String email) {
-        boolean exist = false;
-        String sql = "SELECT userID FROM Users WHERE email = ?";
-        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, email);
             try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     exist = true;
@@ -452,5 +388,45 @@ public class UserDAO {
             try { if (conn != null) { conn.setAutoCommit(true); conn.close(); } } catch (SQLException e) { }
         }
         return false;
+    }
+
+    /**
+     * Check if an email exists in the database.
+     */
+    public boolean checkEmailExists(String email) {
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(CHECK_EMAIL_EXISTS_QUERY)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Update user password by email.
+     */
+    public boolean updatePasswordByEmail(String email, String newPassword) {
+        boolean result = false;
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(UPDATE_PASSWORD_BY_EMAIL_QUERY)) {
+            // Hash the new password before storing it
+            String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            ps.setString(1, hashedPassword);
+            ps.setString(2, email);
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows > 0) {
+                result = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

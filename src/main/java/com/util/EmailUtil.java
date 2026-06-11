@@ -22,7 +22,7 @@ public class EmailUtil {
             Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
             emailAddress = dotenv.get("MAIL_ADDRESS");
             emailPassword = dotenv.get("MAIL_PASSWORD");
-            
+
             if (emailAddress != null && !emailAddress.isEmpty() && emailPassword != null && !emailPassword.isEmpty()) {
                 isConfigured = true;
             } else {
@@ -59,6 +59,11 @@ public class EmailUtil {
         properties.put("mail.smtp.port", "587");
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+
+        // Fix lỗi tên máy tính có dấu (Vietnamese computer name issue in EHLO)
+        properties.put("mail.smtp.localhost", "localhost");
 
         Session session = Session.getInstance(properties, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -66,11 +71,11 @@ public class EmailUtil {
             }
         });
 
-        Message message = new MimeMessage(session);
+        MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(emailAddress));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toAddress));
-        message.setSubject(subject);
-        message.setContent(body, "text/html; charset=utf-8");
+        message.setSubject(subject, "UTF-8");
+        message.setText(body, "UTF-8", "html");
 
         Transport.send(message);
     }

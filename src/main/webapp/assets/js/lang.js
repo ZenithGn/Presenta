@@ -373,3 +373,69 @@ document.addEventListener('DOMContentLoaded', () => {
     let current = localStorage.getItem('lang') || 'vi';
     applyLanguage(current);
 });
+
+// ==========================================
+// WEBSOCKET FOR REAL-TIME NOTIFICATIONS
+// ==========================================
+(function() {
+    // Only connect if the browser supports WebSocket
+    if ("WebSocket" in window) {
+        // Construct the WebSocket URL based on current protocol and host
+        const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        const wsUrl = protocol + "//" + window.location.host + "/EXE202_Maven/notifications";
+        
+        const socket = new WebSocket(wsUrl);
+
+        socket.onopen = function() {
+            console.log("Connected to Real-time Notification Server.");
+        };
+
+        socket.onmessage = function(event) {
+            console.log("Notification received: ", event.data);
+            showToastNotification(event.data);
+        };
+
+        socket.onclose = function() {
+            console.log("Disconnected from Notification Server.");
+        };
+    }
+
+    // Function to show a simple toast notification
+    function showToastNotification(message) {
+        const toast = document.createElement("div");
+        toast.style.position = "fixed";
+        toast.style.bottom = "20px";
+        toast.style.right = "20px";
+        toast.style.backgroundColor = "#4f46e5"; // Indigo color
+        toast.style.color = "white";
+        toast.style.padding = "16px 24px";
+        toast.style.borderRadius = "8px";
+        toast.style.boxShadow = "0 10px 25px rgba(0,0,0,0.2)";
+        toast.style.zIndex = "9999";
+        toast.style.fontFamily = "inherit";
+        toast.style.fontSize = "14px";
+        toast.style.fontWeight = "bold";
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(20px)";
+        toast.style.transition = "all 0.3s ease";
+        
+        toast.innerText = "🔔 " + message;
+        
+        document.body.appendChild(toast);
+        
+        // Animate in
+        setTimeout(() => {
+            toast.style.opacity = "1";
+            toast.style.transform = "translateY(0)";
+        }, 100);
+
+        // Remove after 5 seconds
+        setTimeout(() => {
+            toast.style.opacity = "0";
+            toast.style.transform = "translateY(20px)";
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 5000);
+    }
+})();

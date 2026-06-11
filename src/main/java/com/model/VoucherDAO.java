@@ -145,4 +145,15 @@ public class VoucherDAO {
         }
         return null;
     }
+
+    // Tự động vô hiệu hoá các voucher đã hết hạn
+    public int disableExpiredVouchers() {
+        String sql = "UPDATE Vouchers SET status = 0 WHERE validTo < GETDATE() AND status = 1";
+        try (Connection conn = DBUtils.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            return ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

@@ -156,4 +156,22 @@ public class RedisUtil {
             localCache.remove(pattern);
         }
     }
+
+    /**
+     * Tự động quét và dọn dẹp các cache hết hạn trong bộ nhớ cục bộ.
+     * Hàm này được gọi định kỳ bởi Task Scheduler.
+     */
+    public static int cleanupLocalCache() {
+        if (isRedisAvailable) return 0; // Redis tự dọn dẹp, không cần can thiệp
+        
+        long now = System.currentTimeMillis();
+        int initialSize = localCache.size();
+        localCache.entrySet().removeIf(entry -> now > entry.getValue().expireAt);
+        int removedCount = initialSize - localCache.size();
+        
+        if (removedCount > 0) {
+            logger.info("Local Cache Cleanup: Removed {} expired entries.", removedCount);
+        }
+        return removedCount;
+    }
 }

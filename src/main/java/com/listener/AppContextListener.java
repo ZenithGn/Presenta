@@ -1,6 +1,7 @@
 package com.listener;
 
 import com.model.VoucherDAO;
+import com.util.RedisUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,6 +37,9 @@ public class AppContextListener implements ServletContextListener {
                 } else {
                     logger.debug("Task Scheduler: No expired vouchers found.");
                 }
+                
+                // Tác vụ: Dọn dẹp local Map cache (chứa Token/Redis data)
+                RedisUtil.cleanupLocalCache();
             } catch (Exception e) {
                 logger.error("Error during scheduled task execution", e);
             }

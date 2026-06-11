@@ -95,3 +95,100 @@
     text-align: center;
     margin-bottom: 48px;
 }
+
+/* ============================================================
+   USER REQUESTED DESIGNER CARD STYLE
+   ============================================================ */
+.designer-grid .box {
+  width: 100%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.designer-grid .box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(124,58,237,0.2);
+}
+
+.box .image{
+  margin: 10px 0;
+  height: 100px;
+  width: 100px;
+  background: #7c3aed;
+  padding: 3px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.box .image img{
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+}
+.box p{
+  text-align: center;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #666;
+  padding: 0 10px;
+}
+.box .name_job{
+  margin: 10px 0 3px 0;
+  color: #7c3aed;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
+.rating i{
+  font-size: 14px;
+  color: #f1c40f;
+  margin-bottom: 5px;
+}
+.btns{
+  margin-top: 16px;
+  margin-bottom: 0px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 8px;
+  box-sizing: border-box;
+}
+.btns button{
+  background: #7c3aed;
+  flex: 1;
+  padding: 8px 4px;
+  outline: none;
+  border: 2px solid #7c3aed;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #7c3aed;
+  transition: all 0.3s linear;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+.btns button:first-child{
+  background: none;
+}
+.btns button:last-child{
+  color: #fff;
+}
+.btns button:first-child:hover{
+  background: #7c3aed;
+  color: #fff;
+}
+.btns button:hover{
+  color: #fff;
+}

@@ -15,6 +15,7 @@
         <meta charset="UTF-8">
         <title>Meet Our Designer - Presenta</title>
         <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
         <link rel="apple-touch-icon" sizes="180x180" href="${pageContext.request.contextPath}/assets/images/favicon/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="${pageContext.request.contextPath}/assets/images/favicon/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="${pageContext.request.contextPath}/assets/images/favicon/favicon-16x16.png">
@@ -108,14 +109,24 @@
                                         ? d.getAvatarURL()
                                         : "https://ui-avatars.com/api/?name=" + d.getUserName() + "&background=7C3AED&color=fff";
                         %>
-                        <div class="designer-card">
-                            <div class="designer-card-avatar">
+                        <div class="box">
+                            <div class="image">
                                 <img src="<%= avatar%>" alt="<%= d.getUserName()%>">
                             </div>
-                            <div class="designer-card-body">
-                                <div class="designer-card-name"><%= d.getUserName()%></div>
-                                <span class="designer-card-spec"><%= categoryName%></span>
-                                <a href="MainController?action=DesignerDetail&id=<%= d.getUserID()%>" class="designer-card-btn">View Designer</a>
+                            <div class="name_job"><%= d.getUserName()%></div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <p style="color: #666; font-size: 14px; text-align: center; margin-bottom: 10px;">
+                                <%= categoryName %> expert designer.
+                            </p>
+                            <div class="btns">
+                                <button onclick="window.location.href='MainController?action=DesignerDetail&id=<%= d.getUserID()%>'">View Designer</button>
+                                <button>Book Now</button>
                             </div>
                         </div>
                         <%  } %>
@@ -182,7 +193,7 @@
 
             // Category sections
             document.querySelectorAll(".dl-category-section").forEach(function(section) {
-                gsap.from(section.querySelectorAll(".designer-card"), {
+                gsap.from(section.querySelectorAll(".box"), {
                     scrollTrigger: { trigger: section, start: "top 88%" },
                     opacity: 0, y: 40, scale: 0.95, duration: 0.5, stagger: 0.1, ease: "power2.out",
                     clearProps: "all"

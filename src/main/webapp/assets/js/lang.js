@@ -79,6 +79,7 @@ const dict = {
     "Featured Designer": "Nh\u00e0 thi\u1ebft k\u1ebf n\u1ed5i b\u1eadt",
     "Meet Top-Rated Creators Building High-Quality Templates.": "G\u1eb7p g\u1ee1 nh\u1eefng nh\u00e0 s\u00e1ng t\u1ea1o h\u00e0ng \u0111\u1ea7u x\u00e2y d\u1ef1ng c\u00e1c m\u1eabu ch\u1ea5t l\u01b0\u1ee3ng cao.",
     "View Designer": "Xem nh\u00e0 thi\u1ebft k\u1ebf",
+    "Book Now": "\u0110\u1eb7t l\u1ecbch ngay",
     "Ch\u01b0a c\u00f3 Designer n\u1ed5i b\u1eadt n\u00e0o \u0111\u1ec3 hi\u1ec3n th\u1ecb.": "Ch\u01b0a c\u00f3 Designer n\u1ed5i b\u1eadt n\u00e0o \u0111\u1ec3 hi\u1ec3n th\u1ecb.",
     "View All Designers": "Xem t\u1ea5t c\u1ea3 nh\u00e0 thi\u1ebft k\u1ebf",
     "Ready To Turn Your Design Skills": "S\u1eb5n s\u00e0ng bi\u1ebfn k\u1ef9 n\u0103ng thi\u1ebft k\u1ebf c\u1ee7a b\u1ea1n",

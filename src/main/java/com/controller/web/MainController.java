@@ -11,6 +11,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -18,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "MainController", urlPatterns = {"/MainController"})
 public class MainController extends HttpServlet {
+
+    private static final Logger logger = LogManager.getLogger(MainController.class);
 
     private static final String WELCOME = "views/web/home.jsp";
     private static final String LOGIN = "Login";
@@ -192,7 +197,7 @@ public class MainController extends HttpServlet {
                 url = ADMIN_VOUCHERS_CONTROLLER;
             }
         } catch (Exception e) {
-            log("Error at MainController: " + e.toString());
+            logger.error("Error at MainController", e);
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
         }

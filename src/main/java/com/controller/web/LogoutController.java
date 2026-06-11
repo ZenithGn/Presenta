@@ -13,12 +13,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import javax.servlet.http.Cookie;
+
 /**
  *
  * @author lehan
  */
 @WebServlet(name = "LogoutController", urlPatterns = {"/LogoutController"})
 public class LogoutController extends HttpServlet {
+
+    private static final Logger logger = LogManager.getLogger(LogoutController.class);
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,8 +44,17 @@ public class LogoutController extends HttpServlet {
             if (session != null) {
                 session.invalidate(); // Xóa bỏ hoàn toàn dữ liệu và hủy session
             }
+            
+            // Delete JWT cookie
+            Cookie jwtCookie = new Cookie("jwt", "");
+            jwtCookie.setMaxAge(0);
+            jwtCookie.setPath("/");
+            response.addCookie(jwtCookie);
+            
+            logger.info("User logged out successfully");
+            
         } catch (Exception e) {
-            log("Error at LogoutController: " + e.toString());
+            logger.error("Error at LogoutController", e);
         } finally {
             // Chuyển hướng trình duyệt về lại MainController để tải giao diện trang chủ thô sạch dữ liệu
             response.sendRedirect(request.getContextPath() + "/MainController");

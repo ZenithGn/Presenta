@@ -9,20 +9,36 @@ package com.model;
  * @author lehan
  */
 import com.util.DBUtils;
+import com.util.RedisUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.reflect.Type;
 
 public class TemplateDAO {
 
     public List<Category> getAllCategories() {
+        // Try to get from Cache first
+        String cacheKey = "categories:all";
+        String cachedData = RedisUtil.getCache(cacheKey);
+        if (cachedData != null) {
+            Type listType = new TypeToken<ArrayList<Category>>(){}.getType();
+            return new Gson().fromJson(cachedData, listType);
+        }
+
         List<Category> list = new ArrayList<>();
         String sql = "SELECT * FROM Categories";
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql);  ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 list.add(new Category(rs.getInt("categoryID"), rs.getString("categoryName")));
+            }
+            // Set cache (e.g. 1 hour)
+            if (!list.isEmpty()) {
+                RedisUtil.setCache(cacheKey, new Gson().toJson(list), 3600);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,6 +114,14 @@ public class TemplateDAO {
 
     // Lấy ngẫu nhiên 4 sản phẩm làm Explore Recommendations cho trang chủ
     public List<Template> getRecommendations() {
+        // Cache this for 5 minutes to avoid heavy queries on every homepage load
+        String cacheKey = "templates:recommendations";
+        String cachedData = RedisUtil.getCache(cacheKey);
+        if (cachedData != null) {
+            Type listType = new TypeToken<ArrayList<Template>>(){}.getType();
+            return new Gson().fromJson(cachedData, listType);
+        }
+
         List<Template> list = new ArrayList<>();
         String sql = "SELECT TOP 4 * FROM Templates "
                    + "WHERE templateID NOT IN (SELECT od.templateID FROM OrderDetails od JOIN Orders o ON od.orderID = o.orderID WHERE o.orderType = 'HIRE_DESIGNER' AND od.templateID IS NOT NULL) "
@@ -110,6 +134,9 @@ public class TemplateDAO {
                 t.setPrice(rs.getDouble("price"));
                 t.setThumbnailURL(rs.getString("thumbnailURL"));
                 list.add(t);
+            }
+            if (!list.isEmpty()) {
+                RedisUtil.setCache(cacheKey, new Gson().toJson(list), 300); // 5 minutes
             }
         } catch (Exception e) {
             e.printStackTrace();

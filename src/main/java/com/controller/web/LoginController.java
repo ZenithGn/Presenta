@@ -15,12 +15,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import com.util.JwtUtil;
+import javax.servlet.http.Cookie;
+
 /**
  *
  * @author lehan
  */
 @WebServlet(name = "LoginController", urlPatterns = { "/LoginController" })
 public class LoginController extends HttpServlet {
+
+    private static final Logger logger = LogManager.getLogger(LoginController.class);
 
     private static final String ERROR_PAGE = "views/web/login.jsp";
     private static final String ADMIN_DASHBOARD = "AdminDashboardController";
@@ -48,6 +55,16 @@ public class LoginController extends HttpServlet {
                 if (loginUser != null) {
                     HttpSession session = request.getSession();
                     session.setAttribute("LOGIN_USER", loginUser);
+                    
+                    // Generate JWT and set it in a Cookie
+                    String token = JwtUtil.generateToken(loginUser);
+                    Cookie jwtCookie = new Cookie("jwt", token);
+                    jwtCookie.setHttpOnly(true);
+                    jwtCookie.setPath("/");
+                    jwtCookie.setMaxAge(24 * 60 * 60); // 24 hours
+                    response.addCookie(jwtCookie);
+                    
+                    logger.info("User logged in successfully: {}", loginUser.getEmail());
 
                     // Phân quyền điều hướng
                     if (loginUser.getRoleId() == 1) {
@@ -58,6 +75,7 @@ public class LoginController extends HttpServlet {
                         url = HOME_PAGE;
                     }
                 } else {
+                    logger.warn("Failed login attempt for email: {}", email);
                     request.setAttribute("errorMessage", "Email hoặc mật khẩu không chính xác!");
                 }
             }
@@ -65,7 +83,7 @@ public class LoginController extends HttpServlet {
             // load url = ERROR_PAGE (login.jsp) bình thường
 
         } catch (Exception e) {
-            log("Error at LoginController: " + e.toString());
+            logger.error("Error at LoginController", e);
         } finally {
             request.getRequestDispatcher(url).forward(request, response);
         }

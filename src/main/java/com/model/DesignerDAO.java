@@ -416,7 +416,11 @@ public class DesignerDAO {
             ps.setString(8, assets);
             ps.setInt(9, templateId);
             ps.setInt(10, designerId);
-            return ps.executeUpdate() > 0;
+            int result = ps.executeUpdate();
+            if (result > 0) {
+                com.util.RedisUtil.deleteCacheByPattern("templates:*");
+                return true;
+            }
         } catch (Exception e) { e.printStackTrace(); }
         return false;
     }
@@ -438,7 +442,11 @@ public class DesignerDAO {
             ps.setString(8, coreFeatures);
             ps.setString(9, designAssets);
             
-            return ps.executeUpdate() > 0;
+            int result = ps.executeUpdate();
+            if (result > 0) {
+                com.util.RedisUtil.deleteCacheByPattern("templates:*");
+                return true;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -58,13 +58,14 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=DesignerProfile" style="border-bottom: 2px solid white; font-weight: 700; color:white;">Profile</a>
             </div>
             <div class="nav-actions">
+<button onclick="toggleLanguage()" class="lang-toggle-btn no-translate" style="background: transparent; border: 1px solid currentColor; color: inherit; padding: 4px 10px; border-radius: 20px; cursor: pointer; margin-right: 15px; font-weight: bold; white-space: nowrap;">EN/VI</button>
+
                 <span style="color: #dae2fd; font-size: 14px; margin-right: 10px;">Welcome, <b><%= loginUser.getUsername()%></b></span>
                 <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin:0; display: inline-block;">
                     <input type="hidden" name="action" value="Logout">
                     <button type="submit" class="btn-outline" style="padding: 6px 16px; font-size: 12px; border-radius: 999px; color:white; border-color:white;">Logout</button>
                 </form>
             
-<button onclick="toggleLanguage()" class="lang-toggle-btn no-translate" style="background: transparent; border: 1px solid currentColor; color: inherit; padding: 4px 10px; border-radius: 20px; cursor: pointer; margin-left: 15px; font-weight: bold; white-space: nowrap;">EN/VI</button>
 </div>
         
 </nav>

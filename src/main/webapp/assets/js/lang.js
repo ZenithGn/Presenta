@@ -1,4 +1,4 @@
-﻿const dict = {
+const dict = {
     // Nav & Common
     "HOME": "TRANG CHỦ",
     "SHOP": "CỬA HÀNG",
@@ -171,9 +171,24 @@ function translateNode(node, lang) {
     }
 }
 
+function updateToggleUI(lang) {
+    const wrappers = document.querySelectorAll('.lang-toggle-switch');
+    wrappers.forEach(wrapper => {
+        const slider = wrapper.querySelector('.lang-slider');
+        if (slider) {
+            if (lang === 'vi') {
+                slider.style.transform = 'translateX(30px)';
+            } else {
+                slider.style.transform = 'translateX(0)';
+            }
+        }
+    });
+}
+
 function applyLanguage(lang) {
     localStorage.setItem('lang', lang);
     translateNode(document.body, lang);
+    updateToggleUI(lang);
 }
 
 function toggleLanguage() {

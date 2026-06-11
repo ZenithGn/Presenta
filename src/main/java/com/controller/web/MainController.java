@@ -59,6 +59,8 @@ public class MainController extends HttpServlet {
     private static final String SUBMIT_REVIEW_CONTROLLER = "ReviewController";
     private static final String BUY_NOW = "BuyNow";
     private static final String BUY_NOW_CONTROLLER = "BuyNowController";
+    private static final String GET_FREE_TEMPLATE = "GetFreeTemplate";
+    private static final String GET_FREE_TEMPLATE_CONTROLLER = "GetFreeTemplateController";
 
     //Designer 
     private static final String DESIGNER_HOME = "DesignerHome";
@@ -97,6 +99,8 @@ public class MainController extends HttpServlet {
     private static final String ADMIN_USERS_CONTROLLER = "AdminUserListController";
     private static final String ADMIN_PROFILE = "AdminProfile";
     private static final String ADMIN_PROFILE_CONTROLLER = "AdminProfileController";
+    private static final String ADMIN_VOUCHERS = "AdminVouchers";
+    private static final String ADMIN_VOUCHERS_CONTROLLER = "AdminVoucherController";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -150,6 +154,8 @@ public class MainController extends HttpServlet {
                 url = SUBMIT_REVIEW_CONTROLLER;
             } else if (BUY_NOW.equals(action)) {
                 url = BUY_NOW_CONTROLLER;
+            } else if (GET_FREE_TEMPLATE.equals(action)) {
+                url = GET_FREE_TEMPLATE_CONTROLLER;
             } else if (DESIGNER_HOME.equals(action)) {
                 url = DESIGNER_HOME_CONTROLLER;
             } else if (MANAGE_TEMPLATE.equals(action)) {
@@ -182,6 +188,8 @@ public class MainController extends HttpServlet {
                 url = ADMIN_USERS_CONTROLLER;
             } else if (ADMIN_PROFILE.equals(action)) {
                 url = ADMIN_PROFILE_CONTROLLER;
+            } else if (ADMIN_VOUCHERS.equals(action)) {
+                url = ADMIN_VOUCHERS_CONTROLLER;
             }
         } catch (Exception e) {
             log("Error at MainController: " + e.toString());

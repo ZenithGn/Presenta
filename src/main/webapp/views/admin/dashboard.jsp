@@ -1,6 +1,6 @@
 <%-- Document : dashboard Created on : May 24, 2026, 4:26:11 PM Author : lehan --%>
 
-    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+    <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
         <%@ page import="com.model.User" %>
             <%@ page import="java.util.List" %>
                 <!DOCTYPE html>
@@ -115,6 +115,7 @@
                             <a href="${pageContext.request.contextPath}/MainController?action=AdminDashboard" class="active">Dashboard</a>
                             <a href="${pageContext.request.contextPath}/MainController?action=AdminWithdrawals">Withdrawals</a>
                             <a href="${pageContext.request.contextPath}/MainController?action=AdminUsers">User List</a>
+                            <a href="${pageContext.request.contextPath}/MainController?action=AdminVouchers">Vouchers</a>
                             <a href="${pageContext.request.contextPath}/MainController?action=AdminProfile">Profile</a>
                         </div>
 
@@ -165,18 +166,18 @@
                                     <span class="stat-title">Pending Withdrawals</span>
                                     <div class="stat-value"><%= pendingWithdrawals%></div>
                                 </div>
-                                <div class="stat-icon">⏳</div>
+                                <div class="stat-icon"><span class="no-translate">⏳</span></div>
                             </div>
                         </div>
 
                         <%-- ============ CHARTS ============ --%>
                         <div class="admin-charts-grid">
                             <div class="chart-box">
-                                <h3>📊 User Role Distribution</h3>
+                                <h3><span class="no-translate">📊</span> User Role Distribution</h3>
                                 <canvas id="roleChart"></canvas>
                             </div>
                             <div class="chart-box">
-                                <h3>📈 Monthly Revenue (Last 6 Months)</h3>
+                                <h3><span class="no-translate">📈</span> Monthly Revenue (Last 6 Months)</h3>
                                 <canvas id="revenueChart"></canvas>
                             </div>
                         </div>
@@ -184,7 +185,7 @@
                         <%-- ============ TEMPLATE UPLOAD HISTOGRAM ============ --%>
                         <div class="chart-box" style="margin-top: 24px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                                <h3 style="color: white; font-size: 16px; font-weight: 700; margin: 0;">📋 Template Uploads</h3>
+                                <h3 style="color: white; font-size: 16px; font-weight: 700; margin: 0;"><span class="no-translate">📋</span> Template Uploads</h3>
                                 <div style="display: flex; gap: 8px;">
                                     <a href="${pageContext.request.contextPath}/MainController?action=AdminDashboard&uploadFilter=week"
                                        class="chip-btn <%="week".equals(uploadFilter) ? "active" : ""%>">This Week</a>

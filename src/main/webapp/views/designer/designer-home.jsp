@@ -92,23 +92,23 @@
                         <span class="stat-title">Total Balance</span>
                         <div class="stat-value"><%= String.format("%,.0f", displayBalance)%>₫</div>
                     </div>
-                    <div class="stat-icon">💰</div>
+                    <div class="stat-icon"><span class="no-translate">💰</span></div>
                 </div>
 
                 <div class="vision-card stat-card">
                     <div class="stat-info">
                         <span class="stat-title">Active Templates</span>
-                        <div class="stat-value"><%= displayActive%> <span class="stat-trend" style="color: #A0AEC0; font-weight: normal;">items</span></div>
+                        <div class="stat-value"><%= displayActive%> <span class="stat-trend" style="color: #A0AEC0; font-weight: normal;"><span class="no-translate">items</span></span></div>
                     </div>
-                    <div class="stat-icon">📄</div>
+                    <div class="stat-icon"><span class="no-translate">📄</span></div>
                 </div>
 
                 <div class="vision-card stat-card">
                     <div class="stat-info">
                         <span class="stat-title">Templates Sold</span>
-                        <div class="stat-value"><%= displaySold%> <span class="stat-trend" style="color: #A0AEC0; font-weight: normal;">sales</span></div>
+                        <div class="stat-value"><%= displaySold%> <span class="stat-trend" style="color: #A0AEC0; font-weight: normal;"><span class="no-translate">sales</span></span></div>
                     </div>
-                    <div class="stat-icon">🛒</div>
+                    <div class="stat-icon"><span class="no-translate">🛒</span></div>
                 </div>
 
                 <div class="vision-card stat-card">
@@ -116,7 +116,7 @@
                         <span class="stat-title">Pending Payouts</span>
                         <div class="stat-value"><%= String.format("%,.0f", displayPending)%>₫</div>
                     </div>
-                    <div class="stat-icon">💳</div>
+                    <div class="stat-icon"><span class="no-translate">💳</span></div>
                 </div>
             </div>
 
@@ -135,7 +135,7 @@
                 </div>
 
                 <div class="vision-card" style="padding: 24px;">
-                    <h3 style="color: white; margin: 0 0 4px 0; font-size: 18px;">📈 Daily Activity (Last 30 Days)</h3>
+                    <h3 style="color: white; margin: 0 0 4px 0; font-size: 18px;"><span class="no-translate">📈</span> Daily Activity (Last 30 Days)</h3>
                     <p style="color: #A0AEC0; font-size: 12px; margin-bottom: 16px;">Template sales vs Booking requests per day</p>
                     <div style="height: 250px;">
                         <canvas id="dailyActivityChart"></canvas>

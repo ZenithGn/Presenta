@@ -107,11 +107,19 @@
                             <p class="buy-desc"><%= t.getDescription()%></p>
 
                             <div class="action-buttons">
+                                <% if (t.getPrice() == 0) { %>
+                                <form action="MainController" method="POST" style="margin:0; grid-column: span 2;">
+                                    <input type="hidden" name="action" value="GetFreeTemplate">
+                                    <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
+                                    <button type="submit" class="btn-full" style="width:100%; background: #01B574; color: white;">Get Now</button>
+                                </form>
+                                <% } else { %>
                                 <form action="${pageContext.request.contextPath}/MainController?action=AddCart&id=<%= t.getTemplateID()%>" method="POST" style="margin:0; grid-column: span 2;">
                                     <input type="hidden" name="action" value="BuyNow">
                                     <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
                                     <button type="submit" class="btn-full" style="width:100%;">Buy Now</button>
                                 </form>
+                                <% } %>
                             </div>
                         </div>
                     </div>

@@ -226,12 +226,23 @@
                                 <p class="product-desc"><%= (t.getDescription() != null) ? t.getDescription() : ""%></p>
 
                                 <div class="card-actions" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px;">
+                                    <% if (t.getPrice() == 0) { %>
+                                    <form action="MainController" method="GET" style="flex: 1; min-width: 100%; margin:0;">
+                                        <input type="hidden" name="action" value="TemplateDetail">
+                                        <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
+                                        <button type="submit" class="btn-card btn-dark" style="width:100%;">VIEW DETAIL</button>
+                                    </form>
+                                    <form action="MainController" method="POST" style="flex: 1; min-width: 100%; margin:0; margin-top: 4px;">
+                                        <input type="hidden" name="action" value="GetFreeTemplate">
+                                        <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
+                                        <button type="submit" class="btn-card" style="width:100%; background: #01B574; color: white; border: none; cursor:pointer;">GET NOW</button>
+                                    </form>
+                                    <% } else { %>
                                     <form action="MainController" method="GET" style="flex: 1; min-width: 45%; margin:0;">
                                         <input type="hidden" name="action" value="TemplateDetail">
                                         <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
                                         <button type="submit" class="btn-card btn-dark" style="width:100%;">VIEW DETAIL</button>
                                     </form>
-
                                     <form action="${pageContext.request.contextPath}/MainController?action=AddCart&id=<%= t.getTemplateID()%>" method="POST" style="flex: 1; min-width: 45%; margin:0;">
                                         <input type="hidden" name="action" value="AddToCart">
                                         <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
@@ -243,6 +254,7 @@
                                         <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
                                         <button type="submit" class="btn-card" style="width:100%; border:none; cursor:pointer;">Buy Now</button>
                                     </form>
+                                    <% } %>
                                 </div>
                             </div>
                             <%

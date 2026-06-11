@@ -92,16 +92,16 @@
                         <div class="user-avatar" id="main-avatar-placeholder"><%= loginUser.getUsername().substring(0, 1).toUpperCase()%></div>
                         <img src="" id="main-avatar-img" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; display: none;">
                         <% }%>
-                        <div class="avatar-hover-overlay">&#x1F4F7;</div>
+                        <div class="avatar-hover-overlay"><span class="no-translate">📷</span></div>
                     </div>
 
                     <h3 class="user-name"><%= loginUser.getUsername()%></h3>
                     <p style="text-align:center; color:#D8B4FF; font-size:12px; margin-top:4px;">Designer</p>
                 </div>
                 <ul class="sidebar-menu">
-                    <li class="menu-item <%= "portfolio".equals(activeTab) ? "active" : ""%>" onclick="switchTab('tab-portfolio', this)" id="nav-tab-portfolio">&#x1F3A8; Portfolio Settings</li>
-                    <li class="menu-item <%= "info".equals(activeTab) ? "active" : ""%>" onclick="switchTab('tab-info', this)" id="nav-tab-info">&#x2699;&#xFE0F; Account Settings</li>
-                    <li class="menu-item <%= "orders".equals(activeTab) ? "active" : ""%>" onclick="switchTab('tab-orders', this)" id="nav-tab-orders">&#x1F4E6; Custom Orders</li>
+                    <li class="menu-item <%= "portfolio".equals(activeTab) ? "active" : ""%>" onclick="switchTab('tab-portfolio', this)" id="nav-tab-portfolio"><span class="no-translate">&#x1F3A8;</span> Portfolio Settings</li>
+                    <li class="menu-item <%= "info".equals(activeTab) ? "active" : ""%>" onclick="switchTab('tab-info', this)" id="nav-tab-info"><span class="no-translate">&#x2699;&#xFE0F;</span> Account Settings</li>
+                    <li class="menu-item <%= "orders".equals(activeTab) ? "active" : ""%>" onclick="switchTab('tab-orders', this)" id="nav-tab-orders"><span class="no-translate">&#x1F4E6;</span> Custom Orders</li>
                 </ul>
             </aside>
 

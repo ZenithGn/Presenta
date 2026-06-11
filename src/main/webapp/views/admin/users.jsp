@@ -3,7 +3,7 @@
     Author     : lehan
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ page import="com.model.User" %>
 <%@ page import="java.util.List" %>
 <!DOCTYPE html>
@@ -166,6 +166,7 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminDashboard">Dashboard</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminWithdrawals">Withdrawals</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminUsers" class="active">User List</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=AdminVouchers">Vouchers</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminProfile">Profile</a>
             </div>
 
@@ -188,8 +189,8 @@
 
         <div class="designer-container">
             <div class="vision-card" style="padding: 24px;">
-                <h2 style="color: white; margin: 0 0 4px 0; font-size: 22px;">👥 User Management</h2>
-                <p style="color: #A0AEC0; margin: 0 0 20px 0; font-size: 14px;"><%= totalCount%> total user(s)</p>
+                <h2 style="color: white; margin: 0 0 4px 0; font-size: 22px;"><span class="no-translate">👥</span> User Management</h2>
+                <p style="color: #A0AEC0; margin: 0 0 20px 0; font-size: 14px;"><span class="no-translate"><%= totalCount%></span> total user(s)</p>
 
                 <%-- ============ FILTER BAR ============ --%>
                 <div class="filter-bar">
@@ -202,7 +203,7 @@
                             <option value="Customer" <%= "Customer".equals(roleFilter) ? "selected" : ""%>>Customer</option>
                             <option value="Designer" <%= "Designer".equals(roleFilter) ? "selected" : ""%>>Designer</option>
                         </select>
-                        <button type="submit" class="btn-search">🔍 Search</button>
+                        <button type="submit" class="btn-search"><span class="no-translate">🔍</span> Search</button>
                     </form>
                 </div>
 

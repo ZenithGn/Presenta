@@ -572,15 +572,33 @@ public class DesignerDAO {
             conn = DBUtils.getConnection();
             conn.setAutoCommit(false);
 
+            // Find or create 'Customize design' category
+            int customizeCatId = 1;
+            String getCatSql = "SELECT categoryID FROM Categories WHERE categoryName = 'Customize design' OR categoryName = 'Customize Design'";
+            try (PreparedStatement psCat = conn.prepareStatement(getCatSql); ResultSet rsCat = psCat.executeQuery()) {
+                if (rsCat.next()) {
+                    customizeCatId = rsCat.getInt("categoryID");
+                } else {
+                    String insertCatSql = "INSERT INTO Categories (categoryName, description) VALUES ('Customize Design', 'Custom designs requested by customers')";
+                    try (PreparedStatement psInsCat = conn.prepareStatement(insertCatSql, Statement.RETURN_GENERATED_KEYS)) {
+                        psInsCat.executeUpdate();
+                        try (ResultSet rsInsCat = psInsCat.getGeneratedKeys()) {
+                            if (rsInsCat.next()) customizeCatId = rsInsCat.getInt(1);
+                        }
+                    }
+                }
+            }
+
             // 1. Insert Template
             String insertTemplate = "INSERT INTO Templates (designerID, categoryID, title, description, price, fileURL) "
-                                  + "VALUES (?, 1, ?, ?, ?, ?)";
+                                  + "VALUES (?, ?, ?, ?, ?, ?)";
             psTemplate = conn.prepareStatement(insertTemplate, Statement.RETURN_GENERATED_KEYS);
             psTemplate.setInt(1, designerId);
-            psTemplate.setString(2, "Custom Design #" + orderId);
-            psTemplate.setString(3, "Thiết kế riêng theo đơn đặt hàng #" + orderId);
-            psTemplate.setDouble(4, price);
-            psTemplate.setString(5, fileURL);
+            psTemplate.setInt(2, customizeCatId);
+            psTemplate.setString(3, "Custom Design #" + orderId);
+            psTemplate.setString(4, "Thiết kế riêng theo đơn đặt hàng #" + orderId);
+            psTemplate.setDouble(5, price);
+            psTemplate.setString(6, fileURL);
             psTemplate.executeUpdate();
 
             int templateId;

@@ -133,6 +133,10 @@ function translateNode(node, lang) {
         // Skip script and style tags
         if (node.tagName === 'SCRIPT' || node.tagName === 'STYLE') return;
         
+        // Skip elements that explicitly request no translation
+        if (node.classList && node.classList.contains('no-translate')) return;
+        if (node.dataset && node.dataset.noTranslate) return;
+        
         // Handle input placeholders
         if (node.tagName === 'INPUT' || node.tagName === 'TEXTAREA') {
             if (node.placeholder) {

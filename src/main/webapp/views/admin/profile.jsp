@@ -3,7 +3,7 @@
     Author     : lehan
     Admin Profile — synchronized layout with Admin Dashboard
 --%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ page import="com.model.User" %>
 <%
     User loginUser = (User) session.getAttribute("LOGIN_USER");
@@ -73,6 +73,7 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminDashboard">Dashboard</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminWithdrawals">Withdrawals</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminUsers">User List</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=AdminVouchers">Vouchers</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminProfile" class="active">Profile</a>
             </div>
 
@@ -118,7 +119,7 @@
                     <p style="text-align:center; color:#0075FF; font-size:12px; margin-top:4px; font-weight:700;">Administrator</p>
                 </div>
                 <ul class="sidebar-menu">
-                    <li class="menu-item active" id="nav-tab-info" style="color: white;">&#x2699;&#xFE0F; Account Settings</li>
+                    <li class="menu-item active" id="nav-tab-info" style="color: white;"><span class="no-translate">&#x2699;&#xFE0F;</span> Account Settings</li>
                 </ul>
             </aside>
 

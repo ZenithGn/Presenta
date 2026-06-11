@@ -287,4 +287,61 @@ public class OrderDAO {
         }
         return null;
     }
+
+    public boolean insertFreeOrder(int customerId, int templateId) {
+        Connection conn = null;
+        PreparedStatement psOrder = null;
+        PreparedStatement psDetail = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBUtils.getConnection();
+            if (conn != null) {
+                conn.setAutoCommit(false);
+                
+                String sqlOrder = "INSERT INTO Orders (customerID, orderType, totalPrice, status) VALUES (?, 'BUY_TEMPLATE', 0, 'Completed')";
+                psOrder = conn.prepareStatement(sqlOrder, Statement.RETURN_GENERATED_KEYS);
+                psOrder.setInt(1, customerId);
+                
+                int affectedRows = psOrder.executeUpdate();
+                if (affectedRows > 0) {
+                    rs = psOrder.getGeneratedKeys();
+                    if (rs.next()) {
+                        int newOrderId = rs.getInt(1);
+                        String sqlDetail = "INSERT INTO OrderDetails (orderID, templateID, price) VALUES (?, ?, 0)";
+                        psDetail = conn.prepareStatement(sqlDetail);
+                        psDetail.setInt(1, newOrderId);
+                        psDetail.setInt(2, templateId);
+                        psDetail.executeUpdate();
+                        conn.commit();
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            if (conn != null) try { conn.rollback(); } catch (Exception ex) {}
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (psDetail != null) psDetail.close(); } catch (Exception e) {}
+            try { if (psOrder != null) psOrder.close(); } catch (Exception e) {}
+            try { if (conn != null) { conn.setAutoCommit(true); conn.close(); } } catch (Exception e) {}
+        }
+        return false;
+    }
+
+    public boolean hasPurchasedTemplate(int customerId, int templateId) {
+        String sql = "SELECT COUNT(*) FROM Orders o JOIN OrderDetails od ON o.orderID = od.orderID "
+                   + "WHERE o.customerID = ? AND od.templateID = ? AND o.orderType = 'BUY_TEMPLATE' AND o.status = 'Completed'";
+        try (Connection conn = DBUtils.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, customerId);
+            ps.setInt(2, templateId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next() && rs.getInt(1) > 0) return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

@@ -3,7 +3,7 @@
     Author     : lehan
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ page import="com.model.User" %>
 <%@ page import="com.model.Withdrawal" %>
 <%@ page import="java.util.List" %>
@@ -139,6 +139,7 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminDashboard">Dashboard</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminWithdrawals" class="active">Withdrawals</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminUsers">User List</a>
+                <a href="${pageContext.request.contextPath}/MainController?action=AdminVouchers">Vouchers</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=AdminProfile">Profile</a>
             </div>
 
@@ -162,7 +163,7 @@
         <div class="designer-container">
             <div class="vision-card" style="padding: 24px;">
                 <h2 style="color: white; margin: 0 0 4px 0; font-size: 22px;">💸 Withdrawal Requests</h2>
-                <p style="color: #A0AEC0; margin: 0 0 20px 0; font-size: 14px;"><%= totalCount%> total request(s)</p>
+                <p style="color: #A0AEC0; margin: 0 0 20px 0; font-size: 14px;"><span class="no-translate"><%= totalCount%></span> total request(s)</p>
 
                 <%-- ============ FILTER BAR ============ --%>
                 <div class="filter-bar">
@@ -177,12 +178,12 @@
                     </form>
 
                     <a href="${pageContext.request.contextPath}/MainController?action=AdminWithdrawals&subAction=exportCSV&statusFilter=<%= statusFilter%>" class="btn-export">
-                        📥 Export CSV
+                        <span class="no-translate">📥</span> Export CSV
                     </a>
 
                     <% if ("Pending".equals(statusFilter)) { %>
                     <button type="submit" form="batchForm" class="btn-approve-all">
-                        ✅ Batch Approve Selected
+                        <span class="no-translate">✅</span> Batch Approve Selected
                     </button>
                     <% } %>
                 </div>

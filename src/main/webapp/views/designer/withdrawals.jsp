@@ -106,7 +106,7 @@
             <div class="withdrawals-grid">
                 <%-- ============ WITHDRAWAL FORM ============ --%>
                 <div class="vision-card" style="padding: 32px;">
-                    <h3 style="color: white; margin-bottom: 4px; font-size: 20px;">💸 Request a Payout</h3>
+                    <h3 style="color: white; margin-bottom: 4px; font-size: 20px;"><span class="no-translate">💸</span> Request a Payout</h3>
                     <p style="color: #A0AEC0; font-size: 13px; margin-bottom: 8px;">
                         Available Balance: <b style="color: #FFD700;"><%= String.format("%,.0f", displayBalance)%>₫</b>
                     </p>

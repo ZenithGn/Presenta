@@ -75,5 +75,7 @@
         </div>
 
         <script src="${pageContext.request.contextPath}/assets/js/register.js"></script>
-    </body>
+    
+<script src="${pageContext.request.contextPath}/assets/js/lang.js"></script>
+</body>
 </html>

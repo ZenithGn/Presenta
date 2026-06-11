@@ -21,3 +21,6 @@ target/test-classes/
 
 # Bỏ qua báo cáo kết quả chạy kiểm thử tự động của Maven
 target/surefire-reports/
+
+# Gemini Skills
+skills/

@@ -84,7 +84,9 @@
                     <button type="submit" style="background: transparent; border: none; color: #A0AEC0; font-weight: 700; cursor: pointer;">Sign Out</button>
                 </form>
             </div>
-        </nav>
+        
+<button onclick="toggleLanguage()" class="lang-toggle-btn" style="background: transparent; border: 1px solid currentColor; color: inherit; padding: 4px 10px; border-radius: 20px; cursor: pointer; margin-left: auto; margin-right: 15px; font-weight: bold;">EN/VI</button>
+</nav>
 
         <div class="designer-container">
 
@@ -270,5 +272,7 @@
             });
         </script>
         <script src="${pageContext.request.contextPath}/assets/js/toast.js"></script>
-    </body>
+    
+<script src="${pageContext.request.contextPath}/assets/js/lang.js"></script>
+</body>
 </html>

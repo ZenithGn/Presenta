@@ -58,5 +58,7 @@
             </div>
         </div>
 
-    </body>
+    
+<script src="${pageContext.request.contextPath}/assets/js/lang.js"></script>
+</body>
 </html>

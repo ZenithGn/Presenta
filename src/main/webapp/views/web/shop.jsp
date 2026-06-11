@@ -68,7 +68,9 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=Register" class="btn-primary" style="border-radius: 999px; background: white; color: black;">Sign Up</a>
                 <% } %>
             </div>
-        </nav>
+        
+<button onclick="toggleLanguage()" class="lang-toggle-btn" style="background: transparent; border: 1px solid currentColor; color: inherit; padding: 4px 10px; border-radius: 20px; cursor: pointer; margin-left: auto; margin-right: 15px; font-weight: bold;">EN/VI</button>
+</nav>
 
         <% } else if (roleId == 3) {%>
         <nav class="navbar" style="background: var(--surface); border-bottom: 1px solid var(--border-glass);">
@@ -334,5 +336,7 @@
         </footer>
         <script src="${pageContext.request.contextPath}/assets/js/toast.js?v=1.0"></script>
         <script src="${pageContext.request.contextPath}/assets/js/shop.js"></script>
-    </body>
+    
+<script src="${pageContext.request.contextPath}/assets/js/lang.js"></script>
+</body>
 </html>

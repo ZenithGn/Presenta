@@ -49,7 +49,9 @@
             <div style="display: flex; align-items: center; gap: 20px;">
                 <span style="color: #A0AEC0; font-size: 14px;">Designer: <b style="color: white;"><%= loginUser.getUsername() %></b></span>
             </div>
-        </nav>
+        
+<button onclick="toggleLanguage()" class="lang-toggle-btn" style="background: transparent; border: 1px solid currentColor; color: inherit; padding: 4px 10px; border-radius: 20px; cursor: pointer; margin-left: auto; margin-right: 15px; font-weight: bold;">EN/VI</button>
+</nav>
 
         <div class="designer-container">
             <div class="vision-card" style="max-width: 800px; margin: 0 auto; padding: 40px;">
@@ -150,5 +152,7 @@
                 </div>
             </div>
         </footer>
-    </body>
+    
+<script src="${pageContext.request.contextPath}/assets/js/lang.js"></script>
+</body>
 </html>

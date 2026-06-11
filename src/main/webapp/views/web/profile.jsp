@@ -64,9 +64,10 @@
                     <input type="hidden" name="action" value="Logout">
                     <button type="submit" class="btn-outline" style="padding: 6px 16px; font-size: 12px; border-radius: 999px; color:white; border-color:white;">Logout</button>
                 </form>
-            </div>
+            
+<button onclick="toggleLanguage()" class="lang-toggle-btn no-translate" style="background: transparent; border: 1px solid currentColor; color: inherit; padding: 4px 10px; border-radius: 20px; cursor: pointer; margin-left: 15px; font-weight: bold; white-space: nowrap;">EN/VI</button>
+</div>
         
-<button onclick="toggleLanguage()" class="lang-toggle-btn" style="background: transparent; border: 1px solid currentColor; color: inherit; padding: 4px 10px; border-radius: 20px; cursor: pointer; margin-left: auto; margin-right: 15px; font-weight: bold;">EN/VI</button>
 </nav>
 
         <main class="profile-container">

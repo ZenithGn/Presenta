@@ -7,8 +7,8 @@
 ## 🎯 Tổng Quan Dự Án & Vai Trò (User Roles)
 
 Hệ thống hoạt động theo mô hình phân quyền rõ ràng giữa 3 vai trò:
-1. **Khách hàng (Customer)**: Tìm kiếm, lọc và mua sắm các template chất lượng cao. Đánh giá sản phẩm đã mua, đặt hàng thiết kế riêng theo yêu cầu (Book Designer), và thực hiện thanh toán trực tuyến qua cổng VNPay/MoMo.
-2. **Nhà thiết kế (Designer)**: Đăng tải sản phẩm template cá nhân lên chợ, quản lý danh sách sản phẩm, nhận các đơn đặt hàng thiết kế riêng (HIRE_DESIGNER), thống kê doanh thu bán hàng và gửi yêu cầu rút tiền về tài khoản ngân hàng.
+1. **Khách hàng (Customer)**: Tìm kiếm, lọc và mua sắm các template chất lượng cao. Đánh giá sản phẩm đã mua, đặt hàng thiết kế riêng theo yêu cầu (Book Designer), và thực hiện thanh toán trực tuyến qua cổng VNPay/MoMo/PayOS.
+2. **Nhà thiết kế (Designer)**: Đăng tải sản phẩm template cá nhân lên chợ (tích hợp Cloudinary lưu trữ file tĩnh), quản lý danh sách sản phẩm, nhận các đơn đặt hàng thiết kế riêng (HIRE_DESIGNER), thống kê doanh thu bán hàng và gửi yêu cầu rút tiền về tài khoản ngân hàng.
 3. **Quản trị viên (Admin)**: Quản lý tổng thể hệ thống, thống kê doanh thu & biểu đồ phát triển qua Dashboard (Chart.js), phê duyệt các yêu cầu rút tiền của Designer, ban/unban người dùng vi phạm và quản lý phê duyệt template mới.
 
 ---
@@ -25,25 +25,38 @@ Hệ thống hoạt động theo mô hình phân quyền rõ ràng giữa 3 vai 
 
 ---
 
-## ⚙️ Thiết Kế Hệ Thống Quan Trọng
+## ⚙️ Các Tính Năng Kỹ Thuật Nâng Cao
 
-### A. Quản lý cấu hình Bảo mật (Mô hình `.env` tự chế)
-Để tránh các xung đột thư viện với Java 8, hệ thống không sử dụng thư viện bên thứ ba như `dotenv-java`.
-* **Vị trí file cấu hình**: File `.env` chứa mật khẩu kết nối database được đặt trong thư mục `src/main/resources/` (biên dịch trực tiếp vào Classpath `/target/classes/`).
-* **Cơ chế đọc**: Lớp [DBUtils](src/main/java/com/util/DBUtils.java) sử dụng luồng đọc native:
-  ```java
-  ClassLoader.getResourceAsStream(".env")
-  ```
-* **Tính tương thích Hybrid/Cloud**: Toàn bộ hệ thống kiểm tra biến môi trường hệ thống của Cloud trước (`System.getenv(key)`), nếu chạy local thì mới tự động fallback về file cấu hình `.env` vật lý.
+Dự án tích hợp nhiều công nghệ hiện đại để đảm bảo hiệu năng và tính mở rộng:
 
-### B. Hỗ trợ Tiếng Việt có dấu (Vietnamese encoding filter)
-* **Bộ lọc Encoding**: [EncodingFilter](src/main/java/com/filter/EncodingFilter.java) được cấu hình toàn cục (`/*`) để tự động áp dụng `request.setCharacterEncoding("UTF-8")` và `response.setCharacterEncoding("UTF-8")` cho mọi luồng request/response, tránh hiện tượng lỗi font tiếng Việt khi nhập liệu.
-* **Cấu trúc CSDL**: Mọi cột dữ liệu lưu trữ tiếng Việt đều được định nghĩa kiểu dữ liệu `NVARCHAR` trong MS SQL Server.
+### A. Lưu trữ File Tĩnh với Cloudinary
+* Toàn bộ hình ảnh Avatar và file PDF Portfolio của người dùng được upload trực tiếp lên **Cloudinary** thông qua SDK `cloudinary-http44`.
+* Đảm bảo tính sẵn sàng cao, tối ưu hoá dung lượng ảnh (`.webp`) và giảm tải cho máy chủ web.
 
-### C. Luồng thanh toán (Payment Integrations)
-Hệ thống tích hợp thành công hai cổng thanh toán Sandbox phổ biến tại Việt Nam:
+### B. Gửi Email thông qua Brevo HTTP API
+* Thay vì sử dụng SMTP truyền thống (thường bị các nền tảng như Render chặn cổng 587/465), hệ thống sử dụng **Brevo API qua cổng HTTPS (443)**.
+* Đảm bảo gửi email khôi phục mật khẩu (kèm mã OTP 6 số) nhanh chóng, không bị liệt vào danh sách thư rác, và không bị Cloud block port.
+* Mã OTP bảo mật tự động hết hạn, quản lý vòng đời an toàn qua `HttpSession`.
+
+### C. WebSockets & Real-time Notifications
+* Ứng dụng tích hợp `javax.websocket-api` để duy trì kết nối hai chiều theo thời gian thực (Real-time).
+* Client lắng nghe qua `ws://` và nhận các thông báo hệ thống (như khi có sự kiện mới, cảnh báo) hiển thị dưới dạng **Toast Notifications** một cách liền mạch mà không cần tải lại trang.
+
+### D. Tác Vụ Chạy Ngầm (Task Scheduler)
+* Một **Background Task Scheduler** được khởi tạo thông qua `ServletContextListener` khi Tomcat khởi động.
+* Tự động chạy định kỳ (mỗi phút) để:
+  1. Xoá bộ nhớ đệm dư thừa (Cache Cleanup) để ngăn ngừa rò rỉ bộ nhớ (Memory Leaks).
+  2. Tự động quét và vô hiệu hoá các Mã giảm giá (Vouchers) đã hết hạn trong Cơ sở dữ liệu.
+
+### E. Redis Caching & Bộ nhớ dự phòng
+* Ứng dụng dùng thư viện `Jedis` kết nối với Redis để lưu trữ Cache.
+* Hệ thống được thiết kế với cơ chế Fallback an toàn: Nếu máy chủ Redis sập hoặc không khả dụng, ứng dụng tự động chuyển sang lưu trữ bộ nhớ đệm cục bộ (Local `ConcurrentHashMap`), đảm bảo không bao giờ bị gián đoạn dịch vụ.
+
+### F. Luồng Thanh Toán (Payment Integrations)
+Hệ thống tích hợp thành công các cổng thanh toán phổ biến:
 * **VNPay**: Hỗ trợ chữ ký bảo mật thuật toán `HmacSHA512`.
 * **MoMo**: Hỗ trợ phương thức `captureWallet` sử dụng chữ ký `HmacSHA256`.
+* **PayOS**: Cổng thanh toán chuyển khoản thông minh tự động xác nhận.
 
 ---
 
@@ -56,16 +69,15 @@ Presenta/
 │   │   ├── java/
 │   │   │   └── com/
 │   │   │       ├── controller/    # Lớp Servlet xử lý logic điều hướng
-│   │   │       │   ├── admin/     # Quản lý dành cho Quản trị viên
-│   │   │       │   ├── designer/  # Quản lý dành cho Nhà thiết kế
-│   │   │       │   └── web/       # Chức năng dành cho Khách hàng & Chung
-│   │   │       ├── filter/        # Bộ lọc phân quyền (AdminFilter) và Encoding
+│   │   │       ├── filter/        # Bộ lọc phân quyền (JWT/Auth) và Encoding
+│   │   │       ├── listener/      # Lắng nghe vòng đời ứng dụng (Task Scheduler)
 │   │   │       ├── model/         # Các lớp thực thể (Entity) và truy vấn DAO
-│   │   │       └── util/          # Cấu hình kết nối DB và cấu hình thanh toán
+│   │   │       ├── util/          # Cấu hình DB, Email, Redis, Cloudinary
+│   │   │       └── websocket/     # Lớp endpoint cho Real-time Notifications
 │   │   ├── webapp/
 │   │   │   ├── assets/            # CSS, JS và hình ảnh tĩnh
 │   │   │   ├── WEB-INF/           # File cấu hình web.xml
-│   │   │   └── views/             # Giao diện JSP chia theo vai trò người dùng
+│   │   │   └── views/             # Giao diện JSP chia theo vai trò
 │   │   └── resources/             # Nơi chứa file .env bảo mật (local)
 ├── FinaleProduction.sql           # Script SQL tạo bảng và nạp mock data
 ├── pom.xml                        # Cấu hình dependencies Maven
@@ -80,25 +92,17 @@ Presenta/
 1. Mở SQL Server Management Studio (SSMS) hoặc Azure Data Studio.
 2. Kết nối tới server SQL Server của bạn.
 3. Tạo mới database có tên là `Presenta`.
-4. Mở tab Query mới, dán toàn bộ mã lệnh trong file [FinaleProduction.sql](FinaleProduction.sql) và nhấn **F5** để khởi chạy tạo bảng và nạp dữ liệu mẫu.
+4. Mở tab Query mới, dán toàn bộ mã lệnh trong file `FinaleProduction.sql` và nhấn **F5** để khởi chạy tạo bảng và nạp dữ liệu mẫu.
 
 ### Bước 2: Cấu hình Môi trường `.env`
-1. Tạo thư mục `src/main/resources/` (nếu chưa tồn tại).
-2. Tạo file có tên `.env` bên trong thư mục này.
-3. Sao chép nội dung từ file `.env.example` vào `.env` mới tạo và điền các thông tin tương ứng:
-   ```env
-   DB_HOST=localhost -- Hoặc endpoint AWS RDS
-   DB_NAME=Presenta
-   DB_USER=sa
-   DB_PASSWORD=mật_khẩu_của_bạn
-   ```
+1. Tạo file có tên `.env` bên trong thư mục `src/main/resources/`.
+2. Sao chép nội dung từ file `.env.example` vào `.env` mới tạo và điền các thông tin (Database, Cloudinary URL, Brevo API Key, Payment Keys).
 
 ### Bước 3: Build và Chạy ứng dụng
 * Sử dụng một IDE hỗ trợ Java Web (như **NetBeans 12+**, **IntelliJ IDEA Ultimate** hoặc **Eclipse**):
   1. Mở dự án Maven từ file `pom.xml`.
-  2. Cấu hình Server Apache Tomcat 9.0 tích hợp trong IDE.
-  3. Nhấp chuột phải vào dự án -> Chọn **Clean and Build**.
-  4. Chọn **Run** để khởi chạy Tomcat server. Trình duyệt sẽ tự động mở trang chủ tại địa chỉ `http://localhost:8080/EXE202_Maven/`.
+  2. Chuột phải vào dự án -> Chọn **Clean and Build** để tải các package dependencies.
+  3. Chọn **Run** để khởi chạy Tomcat server. Trình duyệt sẽ tự động mở trang chủ tại địa chỉ `http://localhost:8080/EXE202_Maven/`.
 
 ---
-*Chúc bạn có những trải nghiệm phát triển tuyệt vời cùng dự án **Presenta**!* 🚀
+*Được thiết kế cho hiệu năng và tối ưu hóa trải nghiệm người dùng!* 🚀

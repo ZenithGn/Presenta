@@ -31,7 +31,7 @@ public class LoginController extends HttpServlet {
 
     private static final String ERROR_PAGE = "views/web/login.jsp";
     private static final String ADMIN_DASHBOARD = "AdminDashboardController";
-    private static final String HOME_PAGE = "views/web/home.jsp";
+    private static final String HOME_PAGE = "HomeController";
     private static final String DESIGNER_HOME = "DesignerHomeController";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -44,6 +44,7 @@ public class LoginController extends HttpServlet {
             // Lấy dữ liệu từ form
             String email = request.getParameter("email");
             String pass = request.getParameter("password");
+            String rememberMe = request.getParameter("rememberMe");
 
             // FIX LỖI: Kiểm tra xem user có đang thực sự submit form hay không
             // Nếu email và pass khác null, tức là họ đã bấm nút "Đăng Nhập"
@@ -56,13 +57,22 @@ public class LoginController extends HttpServlet {
                     HttpSession session = request.getSession();
                     session.setAttribute("LOGIN_USER", loginUser);
                     
-                    // Generate JWT and set it in a Cookie
-                    String token = JwtUtil.generateToken(loginUser);
-                    Cookie jwtCookie = new Cookie("jwt", token);
-                    jwtCookie.setHttpOnly(true);
-                    jwtCookie.setPath("/");
-                    jwtCookie.setMaxAge(24 * 60 * 60); // 24 hours
-                    response.addCookie(jwtCookie);
+                    if ("on".equalsIgnoreCase(rememberMe) || "true".equalsIgnoreCase(rememberMe)) {
+                        // Generate JWT and set it in a Cookie
+                        String token = JwtUtil.generateToken(loginUser);
+                        Cookie jwtCookie = new Cookie("jwt", token);
+                        jwtCookie.setHttpOnly(true);
+                        jwtCookie.setPath("/");
+                        jwtCookie.setMaxAge(30 * 24 * 60 * 60); // 30 days
+                        response.addCookie(jwtCookie);
+                    } else {
+                        // Clear the JWT cookie if it exists
+                        Cookie jwtCookie = new Cookie("jwt", "");
+                        jwtCookie.setHttpOnly(true);
+                        jwtCookie.setPath("/");
+                        jwtCookie.setMaxAge(0);
+                        response.addCookie(jwtCookie);
+                    }
                     
                     logger.info("User logged in successfully: {}", loginUser.getEmail());
 

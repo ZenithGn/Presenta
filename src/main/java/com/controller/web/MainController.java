@@ -109,6 +109,11 @@ public class MainController extends HttpServlet {
     private static final String ADMIN_REBUILD_INDEX = "AdminRebuildIndex";
     private static final String ADMIN_REBUILD_INDEX_CONTROLLER = "AdminRebuildIndexController";
 
+    private static final String FORGOT_PASSWORD = "ForgotPassword";
+    private static final String FORGOT_PASSWORD_CONTROLLER = "ForgotPasswordController";
+    private static final String RESET_PASSWORD = "ResetPassword";
+    private static final String RESET_PASSWORD_CONTROLLER = "ResetPasswordController";
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -206,6 +211,10 @@ public class MainController extends HttpServlet {
                 url = ADMIN_VOUCHERS_CONTROLLER;
             } else if (ADMIN_REBUILD_INDEX.equals(action)) {
                 url = ADMIN_REBUILD_INDEX_CONTROLLER;
+            } else if (FORGOT_PASSWORD.equals(action)) {
+                url = FORGOT_PASSWORD_CONTROLLER;
+            } else if (RESET_PASSWORD.equals(action)) {
+                url = RESET_PASSWORD_CONTROLLER;
             }
         } catch (Exception e) {
             logger.error("Error at MainController", e);

@@ -60,6 +60,57 @@ public class UserDAO {
         return user;
     }
 
+    public boolean updateEmail(int userId, String email) {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement ptm = null;
+        try {
+            conn = DBUtils.getConnection();
+            if (conn != null) {
+                ptm = conn.prepareStatement(UPDATE_USER_EMAIL_QUERY);
+                ptm.setString(1, email);
+                ptm.setInt(2, userId);
+                check = ptm.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ptm != null) ptm.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return check;
+    }
+
+    public boolean updatePasswordByEmail(String email, String newPassword) {
+        boolean check = false;
+        Connection conn = null;
+        PreparedStatement ptm = null;
+        String sql = "UPDATE Users SET password = ? WHERE email = ?";
+        try {
+            conn = DBUtils.getConnection();
+            if (conn != null) {
+                ptm = conn.prepareStatement(sql);
+                ptm.setString(1, newPassword);
+                ptm.setString(2, email);
+                check = ptm.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ptm != null) ptm.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return check;
+    }
+
     public boolean checkDuplicate(String username, String email) {
         boolean exist = false;
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(CHECK_DUPLICATE_QUERY)) {
@@ -67,6 +118,22 @@ public class UserDAO {
             ps.setString(1, username);
             ps.setString(2, email);
 
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    exist = true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return exist;
+    }
+
+    public boolean checkEmailExists(String email) {
+        boolean exist = false;
+        String sql = "SELECT userID FROM Users WHERE email = ?";
+        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
             try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     exist = true;

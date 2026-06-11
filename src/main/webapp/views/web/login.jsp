@@ -45,7 +45,12 @@
                             <label for="password">Mật khẩu</label>
                         </div>
                         <input type="password" class="form-control" id="password" name="password" required>
-                        <a href="${pageContext.request.contextPath}/MainController?action=ForgotPassword" class="link-forgot">Quên mật khẩu?</a>
+                        <a href="${pageContext.request.contextPath}/MainController?action=ForgotPassword" class="link-forgot" style="display: block; text-align: right; margin-top: 8px;">Quên mật khẩu?</a>
+                    </div>
+
+                    <div class="form-group" style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+                        <input type="checkbox" id="rememberMe" name="rememberMe" style="width: auto; cursor: pointer;">
+                        <label for="rememberMe" style="margin: 0; font-size: 14px; font-weight: 500; cursor: pointer;">Ghi nhớ đăng nhập</label>
                     </div>
 
                     <button type="submit" class="btn-primary login-btn-submit">Đăng Nhập</button>

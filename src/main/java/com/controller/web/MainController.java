@@ -24,7 +24,7 @@ public class MainController extends HttpServlet {
 
     private static final Logger logger = LogManager.getLogger(MainController.class);
 
-    private static final String WELCOME = "views/web/home.jsp";
+    private static final String WELCOME = "HomeController";
     private static final String LOGIN = "Login";
     private static final String LOGIN_CONTROLLER = "LoginController";
     private static final String LOGOUT = "Logout";
@@ -116,7 +116,14 @@ public class MainController extends HttpServlet {
         try {
             String action = request.getParameter("action");
             if (action == null) {
-                url = WELCOME;
+                com.model.User loginUser = (com.model.User) request.getSession().getAttribute("LOGIN_USER");
+                if (loginUser != null && loginUser.getRoleId() == 1) {
+                    url = ADMIN_DASHBOARD_CONTROLLER;
+                } else if (loginUser != null && loginUser.getRoleId() == 3) {
+                    url = DESIGNER_HOME_CONTROLLER;
+                } else {
+                    url = WELCOME;
+                }
             } else if (LOGIN.equals(action)) {
                 url = LOGIN_CONTROLLER;
             } else if (LOGOUT.equals(action)) {

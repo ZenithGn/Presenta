@@ -18,7 +18,7 @@
         <link rel="icon" type="image/png" sizes="16x16" href="${pageContext.request.contextPath}/assets/images/favicon/favicon-16x16.png">
         <link rel="manifest" href="${pageContext.request.contextPath}/assets/images/favicon/site.webmanifest">
         <link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/images/favicon/favicon.ico">
-        
+
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/designer-hub.css">
@@ -47,6 +47,12 @@
                 <% } %>
             </div>
             <div class="nav-actions">
+                <div onclick="toggleLanguage()" class="lang-toggle-switch no-translate" style="position: relative; display: flex; align-items: center; width: 64px; height: 28px; border: 1px solid currentColor; border-radius: 20px; cursor: pointer; margin-right: 15px; color: inherit;">
+                    <div class="lang-slider" style="position: absolute; top: 2px; left: 2px; width: 28px; height: 22px; background: currentColor; opacity: 0.2; border-radius: 14px; transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); z-index: 1;"></div>
+                    <span style="flex: 1; text-align: center; font-size: 11px; font-weight: bold; z-index: 2; pointer-events: none;">EN</span>
+                    <span style="flex: 1; text-align: center; font-size: 11px; font-weight: bold; z-index: 2; pointer-events: none;">VI</span>
+                </div>
+
                 <% if (roleId == 2) {%>
                 <span style="color: #dae2fd; font-size: 14px; margin-right: 10px;">Welcome, <b><%= loginUser.getUsername()%></b></span>
                 <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin:0; display: inline-block;">
@@ -57,7 +63,9 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=Login" class="btn-outline" style="border-radius: 999px;">Login</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=Register" class="btn-primary" style="border-radius: 999px; background: white; color: black;">Sign Up</a>
                 <% } %>
+
             </div>
+
         </nav>
         <% }%>
 
@@ -68,7 +76,7 @@
         <div class="hub-body-wrapper">
 
             <section class="hub-hero hub-container">
-                <h1 class="hub-title-script" style="margin-bottom: 40px;">Designer Hub</h1>
+                <h1 class="hub-title-script">Designer Hub</h1>
             </section>
 
             <section class="hub-container">
@@ -100,7 +108,7 @@
             </section>
 
             <section class="hub-container">
-                <h2 class="hub-title-script" style="font-size: 48px; text-align: center; margin-bottom: 40px;">Why Join Presenta</h2>
+                <h2 class="hub-title-script" style="font-size: 56px; text-align: center; margin-bottom: 48px; -webkit-text-fill-color: white; background: none; color: white;">Why Join <span style="background: linear-gradient(160deg, #c4a8ff, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Presenta</span></h2>
                 <div class="why-join-grid">
                     <div class="why-card">
                         <h3>Access To Targeted Clients</h3>
@@ -130,17 +138,17 @@
                         <span class="step-number">1</span>
                         <span class="step-text">Create Your Designer Profile</span>
                     </div>
-                    <div class="step-item" style="justify-content: flex-end; border-left: none; border-right: 4px solid #7C3AED; background: linear-gradient(-90deg, #1D153B 0%, transparent 100%);">
+                    <div class="step-item">
+                        <span class="step-number">2</span>
                         <span class="step-text">Upload Templates to Our Custom System</span>
-                        <span class="step-number" style="margin-left: 24px; margin-right: 0;">2</span>
                     </div>
                     <div class="step-item">
                         <span class="step-number">3</span>
-                        <span class="step-text">Receive Hires & Reviews</span>
+                        <span class="step-text">Receive Hires &amp; Reviews</span>
                     </div>
-                    <div class="step-item" style="justify-content: flex-end; border-left: none; border-right: 4px solid #7C3AED; background: linear-gradient(-90deg, #1D153B 0%, transparent 100%);">
+                    <div class="step-item">
+                        <span class="step-number">4</span>
                         <span class="step-text">Cash Out Your Earnings</span>
-                        <span class="step-number" style="margin-left: 24px; margin-right: 0;">4</span>
                     </div>
                 </div>
             </section>
@@ -190,7 +198,7 @@
 
                 <div style="margin-bottom: 80px; margin-top: 40px;">
                     <a href="MainController?action=DesignerList" class="btn-primary" style="padding: 16px 40px; border-radius: 999px; font-size: 16px;">
-                        View All Designers &rarr;
+                        <span>View All Designers</span> &rarr;
                     </a>
                 </div>
             </section>
@@ -242,5 +250,7 @@
                 </div>
             </div>
         </footer>
+
+        <script src="${pageContext.request.contextPath}/assets/js/lang.js" charset="UTF-8"></script>
     </body>
 </html>

@@ -99,7 +99,9 @@ public class TemplateDAO {
     // Lấy ngẫu nhiên 4 sản phẩm làm Explore Recommendations cho trang chủ
     public List<Template> getRecommendations() {
         List<Template> list = new ArrayList<>();
-        String sql = "SELECT TOP 4 * FROM Templates ORDER BY NEWID()";
+        String sql = "SELECT TOP 4 * FROM Templates "
+                   + "WHERE templateID NOT IN (SELECT od.templateID FROM OrderDetails od JOIN Orders o ON od.orderID = o.orderID WHERE o.orderType = 'HIRE_DESIGNER' AND od.templateID IS NOT NULL) "
+                   + "ORDER BY NEWID()";
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql);  ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Template t = new Template();
@@ -239,7 +241,9 @@ public class TemplateDAO {
     // Lấy danh sách sản phẩm gợi ý cùng danh mục (loại trừ sản phẩm chính đang xem chi tiết)
     public List<Template> getRelatedTemplates(int categoryID, int currentTemplateID) {
         List<Template> list = new ArrayList<>();
-        String sql = "SELECT TOP 4 * FROM Templates WHERE categoryID = ? AND templateID != ? ORDER BY NEWID()";
+        String sql = "SELECT TOP 4 * FROM Templates WHERE categoryID = ? AND templateID != ? "
+                   + "AND templateID NOT IN (SELECT od.templateID FROM OrderDetails od JOIN Orders o ON od.orderID = o.orderID WHERE o.orderType = 'HIRE_DESIGNER' AND od.templateID IS NOT NULL) "
+                   + "ORDER BY NEWID()";
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, categoryID);
             ps.setInt(2, currentTemplateID);

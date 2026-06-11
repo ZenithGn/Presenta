@@ -120,7 +120,9 @@ public class DesignerDAO {
     public List<Template> getTop3TemplatesByDesigner(int designerId) {
         List<Template> list = new ArrayList<>();
         String sql = "SELECT TOP 3 templateID, title, price, thumbnailURL "
-                + "FROM Templates WHERE designerID = ? ORDER BY createAt DESC";
+                + "FROM Templates WHERE designerID = ? "
+                + "AND templateID NOT IN (SELECT od.templateID FROM OrderDetails od JOIN Orders o ON od.orderID = o.orderID WHERE o.orderType = 'HIRE_DESIGNER' AND od.templateID IS NOT NULL) "
+                + "ORDER BY createAt DESC";
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, designerId);
             ResultSet rs = ps.executeQuery();

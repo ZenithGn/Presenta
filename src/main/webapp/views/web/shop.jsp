@@ -57,6 +57,12 @@
                 <% } %>
             </div>
             <div class="nav-actions">
+<div onclick="toggleLanguage()" class="lang-toggle-switch no-translate" style="position: relative; display: flex; align-items: center; width: 64px; height: 28px; border: 1px solid currentColor; border-radius: 20px; cursor: pointer; margin-right: 15px; color: inherit;">
+    <div class="lang-slider" style="position: absolute; top: 2px; left: 2px; width: 28px; height: 22px; background: currentColor; opacity: 0.2; border-radius: 14px; transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); z-index: 1;"></div>
+    <span style="flex: 1; text-align: center; font-size: 11px; font-weight: bold; z-index: 2; pointer-events: none;">EN</span>
+    <span style="flex: 1; text-align: center; font-size: 11px; font-weight: bold; z-index: 2; pointer-events: none;">VI</span>
+</div>
+
                 <% if (roleId == 2) {%>
                 <span style="color: #dae2fd; font-size: 14px; margin-right: 10px;">Welcome, <b><%= loginUser.getUsername()%></b></span>
                 <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin:0; display: inline-block;">
@@ -67,8 +73,10 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=Login" class="btn-outline" style="border-radius: 999px;">Login</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=Register" class="btn-primary" style="border-radius: 999px; background: white; color: black;">Sign Up</a>
                 <% } %>
-            </div>
-        </nav>
+            
+</div>
+        
+</nav>
 
         <% } else if (roleId == 3) {%>
         <nav class="navbar" style="background: var(--surface); border-bottom: 1px solid var(--border-glass);">
@@ -79,12 +87,19 @@
                 <a href="#">Orders</a>
             </div>
             <div class="nav-actions">
+<div onclick="toggleLanguage()" class="lang-toggle-switch no-translate" style="position: relative; display: flex; align-items: center; width: 64px; height: 28px; border: 1px solid currentColor; border-radius: 20px; cursor: pointer; margin-right: 15px; color: inherit;">
+    <div class="lang-slider" style="position: absolute; top: 2px; left: 2px; width: 28px; height: 22px; background: currentColor; opacity: 0.2; border-radius: 14px; transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); z-index: 1;"></div>
+    <span style="flex: 1; text-align: center; font-size: 11px; font-weight: bold; z-index: 2; pointer-events: none;">EN</span>
+    <span style="flex: 1; text-align: center; font-size: 11px; font-weight: bold; z-index: 2; pointer-events: none;">VI</span>
+</div>
+
                 <span style="font-size: 14px; margin-right: 10px;">Designer: <b><%= loginUser.getUsername()%></b></span>
                 <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin:0; display: inline-block;">
                     <input type="hidden" name="action" value="Logout">
                     <button type="submit" class="btn-outline" style="padding: 6px 16px; font-size: 12px; border-radius: 999px;">Logout</button>
                 </form>
-            </div>
+            
+</div>
         </nav>
         <%  } %>
 
@@ -334,5 +349,7 @@
         </footer>
         <script src="${pageContext.request.contextPath}/assets/js/toast.js?v=1.0"></script>
         <script src="${pageContext.request.contextPath}/assets/js/shop.js"></script>
-    </body>
+    
+<script src="${pageContext.request.contextPath}/assets/js/lang.js" charset="UTF-8"></script>
+</body>
 </html>

@@ -5,7 +5,8 @@ nb-configuration.xml
 *.log
 .DS_Store
 
-# Bỏ qua toàn bộ mã nguồn và class biên dịch chạy thử
 src/test/
 target/test-classes/
 target/surefire-reports/
+
+skills/

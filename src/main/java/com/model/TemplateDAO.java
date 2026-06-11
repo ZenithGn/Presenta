@@ -187,20 +187,37 @@ public class TemplateDAO {
     // Đếm tổng số lượng sản phẩm phục vụ cho thuật toán phân trang của Shop
     // Loại trừ các template thuộc đơn HIRE_DESIGNER (thiết kế riêng)
     public int countTotalTemplates(String keyword, int categoryID) {
+        List<Integer> luceneIds = null;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            luceneIds = com.util.SearchEngineUtil.searchTemplates(keyword);
+            if (luceneIds.isEmpty()) return 0;
+        }
+
         int count = 0;
         String sql = "SELECT COUNT(*) FROM Templates t WHERE t.templateID NOT IN "
                    + "(SELECT od.templateID FROM OrderDetails od "
                    + "JOIN Orders o ON od.orderID = o.orderID "
-                   + "WHERE o.orderType = 'HIRE_DESIGNER' AND od.templateID IS NOT NULL) "
-                   + "AND t.title LIKE ? ";
+                   + "WHERE o.orderType = 'HIRE_DESIGNER' AND od.templateID IS NOT NULL) ";
+
+        if (luceneIds != null) {
+            String inClause = luceneIds.stream().map(String::valueOf).collect(java.util.stream.Collectors.joining(","));
+            sql += " AND t.templateID IN (" + inClause + ") ";
+        } else {
+            sql += " AND t.title LIKE ? ";
+        }
+
         if (categoryID > 0) {
             sql += " AND t.categoryID = ? ";
         }
 
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, "%" + keyword + "%");
+            int paramIndex = 1;
+            if (luceneIds == null) {
+                ps.setString(paramIndex++, "%" + keyword + "%");
+            }
+            
             if (categoryID > 0) {
-                ps.setInt(2, categoryID);
+                ps.setInt(paramIndex, categoryID);
             }
             try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -217,11 +234,24 @@ public class TemplateDAO {
     // Loại trừ các template thuộc đơn HIRE_DESIGNER (thiết kế riêng)
     public List<Template> searchAndPagingTemplates(String keyword, int categoryID, int index, int pageSize, String priceSort) {
         List<Template> list = new ArrayList<>();
+        List<Integer> luceneIds = null;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            luceneIds = com.util.SearchEngineUtil.searchTemplates(keyword);
+            if (luceneIds.isEmpty()) return list;
+        }
+
         String sql = "SELECT * FROM Templates t WHERE t.templateID NOT IN "
                    + "(SELECT od.templateID FROM OrderDetails od "
                    + "JOIN Orders o ON od.orderID = o.orderID "
-                   + "WHERE o.orderType = 'HIRE_DESIGNER' AND od.templateID IS NOT NULL) "
-                   + "AND t.title LIKE ? ";
+                   + "WHERE o.orderType = 'HIRE_DESIGNER' AND od.templateID IS NOT NULL) ";
+
+        if (luceneIds != null) {
+            String inClause = luceneIds.stream().map(String::valueOf).collect(java.util.stream.Collectors.joining(","));
+            sql += " AND t.templateID IN (" + inClause + ") ";
+        } else {
+            sql += " AND t.title LIKE ? ";
+        }
+
         if (categoryID > 0) {
             sql += " AND t.categoryID = ? ";
         }
@@ -236,9 +266,11 @@ public class TemplateDAO {
         sql += " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, "%" + keyword + "%");
+            int paramIndex = 1;
+            if (luceneIds == null) {
+                ps.setString(paramIndex++, "%" + keyword + "%");
+            }
 
-            int paramIndex = 2;
             if (categoryID > 0) {
                 ps.setInt(paramIndex++, categoryID);
             }

@@ -351,12 +351,14 @@ public class DesignerDAO {
     
     public boolean deleteTemplate(int templateId) {
         String sql = "DELETE FROM Templates WHERE templateID = ?";
-        try (Connection conn = DBUtils.getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtils.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, templateId);
-            return ps.executeUpdate() > 0;
+            int result = ps.executeUpdate();
+            if (result > 0) {
+                com.util.SearchEngineUtil.deleteTemplate(templateId);
+                return true;
+            }
         } catch (Exception e) {
-            // In log lỗi nếu vướng khóa ngoại ràng buộc dữ liệu giao dịch
             e.printStackTrace();
         }
         return false;
@@ -419,6 +421,12 @@ public class DesignerDAO {
             int result = ps.executeUpdate();
             if (result > 0) {
                 com.util.RedisUtil.deleteCacheByPattern("templates:*");
+                com.model.Template t = new com.model.Template();
+                t.setTemplateID(templateId);
+                t.setTitle(title);
+                t.setDescription(description);
+                t.setCoreFeatures(core);
+                com.util.SearchEngineUtil.addOrUpdateTemplate(t);
                 return true;
             }
         } catch (Exception e) { e.printStackTrace(); }
@@ -428,7 +436,7 @@ public class DesignerDAO {
     // Thêm mới một Template vào hệ thống
     public boolean insertTemplate(int designerId, int categoryId, String title, String description, double price, String thumbnailURL, String fileURL, String coreFeatures, String designAssets) {
         String sql = "INSERT INTO Templates (designerID, categoryID, title, description, price, thumbnailURL, fileURL, coreFeatures, designAssets) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DBUtils.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtils.getConnection(); PreparedStatement ps = conn.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, designerId);
             ps.setInt(2, categoryId);
             ps.setString(3, title);
@@ -444,6 +452,17 @@ public class DesignerDAO {
             
             int result = ps.executeUpdate();
             if (result > 0) {
+                try (java.sql.ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        int generatedId = rs.getInt(1);
+                        com.model.Template t = new com.model.Template();
+                        t.setTemplateID(generatedId);
+                        t.setTitle(title);
+                        t.setDescription(description);
+                        t.setCoreFeatures(coreFeatures);
+                        com.util.SearchEngineUtil.addOrUpdateTemplate(t);
+                    }
+                }
                 com.util.RedisUtil.deleteCacheByPattern("templates:*");
                 return true;
             }

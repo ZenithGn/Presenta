@@ -106,6 +106,8 @@ public class MainController extends HttpServlet {
     private static final String ADMIN_PROFILE_CONTROLLER = "AdminProfileController";
     private static final String ADMIN_VOUCHERS = "AdminVouchers";
     private static final String ADMIN_VOUCHERS_CONTROLLER = "AdminVoucherController";
+    private static final String ADMIN_REBUILD_INDEX = "AdminRebuildIndex";
+    private static final String ADMIN_REBUILD_INDEX_CONTROLLER = "AdminRebuildIndexController";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -195,6 +197,8 @@ public class MainController extends HttpServlet {
                 url = ADMIN_PROFILE_CONTROLLER;
             } else if (ADMIN_VOUCHERS.equals(action)) {
                 url = ADMIN_VOUCHERS_CONTROLLER;
+            } else if (ADMIN_REBUILD_INDEX.equals(action)) {
+                url = ADMIN_REBUILD_INDEX_CONTROLLER;
             }
         } catch (Exception e) {
             logger.error("Error at MainController", e);

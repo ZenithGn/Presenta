@@ -137,6 +137,28 @@
 </nav>
 
                     <div class="designer-container">
+                        <% String successMsg = (String) request.getAttribute("SUCCESS_MSG");
+                           if (successMsg != null) { %>
+                            <div style="background: rgba(34, 197, 94, 0.2); border: 1px solid #22c55e; color: #4ade80; padding: 12px 20px; border-radius: 8px; margin-bottom: 24px; text-align: center; font-weight: 600;">
+                                <%= successMsg %>
+                            </div>
+                        <% } %>
+                        <% String errorMsg = (String) request.getAttribute("ERROR");
+                           if (errorMsg != null) { %>
+                            <div style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #f87171; padding: 12px 20px; border-radius: 8px; margin-bottom: 24px; text-align: center; font-weight: 600;">
+                                <%= errorMsg %>
+                            </div>
+                        <% } %>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <h2 style="color: white; font-size: 24px; font-weight: 800; margin: 0;">System Overview</h2>
+                            <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin: 0;">
+                                <input type="hidden" name="action" value="AdminRebuildIndex">
+                                <button type="submit" class="chip-btn" style="background: rgba(124, 58, 237, 0.2); border-color: #7c3aed; color: #d8b4ff; cursor: pointer; padding: 8px 16px;">
+                                    <span class="no-translate">🔄</span> Rebuild Search Index
+                                </button>
+                            </form>
+                        </div>
 
                         <%-- ============ STAT CARDS ============ --%>
                         <div class="stats-grid">

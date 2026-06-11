@@ -50,14 +50,39 @@ public class AccountController extends HttpServlet {
                 UserDAO userDao = new UserDAO();
 
                 if ("profile".equals(updateType)) {
-                    // --- Email Update ---
+                    // --- Profile Update ---
                     String email = request.getParameter("email");
-                    if (userDao.updateEmail(loginUser.getUserId(), email)) {
-                        loginUser.setEmail(email);
-                        session.setAttribute("toastMessage", "Cập nhật Email thành công!");
-                    } else {
-                        session.setAttribute("toastMessage", "Cập nhật Email thất bại!");
+                    String username = request.getParameter("username");
+
+                    boolean success = true;
+                    String message = "Cập nhật thông tin thành công!";
+
+                    if (username != null && !username.trim().isEmpty() && !username.equals(loginUser.getUsername())) {
+                        if (userDao.checkUsernameExists(username, loginUser.getUserId())) {
+                            success = false;
+                            message = "Tên đăng nhập đã tồn tại!";
+                        } else {
+                            if (userDao.updateUsername(loginUser.getUserId(), username)) {
+                                loginUser.setUsername(username);
+                            } else {
+                                success = false;
+                                message = "Cập nhật tên đăng nhập thất bại!";
+                            }
+                        }
                     }
+
+                    if (success && email != null && !email.trim().isEmpty() && !email.equals(loginUser.getEmail())) {
+                        if (userDao.updateEmail(loginUser.getUserId(), email)) {
+                            loginUser.setEmail(email);
+                        } else {
+                            success = false;
+                            if (message.equals("Cập nhật thông tin thành công!")) {
+                                message = "Cập nhật Email thất bại!";
+                            }
+                        }
+                    }
+
+                    session.setAttribute("toastMessage", message);
                     if (loginUser.getRoleId() == 3) {
                         url = DESIGNER_PROFILE_REDIRECT;
                     } else if (loginUser.getRoleId() == 1) {

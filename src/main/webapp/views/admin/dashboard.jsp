@@ -137,14 +137,18 @@
 </nav>
 
                     <div class="designer-container">
-                        <% String successMsg = (String) request.getAttribute("SUCCESS_MSG");
-                           if (successMsg != null) { %>
+                        <% String successMsg = (String) session.getAttribute("SUCCESS_MSG");
+                           if (successMsg != null) { 
+                               session.removeAttribute("SUCCESS_MSG"); // Xóa đi sau khi hiển thị 1 lần
+                        %>
                             <div style="background: rgba(34, 197, 94, 0.2); border: 1px solid #22c55e; color: #4ade80; padding: 12px 20px; border-radius: 8px; margin-bottom: 24px; text-align: center; font-weight: 600;">
                                 <%= successMsg %>
                             </div>
                         <% } %>
-                        <% String errorMsg = (String) request.getAttribute("ERROR");
-                           if (errorMsg != null) { %>
+                        <% String errorMsg = (String) session.getAttribute("ERROR");
+                           if (errorMsg != null) { 
+                               session.removeAttribute("ERROR"); // Xóa đi sau khi hiển thị 1 lần
+                        %>
                             <div style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #f87171; padding: 12px 20px; border-radius: 8px; margin-bottom: 24px; text-align: center; font-weight: 600;">
                                 <%= errorMsg %>
                             </div>

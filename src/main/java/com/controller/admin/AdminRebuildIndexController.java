@@ -29,15 +29,15 @@ public class AdminRebuildIndexController extends HttpServlet {
             // Rebuild the Lucene Index
             SearchEngineUtil.buildIndex();
             
-            // Set success message
-            request.setAttribute("SUCCESS_MSG", "Search Engine Index has been rebuilt successfully!");
+            // Set success message in session so it survives redirect
+            session.setAttribute("SUCCESS_MSG", "Search Engine Index has been rebuilt successfully!");
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("ERROR", "Failed to rebuild index: " + e.getMessage());
+            session.setAttribute("ERROR", "Failed to rebuild index: " + e.getMessage());
         }
 
-        // Forward back to dashboard
-        request.getRequestDispatcher("MainController?action=AdminDashboard").forward(request, response);
+        // Redirect back to dashboard to avoid nested forward 500 errors
+        response.sendRedirect(request.getContextPath() + "/MainController?action=AdminDashboard");
     }
 
     @Override

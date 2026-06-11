@@ -1,4 +1,4 @@
-const dict = {
+﻿const dict = {
     // Nav & Common
     "HOME": "TRANG CHỦ",
     "SHOP": "CỬA HÀNG",

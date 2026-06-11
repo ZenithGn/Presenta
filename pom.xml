@@ -47,6 +47,19 @@
         </dependency>
         
         <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20231013</version>
+        </dependency>
+        
+        <!-- Cloudinary SDK for Image/File Uploads -->
+        <dependency>
+            <groupId>com.cloudinary</groupId>
+            <artifactId>cloudinary-http44</artifactId>
+            <version>1.36.0</version>
+        </dependency>
+        
+        <dependency>
             <groupId>vn.payos</groupId>
             <artifactId>payos-java</artifactId>
             <version>2.0.1</version>
@@ -105,19 +118,6 @@
             <artifactId>lucene-analyzers-common</artifactId>
             <version>8.11.2</version>
         </dependency>
-
-        <!-- JavaMail API for Email Sending -->
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>javax.mail-api</artifactId>
-            <version>1.6.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.6.2</version>
-        </dependency>
-
     </dependencies>
     
     <build>

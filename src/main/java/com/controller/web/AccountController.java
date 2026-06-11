@@ -7,6 +7,7 @@ package com.controller.web;
 import com.model.DesignerDAO;
 import com.model.User;
 import com.model.UserDAO;
+import com.util.CloudinaryUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
@@ -105,10 +106,21 @@ public class AccountController extends HttpServlet {
                     // --- Designer Portfolio Update ---
                     String bio = request.getParameter("bio");
                     String phone = request.getParameter("phone");
-                    String portfolioURL = request.getParameter("portfolioURL");
+                    String portfolioURL = request.getParameter("portfolioURL"); // Fallback if no file uploaded
+                    
+                    // Upload new portfolio file if provided
+                    Part portfolioPart = request.getPart("portfolioFile");
+                    if (portfolioPart != null && portfolioPart.getSize() > 0) {
+                        String originalFileName = getFileName(portfolioPart);
+                        String cloudinaryUrl = CloudinaryUtil.uploadFile(portfolioPart.getInputStream(), originalFileName, "portfolios");
+                        if (cloudinaryUrl != null) {
+                            portfolioURL = cloudinaryUrl;
+                        }
+                    }
 
                     DesignerDAO designerDao = new DesignerDAO();
                     if (designerDao.updateDesignerProfile(loginUser.getUserId(), bio, phone, portfolioURL)) {
+                        loginUser.setAvatarUrl(loginUser.getAvatarUrl()); // Refresh
                         session.setAttribute("toastMessage", "Cập nhật hồ sơ Designer thành công!");
                     } else {
                         session.setAttribute("toastMessage", "Cập nhật hồ sơ Designer thất bại!");
@@ -148,8 +160,8 @@ public class AccountController extends HttpServlet {
     }
 
     /**
-     * Saves uploaded avatar to external directory via ImageServlet.
-     * Returns the DB-relative path on success, null on failure.
+     * Saves uploaded avatar to Cloudinary.
+     * Returns the secure URL on success, null on failure.
      */
     private String saveAvatar(HttpServletRequest request, User loginUser,
                                UserDAO userDao, HttpSession session)
@@ -161,30 +173,20 @@ public class AccountController extends HttpServlet {
             return null;
         }
 
-        // External upload directory (survives redeploys)
-        String uploadRoot = ImageServlet.getUploadRoot();
-        String uploadFilePath = uploadRoot + File.separator + UPLOAD_SUB_DIR;
-        File uploadLoc = new File(uploadFilePath);
-        if (!uploadLoc.exists()) {
-            uploadLoc.mkdirs();
-        }
-
-        // Generate unique filename
-        String fileName = getFileName(filePart);
-        String fileExt = fileName.substring(fileName.lastIndexOf("."));
-        String uniqueFileName = "user_" + loginUser.getUserId() + "_" + UUID.randomUUID().toString() + fileExt;
-
-        // Write file to external directory
-        filePart.write(uploadFilePath + File.separator + uniqueFileName);
-
-        // DB path via ImageServlet
-        String dbRelativePath = request.getContextPath() + "/uploads/" + UPLOAD_SUB_DIR + "/" + uniqueFileName;
-
-        if (userDao.updateAvatar(loginUser.getUserId(), dbRelativePath)) {
-            session.setAttribute("toastMessage", "Đổi ảnh đại diện thành công!");
-            return dbRelativePath;
-        } else {
-            session.setAttribute("toastMessage", "Lỗi cập nhật CSDL ảnh!");
+        try {
+            String originalFileName = getFileName(filePart);
+            String secureUrl = CloudinaryUtil.uploadFile(filePart.getInputStream(), originalFileName, "avatars");
+            
+            if (secureUrl != null && userDao.updateAvatar(loginUser.getUserId(), secureUrl)) {
+                session.setAttribute("toastMessage", "Đổi ảnh đại diện thành công!");
+                return secureUrl;
+            } else {
+                session.setAttribute("toastMessage", "Lỗi cập nhật CSDL ảnh!");
+                return null;
+            }
+        } catch (Exception e) {
+            log("Error uploading to Cloudinary: " + e.getMessage());
+            session.setAttribute("toastMessage", "Lỗi tải ảnh lên Cloud!");
             return null;
         }
     }

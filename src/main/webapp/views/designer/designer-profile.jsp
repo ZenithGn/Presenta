@@ -116,7 +116,7 @@
                     </p>
 
                     <div style="background: rgba(255,255,255,0.02); padding: 24px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                        <form action="${pageContext.request.contextPath}/AccountController" method="POST">
+                        <form action="${pageContext.request.contextPath}/AccountController" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="updateType" value="designer_profile">
 
                             <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Bio / About</label>
@@ -125,8 +125,11 @@
                             <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Phone Number</label>
                             <input type="text" name="phone" value="<%= (designer != null && designer.getPhone() != null) ? designer.getPhone() : ""%>" style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:16px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing:border-box;">
 
-                            <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Portfolio URL (Behance, Dribbble, etc.)</label>
-                            <input type="url" name="portfolioURL" value="<%= (designer != null && designer.getPortfolioURL() != null) ? designer.getPortfolioURL() : ""%>" placeholder="https://" style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:24px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing:border-box;">
+                            <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Portfolio URL (If you have a Behance/Dribbble link)</label>
+                            <input type="url" name="portfolioURL" value="<%= (designer != null && designer.getPortfolioURL() != null) ? designer.getPortfolioURL() : ""%>" placeholder="https://" style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:16px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing:border-box;">
+
+                            <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">OR Upload Portfolio File (Image/PDF)</label>
+                            <input type="file" name="portfolioFile" accept="image/png, image/jpeg, image/gif, application/pdf" style="width:100%; padding:10px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:24px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box; font-size: 12px;">
 
                             <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding:12px 28px; width:100%;">Save Portfolio Settings</button>
                         </form>

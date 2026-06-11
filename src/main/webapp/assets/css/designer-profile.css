@@ -1,121 +1,334 @@
-/*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
-*/
-/* 
-    Created on : May 28, 2026, 12:34:43 AM
-    Author     : lehan
-*/
-/* Panel Hồ Sơ */
-.profile-hero-card {
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(21, 14, 86, 0.4) 100%);
-    border: 1px solid rgba(216, 180, 255, 0.2);
-    border-radius: 32px;
-    padding: 40px;
+/* ============================================================
+   DESIGNER PROFILE — FULL REDESIGN
+   ============================================================ */
+
+/* ---------- HERO BANNER ---------- */
+.dp-hero {
+    position: relative;
+    width: 100%;
+    min-height: 480px;
     display: flex;
-    gap: 40px;
-    backdrop-filter: blur(16px);
-    margin: 40px auto 60px;
-    max-width: 1000px;
+    align-items: flex-end;
+    padding: 0 0 60px 0;
+    overflow: hidden;
 }
 
-/* Avatar lượn sóng đáy */
-.profile-avatar-wrap {
-    width: 300px;
-    height: 350px;
-    flex-shrink: 0;
-    border-radius: 150px 150px 0 0; /* Bo tròn phía trên */
-    overflow: hidden;
-    /* Cắt lượn sóng phía dưới */
-    -webkit-mask: radial-gradient(12px at 12px 100%, #0000 98%, #000) -12px calc(100% - 10px) / 24px 100% repeat-x, linear-gradient(#000 0 0) 0 0 / 100% calc(100% - 12px) no-repeat;
-    mask: radial-gradient(12px at 12px 100%, #0000 98%, #000) -12px calc(100% - 10px) / 24px 100% repeat-x, linear-gradient(#000 0 0) 0 0 / 100% calc(100% - 12px) no-repeat;
-    border: 2px solid rgba(255,255,255,0.2);
+.dp-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a0533 0%, #0d0d2b 50%, #090920 100%);
+    z-index: 0;
 }
-.profile-avatar-wrap img {
+
+.dp-hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(to top, var(--bg-body, #0a0a1a), transparent);
+    z-index: 1;
+}
+
+.dp-hero-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    gap: 48px;
+}
+
+.dp-avatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 3px solid rgba(255,255,255,0.15);
+    flex-shrink: 0;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.5);
+}
+
+.dp-avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.profile-info h1 {
-    font-size: 48px;
+.dp-hero-text {
+    flex: 1;
+    padding-bottom: 8px;
+}
+
+.dp-hero-text h1 {
+    font-size: 52px;
     font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
     margin-bottom: 8px;
-    color: white;
 }
-.profile-info h3 {
+
+.dp-hero-text .dp-tagline {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #a78bfa;
+    margin-bottom: 20px;
+}
+
+.dp-hero-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.dp-hero-actions .btn-primary,
+.dp-hero-actions .btn-outline {
+    padding: 12px 32px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dp-hero-actions .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(124,58,237,0.4);
+}
+
+.dp-hero-actions .btn-outline:hover {
+    transform: translateY(-2px);
+}
+
+/* Decorative glow orb */
+.dp-hero-orb {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,58,237,0.25) 0%, transparent 70%);
+    top: -100px;
+    right: -100px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* ---------- STATS BAR ---------- */
+.dp-stats-bar {
+    max-width: 1100px;
+    margin: -32px auto 60px;
+    padding: 0 32px;
+    position: relative;
+    z-index: 3;
+}
+
+.dp-stats-inner {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.dp-stat {
+    background: rgba(15,15,30,0.8);
+    backdrop-filter: blur(20px);
+    padding: 28px 24px;
+    text-align: center;
+}
+
+.dp-stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.dp-stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* ---------- ABOUT SECTION ---------- */
+.dp-about {
+    max-width: 1100px;
+    margin: 0 auto 72px;
+    padding: 0 32px;
+}
+
+.dp-about-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 40px 48px;
+}
+
+.dp-about-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #a78bfa;
+    margin-bottom: 16px;
+}
+
+.dp-about-card p {
     font-size: 16px;
-    color: #D8B4FF;
-    margin-bottom: 24px;
-    font-weight: 500;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.7);
 }
 
-/* Box chứa danh sách Template (Kính mờ xám) */
-.templates-wrapper {
-    background: rgba(255,255,255,0.05);
-    border-radius: 24px;
-    padding: 32px; /* Giảm padding từ 40px xuống 32px */
-    border: 1px solid rgba(255,255,255,0.1);
-    margin-bottom: 80px;
-
-    /* Bóp chiều rộng tổng thể của khu vực này lại (giảm 20-30%) */
-    max-width: 950px;
-    margin-left: auto;
-    margin-right: auto;
+/* ---------- SECTION HEADERS ---------- */
+.dp-section-header {
+    max-width: 1100px;
+    margin: 0 auto 32px;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
-/* Ghi đè kích thước thẻ sản phẩm (nhỏ hơn so với trang Shop) */
-.templates-wrapper .product-grid {
-    /* Giảm kích thước tối thiểu của card từ 350px xuống 260px */
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
+.dp-section-header h2 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.01em;
 }
 
-.templates-wrapper .product-img {
-    height: 160px; /* Giảm chiều cao ảnh (gốc là 200px) */
+.dp-section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(255,255,255,0.15), transparent);
 }
 
-/* Layout cho Review Grid */
+/* ---------- TEMPLATES GRID ---------- */
+.dp-templates {
+    max-width: 1100px;
+    margin: 0 auto 96px;
+    padding: 0 32px;
+}
+
+.dp-templates .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+/* ---------- REVIEWS ---------- */
+.dp-reviews {
+    max-width: 1100px;
+    margin: 0 auto 40px;
+    padding: 0 32px;
+}
+
 .review-grid {
     display: grid;
-    /* Tự động chia cột linh hoạt với độ rộng thẻ review nhỏ hơn */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    margin-bottom: 32px;
-
-    /* Bóp chiều rộng tổng thể của khu vực Review cho đồng bộ với Templates */
-    max-width: 950px;
-    margin-left: auto;
-    margin-right: auto;
+    gap: 24px;
 }
 
 .review-card {
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.4) 0%, rgba(59, 24, 95, 0.6) 100%);
-    border-radius: 16px;
-    padding: 20px; /* Giảm padding bên trong thẻ */
-    text-align: center;
-    border: 1px solid rgba(216, 180, 255, 0.3);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-.review-stars {
-    color: #D8B4FF;
-    font-size: 20px;
-    margin-bottom: 8px;
-    letter-spacing: 2px;
-}
-.review-user {
-    font-weight: 700;
-    font-size: 18px;
-    margin-bottom: 8px;
-    color: white;
-}
-.review-text {
-    font-size: 14px;
-    color: #E2D7FF;
-    font-style: italic;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 32px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.35s ease, background 0.35s ease;
 }
 
-/* CSS ẩn các review bị dư (để làm Load More) */
+.review-card::before {
+    content: "\201C";
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    font-size: 64px;
+    font-family: Georgia, serif;
+    color: rgba(167,139,250,0.15);
+    line-height: 1;
+    pointer-events: none;
+}
+
+.review-card:hover {
+    transform: translateY(-6px);
+    background: rgba(255,255,255,0.06);
+}
+
+.review-stars {
+    color: #fbbf24;
+    font-size: 14px;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+}
+
+.review-text {
+    font-size: 15px;
+    color: rgba(255,255,255,0.75);
+    font-style: italic;
+    line-height: 1.7;
+    flex-grow: 1;
+    margin-bottom: 24px;
+}
+
+.review-user {
+    font-size: 13px;
+    font-weight: 700;
+    color: #a78bfa;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
 .review-hidden {
     display: none !important;
+}
+
+.dp-reviews-more {
+    max-width: 1100px;
+    margin: 0 auto 96px;
+    padding: 0 32px;
+    text-align: center;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .dp-hero {
+        min-height: 400px;
+        padding-bottom: 40px;
+    }
+    .dp-hero-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 24px;
+    }
+    .dp-avatar {
+        width: 140px;
+        height: 140px;
+    }
+    .dp-hero-text h1 {
+        font-size: 36px;
+    }
+    .dp-hero-actions {
+        justify-content: center;
+    }
+    .dp-stats-inner {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .dp-about-card {
+        padding: 28px;
+    }
 }

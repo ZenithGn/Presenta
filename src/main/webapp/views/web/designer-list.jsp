@@ -23,15 +23,14 @@
 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/designer-hub.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/designer-list.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/designer-hub.css?v=2.0">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/designer-list.css?v=2.0">
     </head>
 
     <%
         User loginUser = (User) session.getAttribute("LOGIN_USER");
         int roleId = (loginUser != null) ? loginUser.getRoleId() : 0;
 
-        // Nhận dữ liệu từ Controller
         Map<String, List<Designer>> designerMap = (Map<String, List<Designer>>) request.getAttribute("designerMap");
         String txtSearch = (String) request.getAttribute("txtSearch");
         if (txtSearch == null)
@@ -40,9 +39,7 @@
 
     <body class="landing-body">
 
-        <%-- ======================================================= --%>
-        <%-- NAVBAR (Copy nguyên bản từ home.jsp)                    --%>
-        <%-- ======================================================= --%>
+        <%-- NAVBAR --%>
         <% if (roleId == 0 || roleId == 2) { %>
         <nav class="navbar" style="border-bottom: none; background: transparent;">
             <a href="${pageContext.request.contextPath}/MainController" class="nav-brand" style="font-family: 'Pacifico', cursive; font-size: 28px;">Presenta</a>
@@ -56,12 +53,11 @@
                 <% } %>
             </div>
             <div class="nav-actions">
-<div onclick="toggleLanguage()" class="lang-toggle-switch no-translate" style="position: relative; display: flex; align-items: center; width: 64px; height: 28px; border: 1px solid currentColor; border-radius: 20px; cursor: pointer; margin-right: 15px; color: inherit;">
-    <div class="lang-slider" style="position: absolute; top: 2px; left: 2px; width: 28px; height: 22px; background: currentColor; opacity: 0.2; border-radius: 14px; transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); z-index: 1;"></div>
-    <span style="flex: 1; text-align: center; font-size: 11px; font-weight: bold; z-index: 2; pointer-events: none;">EN</span>
-    <span style="flex: 1; text-align: center; font-size: 11px; font-weight: bold; z-index: 2; pointer-events: none;">VI</span>
-</div>
-
+                <div onclick="toggleLanguage()" class="lang-toggle-switch no-translate" style="position: relative; display: flex; align-items: center; width: 64px; height: 28px; border: 1px solid currentColor; border-radius: 20px; cursor: pointer; margin-right: 15px; color: inherit;">
+                    <div class="lang-slider" style="position: absolute; top: 2px; left: 2px; width: 28px; height: 22px; background: currentColor; opacity: 0.2; border-radius: 14px; transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); z-index: 1;"></div>
+                    <span style="flex: 1; text-align: center; font-size: 11px; font-weight: bold; z-index: 2; pointer-events: none;">EN</span>
+                    <span style="flex: 1; text-align: center; font-size: 11px; font-weight: bold; z-index: 2; pointer-events: none;">VI</span>
+                </div>
                 <% if (roleId == 2) {%>
                 <span style="color: #dae2fd; font-size: 14px; margin-right: 10px;">Welcome, <b><%= loginUser.getUsername()%></b></span>
                 <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin:0; display: inline-block;">
@@ -72,35 +68,34 @@
                 <a href="${pageContext.request.contextPath}/MainController?action=Login" class="btn-outline" style="border-radius: 999px;">Login</a>
                 <a href="${pageContext.request.contextPath}/MainController?action=Register" class="btn-primary" style="border-radius: 999px; background: white; color: black;">Sign Up</a>
                 <% } %>
-            
-</div>
-        
-</nav>
+            </div>
+        </nav>
         <% }%>
 
-        <%-- ======================================================= --%>
-        <%-- NỘI DUNG CHÍNH: LIST DESIGNER THEO CATEGORY             --%>
-        <%-- ======================================================= --%>
+        <%-- CONTENT --%>
         <div class="hub-body-wrapper">
-            <div class="hub-container" style="padding-top: 40px; min-height: 80vh;">
+            <div class="hub-container" style="padding-top: 60px; min-height: 80vh;">
 
-                <h1 class="hub-title-script" style="text-align: center; margin-bottom: 40px;">Meet Our Designer</h1>
+                <h1 class="dl-page-title" id="pageTitle">Meet Our Designer</h1>
+                <p class="dl-page-subtitle">Discover talented designers organized by their specialties.</p>
 
-                <form action="MainController" method="GET" class="search-wrapper">
+                <form action="MainController" method="GET" class="search-wrapper" id="searchBox">
                     <input type="hidden" name="action" value="DesignerList">
-                    <span class="search-icon">🔍</span>
+                    <span class="search-icon">&#128269;</span>
                     <input type="text" name="search" value="<%= txtSearch%>" class="search-input" placeholder="Search designers...">
                 </form>
 
                 <%
                     if (designerMap != null && !designerMap.isEmpty()) {
-                        // Lặp qua từng Category
+                        int sectionIdx = 0;
                         for (Map.Entry<String, List<Designer>> entry : designerMap.entrySet()) {
                             String categoryName = entry.getKey();
                             List<Designer> designers = entry.getValue();
+                            // Skip categories with no designers
+                            if (designers == null || designers.isEmpty()) continue;
                 %>
 
-                <div style="margin-bottom: 80px;">
+                <div style="margin-bottom: 80px;" class="dl-category-section">
                     <div class="category-header">
                         <h2><%= categoryName%></h2>
                         <a href="MainController?action=DesignerList&category=<%= categoryName%>">View All &rarr;</a>
@@ -113,16 +108,14 @@
                                         ? d.getAvatarURL()
                                         : "https://ui-avatars.com/api/?name=" + d.getUserName() + "&background=7C3AED&color=fff";
                         %>
-                        <div class="scalloped-designer-card">
-                            <div class="scalloped-avatar-wrap">
+                        <div class="designer-card">
+                            <div class="designer-card-avatar">
                                 <img src="<%= avatar%>" alt="<%= d.getUserName()%>">
                             </div>
-                            <div class="scalloped-info">
-                                <span class="scalloped-name"><%= d.getUserName()%></span>
-                                <span class="scalloped-spec"><%= categoryName%></span>
-                            </div>
-                            <div class="scalloped-actions">
-                                <a href="MainController?action=DesignerDetail&id=<%= d.getUserID()%>" class="btn-grid-book" style="width: 100%;">View Designer</a>
+                            <div class="designer-card-body">
+                                <div class="designer-card-name"><%= d.getUserName()%></div>
+                                <span class="designer-card-spec"><%= categoryName%></span>
+                                <a href="MainController?action=DesignerDetail&id=<%= d.getUserID()%>" class="designer-card-btn">View Designer</a>
                             </div>
                         </div>
                         <%  } %>
@@ -130,21 +123,20 @@
                 </div>
 
                 <%
-                    }
-                } else {
+                            sectionIdx++;
+                        }
+                    } else {
                 %>
-                <div style="text-align: center; padding: 100px 0; color: #ccc3d8;">
-                    <h2>No designers found.</h2>
-                    <p>Try adjusting your search keyword.</p>
+                <div style="text-align: center; padding: 100px 0;">
+                    <h2 style="color: white; margin-bottom: 12px;">No designers found.</h2>
+                    <p style="color: rgba(255,255,255,0.5);">Try adjusting your search keyword.</p>
                 </div>
                 <%  }%>
 
             </div>
         </div>
 
-        <%-- ======================================================= --%>
-        <%-- FOOTER (Copy nguyên bản từ home.jsp)                    --%>
-        <%-- ======================================================= --%>
+        <%-- FOOTER --%>
         <footer class="main-footer">
             <div class="footer-container">
                 <div class="footer-col brand-col">
@@ -156,19 +148,18 @@
                         </div>
                     </div>
                     <div class="footer-socials">
-                        <a href="https://www.facebook.com/profile.php?id=61590550761077" target="_blank" class="social-icon">🌐</a>
-                        <a href="#" class="social-icon">💬</a>
-                        <a href="mailto:presentaproject05@gmail.com" target="_blank" class="social-icon">📧</a>
+                        <a href="https://www.facebook.com/profile.php?id=61590550761077" target="_blank" class="social-icon">&#127760;</a>
+                        <a href="#" class="social-icon">&#128172;</a>
+                        <a href="mailto:presentaproject05@gmail.com" target="_blank" class="social-icon">&#128231;</a>
                     </div>
                 </div>
-
                 <div class="footer-col contact-col">
                     <h4>GET IN TOUCH</h4>
                     <ul class="contact-info-list">
-                        <li><span class="contact-icon">📍</span><span>FPT University, District 9, Ho Chi Minh City</span></li>
-                        <li><span class="contact-icon">📧</span><span>presentaproject05@gmail.com</span></li>
-                        <li><span class="contact-icon">📞</span><span>+84 (28) 7300 5588</span></li>
-                        <li><span class="contact-icon">⏱</span><span>Mon - Fri: 8:00 AM - 5:00 PM</span></li>
+                        <li><span class="contact-icon">&#128205;</span><span>FPT University, District 9, Ho Chi Minh City</span></li>
+                        <li><span class="contact-icon">&#128231;</span><span>presentaproject05@gmail.com</span></li>
+                        <li><span class="contact-icon">&#128222;</span><span>+84 (28) 7300 5588</span></li>
+                        <li><span class="contact-icon">&#9201;</span><span>Mon - Fri: 8:00 AM - 5:00 PM</span></li>
                     </ul>
                 </div>
             </div>
@@ -178,7 +169,25 @@
                 </div>
             </div>
         </footer>
-    
-<script src="${pageContext.request.contextPath}/assets/js/lang.js" charset="UTF-8"></script>
-</body>
+
+        <script src="${pageContext.request.contextPath}/assets/js/lang.js" charset="UTF-8"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+        <script>
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Page title + search
+            gsap.from("#pageTitle", { opacity: 0, y: 30, duration: 0.7, ease: "power3.out" });
+            gsap.from("#searchBox", { opacity: 0, y: 20, duration: 0.5, delay: 0.2, ease: "power2.out" });
+
+            // Category sections
+            document.querySelectorAll(".dl-category-section").forEach(function(section) {
+                gsap.from(section.querySelectorAll(".designer-card"), {
+                    scrollTrigger: { trigger: section, start: "top 88%" },
+                    opacity: 0, y: 40, scale: 0.95, duration: 0.5, stagger: 0.1, ease: "power2.out",
+                    clearProps: "all"
+                });
+            });
+        </script>
+    </body>
 </html>

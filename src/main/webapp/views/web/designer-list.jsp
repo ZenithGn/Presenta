@@ -108,18 +108,23 @@
                                 String avatar = (d.getAvatarURL() != null && !d.getAvatarURL().trim().isEmpty())
                                         ? d.getAvatarURL()
                                         : "https://ui-avatars.com/api/?name=" + d.getUserName() + "&background=7C3AED&color=fff";
+                                double avgRating = new com.model.ReviewDAO().getAverageRatingForDesigner(d.getUserID());
                         %>
                         <div class="box">
                             <div class="image">
                                 <img src="<%= avatar%>" alt="<%= d.getUserName()%>">
                             </div>
                             <div class="name_job"><%= d.getUserName()%></div>
-                            <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
+                            <div class="rating" title="<%= String.format("%.1f", avgRating) %> Sao">
+                                <% for (int i = 1; i <= 5; i++) {
+                                     if (i <= Math.floor(avgRating)) { %>
+                                        <i class="fas fa-star"></i>
+                                <%   } else if (i == Math.ceil(avgRating) && avgRating % 1 != 0) { %>
+                                        <i class="fas fa-star-half-alt"></i>
+                                <%   } else { %>
+                                        <i class="far fa-star"></i>
+                                <%   }
+                                   } %>
                             </div>
                             <p style="color: #666; font-size: 14px; text-align: center; margin-bottom: 10px;">
                                 <%= categoryName %> expert designer.

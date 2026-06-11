@@ -43,4 +43,19 @@ public class ReviewDAO {
         }
         return false;
     }
+
+    public double getAverageRatingForDesigner(int designerId) {
+        String sql = "SELECT AVG(CAST(rating AS FLOAT)) FROM Reviews r JOIN Templates t ON r.templateID = t.templateID WHERE t.designerID = ?";
+        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, designerId);
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
 }

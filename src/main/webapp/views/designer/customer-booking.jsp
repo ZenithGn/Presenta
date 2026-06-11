@@ -274,6 +274,6 @@
         </script>
         <script src="${pageContext.request.contextPath}/assets/js/toast.js"></script>
     
-<script src="${pageContext.request.contextPath}/assets/js/lang.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/lang.js" charset="UTF-8"></script>
 </body>
 </html>

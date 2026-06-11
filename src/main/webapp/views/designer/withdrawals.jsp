@@ -231,6 +231,6 @@
         </footer>
         <script src="${pageContext.request.contextPath}/assets/js/toast.js?v=1.0"></script>
     
-<script src="${pageContext.request.contextPath}/assets/js/lang.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/lang.js" charset="UTF-8"></script>
 </body>
 </html>

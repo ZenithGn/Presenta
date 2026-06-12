@@ -225,9 +225,11 @@
                         <span class="product-title"><%= t.getTitle()%></span>
                         <span class="product-price"><%= (int) (t.getPrice() / 1000)%>k</span>
                     </div>
-                    <div class="card-actions" style="margin-top: 16px;">
+                     <div class="card-actions" style="margin-top: 16px;">
                         <a href="MainController?action=TemplateDetail&templateID=<%= t.getTemplateID()%>" class="btn-card btn-white" style="text-decoration:none; display:block; width:100%;">View Detail</a>
+                        <% if (t.getPrice() > 0) { %>
                         <a href="${pageContext.request.contextPath}/MainController?action=AddCart&id=<%= t.getTemplateID()%>" class="btn-card btn-dark" style="text-decoration:none; display:block; width:100%;">Add To Cart</a>
+                        <% } %>
                     </div>
                 </div>
                 <%      }

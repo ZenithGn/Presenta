@@ -194,11 +194,13 @@
                                         <input type="hidden" name="templateID" value="<%= t.getTemplateID()%>">
                                         <button type="submit" class="btn-s-outline" style="width:100%;">View Detail</button>
                                     </form>
+                                    <% if (t.getPrice() > 0) { %>
                                     <form action="${pageContext.request.contextPath}/MainController" method="POST" style="flex:1; margin:0;">
                                         <input type="hidden" name="action" value="AddCart">
                                         <input type="hidden" name="id" value="<%= t.getTemplateID()%>">
                                         <button type="submit" class="btn-s-outline" style="width:100%;">Add to Cart</button>
                                     </form>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>

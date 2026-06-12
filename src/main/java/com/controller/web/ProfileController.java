@@ -58,18 +58,27 @@ public class ProfileController extends HttpServlet {
                 List<Template> purchasedTemplates = orderDao.getPurchasedTemplates(loginUser.getUserId(), offset, pageSize);
                 List<Order> customOrders = orderDao.getCustomOrders(loginUser.getUserId());
 
-                // Load template fileURLs for completed custom orders (for download links)
+                // Load template fileURLs and designer phones for custom orders
+                com.model.DesignerDAO designerDao = new com.model.DesignerDAO();
                 Map<Integer, Template> customOrderTemplates = new HashMap<>();
+                Map<Integer, String> customOrderDesignerPhones = new HashMap<>();
                 for (Order co : customOrders) {
                     Template t = orderDao.getTemplateByCustomOrder(co.getOrderId());
                     if (t != null) {
                         customOrderTemplates.put(co.getOrderId(), t);
+                    }
+                    if ("Processing".equals(co.getStatus()) && co.getDesignerId() != null) {
+                        String phone = designerDao.getDesignerPhone(co.getDesignerId());
+                        if (phone != null && !phone.trim().isEmpty()) {
+                            customOrderDesignerPhones.put(co.getOrderId(), phone.trim());
+                        }
                     }
                 }
 
                 request.setAttribute("purchasedTemplates", purchasedTemplates);
                 request.setAttribute("customOrders", customOrders);
                 request.setAttribute("customOrderTemplates", customOrderTemplates);
+                request.setAttribute("customOrderDesignerPhones", customOrderDesignerPhones);
                 request.setAttribute("tag", pageIndex);
                 request.setAttribute("endPage", endPage);
             }

@@ -24,6 +24,10 @@
     if (customOrderTemplates == null) {
         customOrderTemplates = new HashMap<>();
     }
+    Map<Integer, String> customOrderDesignerPhones = (Map<Integer, String>) request.getAttribute("customOrderDesignerPhones");
+    if (customOrderDesignerPhones == null) {
+        customOrderDesignerPhones = new HashMap<>();
+    }
 
     String toastMsg = (String) session.getAttribute("toastMessage");
 %>
@@ -240,6 +244,20 @@
                                        style="background: #4ade80; color: #11052C; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
                                         💳 PayOS
                                     </a>
+                                    <% } else if (status.equals("Processing")) {
+                                        String phone = customOrderDesignerPhones.get(co.getOrderId());
+                                        if (phone != null && !phone.isEmpty()) {
+                                            String cleanPhone = phone.replaceAll("[^0-9]", "");
+                                    %>
+                                    <a href="tel:<%= phone %>"
+                                       style="background: #3b82f6; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 5px;">
+                                        📞 <span>Call Designer</span>
+                                    </a>
+                                    <a href="https://zalo.me/<%= cleanPhone %>" target="_blank"
+                                       style="background: #0068ff; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 5px;">
+                                        💬 <span>Zalo</span>
+                                    </a>
+                                    <% } %>
                                     <% } else if (status.equals("Completed")) {
                                         Template ct = customOrderTemplates.get(co.getOrderId());
                                         if (ct != null && ct.getFileURL() != null && !ct.getFileURL().isEmpty()) {

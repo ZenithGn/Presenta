@@ -14,6 +14,7 @@ const dict = {
     "Welcome": "Xin ch\u00e0o",
     "Welcome,": "Xin ch\u00e0o,",
     "Designer:": "Nh\u00e0 thi\u1ebft k\u1ebf:",
+    "Call Designer": "G\u1ecdi \u0111i\u1ec7n",
     "CONTACT": "Li\u00ean h\u1ec7",
     "VIEW PORTFOLIO": "Xem Portfolio",
     "Purchased Templates": "\ud83d\uded2 Template \u0111\u00e3 mua",

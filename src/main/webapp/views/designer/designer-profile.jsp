@@ -41,6 +41,13 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/profile.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/designer/designer-profile.css">
+        <!-- Include pdf.js in head so it is loaded before change handler fires -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+        <script>
+            if (typeof pdfjsLib !== 'undefined') {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+            }
+        </script>
     </head>
 
     <body class="landing-body">
@@ -125,11 +132,46 @@
                             <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Phone Number</label>
                             <input type="text" name="phone" value="<%= (designer != null && designer.getPhone() != null) ? designer.getPhone() : ""%>" style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:16px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing:border-box;">
 
-                            <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Portfolio URL (If you have a Behance/Dribbble link)</label>
-                            <input type="url" name="portfolioURL" value="<%= (designer != null && designer.getPortfolioURL() != null) ? designer.getPortfolioURL() : ""%>" placeholder="https://" style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:16px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing:border-box;">
-
-                            <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">OR Upload Portfolio File (Image/PDF)</label>
-                            <input type="file" name="portfolioFile" accept="image/png, image/jpeg, image/gif, application/pdf" style="width:100%; padding:10px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:24px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box; font-size: 12px;">
+                            <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Portfolio File (Image or PDF)</label>
+                            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+                                <div class="file-drop-area" id="portfolio-drop-area" style="position: relative; display: flex; align-items: center; width: 100%; padding: 25px; border: 2px dashed rgba(255, 255, 255, 0.2); border-radius: 12px; background: rgba(15, 23, 42, 0.6); transition: all 0.3s; cursor: pointer; box-sizing: border-box;">
+                                    <span class="fake-btn" style="flex-shrink: 0; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 8px 15px; margin-right: 10px; font-size: 14px; color: white;">Choose File</span>
+                                    <%
+                                        String fileMsgText = "or drag and drop Image/PDF here";
+                                        if (designer != null && designer.getPortfolioURL() != null && !designer.getPortfolioURL().trim().isEmpty()) {
+                                            String urlStr = designer.getPortfolioURL();
+                                            int lastSlash = urlStr.lastIndexOf('/');
+                                            if (lastSlash != -1 && lastSlash < urlStr.length() - 1) {
+                                                fileMsgText = "Current file: " + urlStr.substring(lastSlash + 1);
+                                            } else {
+                                                fileMsgText = "Current file uploaded";
+                                            }
+                                        }
+                                    %>
+                                    <span class="file-msg" id="portfolio-file-msg" style="font-size: 13px; font-weight: 300; color: #A0AEC0;"><%= fileMsgText %></span>
+                                    <input class="file-input" type="file" name="portfolioFile" accept="image/png, image/jpeg, image/gif, application/pdf" id="portfolioFile" style="position: absolute; left: 0; top: 0; height: 100%; width: 100%; cursor: pointer; opacity: 0;">
+                                </div>
+                                <div style="color: #ffc107; font-size: 11px; margin-top: 4px; text-align: left;">
+                                    * Lưu ý: Đối với file PDF, hệ thống chỉ hỗ trợ hiển thị trang đầu tiên.
+                                </div>
+                                <div id="portfolio-preview-container" style="margin-top: 15px; text-align: center;">
+                                    <% 
+                                        String previewUrl = (designer != null) ? designer.getPortfolioURL() : null;
+                                        if (previewUrl != null && previewUrl.toLowerCase().endsWith(".pdf") && previewUrl.contains("res.cloudinary.com")) {
+                                            int lastDot = previewUrl.lastIndexOf('.');
+                                            if (lastDot != -1) {
+                                                previewUrl = previewUrl.substring(0, lastDot) + ".jpg";
+                                            }
+                                        }
+                                    %>
+                                    <% if (designer != null && designer.getPortfolioURL() != null && !designer.getPortfolioURL().trim().isEmpty()) { %>
+                                    <input type="hidden" name="portfolioURL" value="<%= designer.getPortfolioURL() %>">
+                                    <img id="portfolio-image-preview" src="<%= previewUrl %>" alt="Portfolio Preview" style="max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: inline-block;">
+                                    <% } else { %>
+                                    <img id="portfolio-image-preview" src="" alt="Portfolio Preview" style="max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); display: none;">
+                                    <% } %>
+                                </div>
+                            </div>
 
                             <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding:12px 28px; width:100%;">Save Portfolio Settings</button>
                         </form>
@@ -286,6 +328,113 @@
 
         <script src="${pageContext.request.contextPath}/assets/js/toast.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/designer-account.js"></script>
+        <script>
+            const fileDropArea = document.querySelector('#portfolio-drop-area');
+            const fileInput = document.querySelector('#portfolioFile');
+            const fileMsg = document.querySelector('#portfolio-file-msg');
+
+            if(fileDropArea && fileInput) {
+                fileInput.addEventListener('dragenter', () => {
+                    fileDropArea.style.borderColor = '#0075FF';
+                    fileDropArea.style.background = 'rgba(15, 23, 42, 0.8)';
+                });
+                fileInput.addEventListener('focus', () => {
+                    fileDropArea.style.borderColor = '#0075FF';
+                    fileDropArea.style.background = 'rgba(15, 23, 42, 0.8)';
+                });
+                fileInput.addEventListener('click', () => {
+                    fileDropArea.style.borderColor = '#0075FF';
+                    fileDropArea.style.background = 'rgba(15, 23, 42, 0.8)';
+                });
+
+                fileInput.addEventListener('dragleave', () => {
+                    fileDropArea.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    fileDropArea.style.background = 'rgba(15, 23, 42, 0.6)';
+                });
+                fileInput.addEventListener('blur', () => {
+                    fileDropArea.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    fileDropArea.style.background = 'rgba(15, 23, 42, 0.6)';
+                });
+                fileInput.addEventListener('drop', () => {
+                    fileDropArea.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                    fileDropArea.style.background = 'rgba(15, 23, 42, 0.6)';
+                });
+
+                fileInput.addEventListener('change', async function() {
+                    const file = this.files[0];
+                    const imagePreview = document.querySelector('#portfolio-image-preview');
+                    if (file) {
+                        fileMsg.textContent = "Current file: " + file.name;
+                        
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                imagePreview.src = e.target.result;
+                                imagePreview.style.display = 'inline-block';
+                            }
+                            reader.readAsDataURL(file);
+                        } else if (file.type === 'application/pdf') {
+                            const submitBtn = document.querySelector('button[type="submit"]');
+                            if(submitBtn) submitBtn.disabled = true;
+                            
+                            // Temporarily show loading state
+                            fileMsg.textContent = "Current file: " + file.name + " (Loading preview...)";
+                            
+                            try {
+                                if (typeof pdfjsLib === 'undefined') {
+                                    throw new Error("pdf.js library is not loaded yet.");
+                                }
+                                const arrayBuffer = await new Promise((resolve, reject) => {
+                                    const reader = new FileReader();
+                                    reader.onload = () => resolve(reader.result);
+                                    reader.onerror = () => reject(reader.error);
+                                    reader.readAsArrayBuffer(file);
+                                });
+                                const uint8Array = new Uint8Array(arrayBuffer);
+                                const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise;
+                                const page = await pdf.getPage(1);
+                                const viewport = page.getViewport({ scale: 1.5 });
+                                
+                                const canvas = document.createElement('canvas');
+                                const context = canvas.getContext('2d');
+                                canvas.height = viewport.height;
+                                canvas.width = viewport.width;
+                                
+                                await page.render({ canvasContext: context, viewport: viewport }).promise;
+                                
+                                imagePreview.src = canvas.toDataURL('image/jpeg');
+                                imagePreview.style.display = 'inline-block';
+                                fileMsg.textContent = "Current file: " + file.name;
+                                if(submitBtn) submitBtn.disabled = false;
+                            } catch (error) {
+                                console.error("Error converting PDF to preview image:", error);
+                                // Fallback: just show a PDF icon as preview
+                                imagePreview.src = "https://cdn-icons-png.flaticon.com/512/337/337946.png";
+                                imagePreview.style.display = 'inline-block';
+                                fileMsg.textContent = "Current file: " + file.name;
+                                if(submitBtn) submitBtn.disabled = false;
+                            }
+                        }
+                    } else {
+                        <%
+                            String defaultMsg = "or drag and drop Image/PDF here";
+                            if (designer != null && designer.getPortfolioURL() != null && !designer.getPortfolioURL().trim().isEmpty()) {
+                                String urlStr = designer.getPortfolioURL();
+                                int lastSlash = urlStr.lastIndexOf('/');
+                                if (lastSlash != -1 && lastSlash < urlStr.length() - 1) {
+                                    defaultMsg = "Current file: " + urlStr.substring(lastSlash + 1);
+                                } else {
+                                    defaultMsg = "Current file uploaded";
+                                }
+                            }
+                        %>
+                        fileMsg.textContent = "<%= defaultMsg %>";
+                        imagePreview.src = '<%= previewUrl != null ? previewUrl : "" %>';
+                        imagePreview.style.display = '<%= previewUrl != null && !previewUrl.isEmpty() ? "inline-block" : "none" %>';
+                    }
+                });
+            }
+        </script>
     
 <script src="${pageContext.request.contextPath}/assets/js/lang.js" charset="UTF-8"></script>
 </body>

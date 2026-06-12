@@ -126,6 +126,9 @@
                         <% } else { %>
                         <a href="#" class="btn-outline" style="border-color: rgba(255,255,255,0.2); color: white; opacity: 0.5; pointer-events: none;">Contact</a>
                         <% } %>
+                        <% if (designer.getPortfolioURL() != null && !designer.getPortfolioURL().trim().isEmpty()) { %>
+                        <a href="#portfolioSection" class="btn-outline" style="border-color: #D8B4FF; color: #D8B4FF;">View Portfolio</a>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -164,6 +167,42 @@
                 <p><%= (designer.getBio() != null && !designer.getBio().trim().isEmpty()) ? designer.getBio() : "This designer has not added a bio yet."%></p>
             </div>
         </div>
+
+        <%-- ======================================================= --%>
+        <%-- PORTFOLIO                                               --%>
+        <%-- ======================================================= --%>
+        <% if (designer.getPortfolioURL() != null && !designer.getPortfolioURL().trim().isEmpty()) { 
+            String pUrl = designer.getPortfolioURL();
+            String pUrlLower = pUrl.toLowerCase();
+            
+            // If it is a Cloudinary-hosted PDF file, dynamically convert it to a JPG url
+            if (pUrlLower.endsWith(".pdf") && pUrlLower.contains("res.cloudinary.com")) {
+                int lastDot = pUrl.lastIndexOf('.');
+                if (lastDot != -1) {
+                    pUrl = pUrl.substring(0, lastDot) + ".jpg";
+                    pUrlLower = pUrl.toLowerCase();
+                }
+            }
+            
+            boolean isPdf = pUrlLower.endsWith(".pdf");
+            boolean isImage = pUrlLower.endsWith(".png") || pUrlLower.endsWith(".jpg") || pUrlLower.endsWith(".jpeg") || pUrlLower.endsWith(".gif") || pUrlLower.endsWith(".webp") || pUrlLower.contains("res.cloudinary.com");
+        %>
+        <div class="dp-section-header">
+            <h2>Portfolio</h2>
+            <div class="dp-section-line"></div>
+        </div>
+        <div class="dp-portfolio" id="portfolioSection" style="margin-bottom: 60px; max-width: 1000px; margin-left: auto; margin-right: auto; padding: 0 20px; text-align: center;">
+            <% if (isPdf) { %>
+                <iframe src="https://docs.google.com/gview?url=<%= pUrl %>&embedded=true" width="100%" height="800px" style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);"></iframe>
+            <% } else if (isImage && !pUrlLower.contains("behance.net") && !pUrlLower.contains("dribbble.com") && !pUrlLower.contains("drive.google.com")) { %>
+                <img src="<%= pUrl %>" alt="Portfolio" style="max-width: 100%; height: auto; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: block; margin: 0 auto;">
+            <% } else { %>
+                <a href="<%= pUrl %>" target="_blank" class="btn-outline" style="padding: 12px 32px; border-radius: 999px; color: white; border-color: rgba(255,255,255,0.3); display: inline-block;">
+                    View External Portfolio &rarr;
+                </a>
+            <% } %>
+        </div>
+        <% } %>
 
         <%-- ======================================================= --%>
         <%-- TEMPLATES BY THIS DESIGNER                              --%>

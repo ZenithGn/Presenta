@@ -59,7 +59,8 @@ public class CloudinaryUtil {
             Map params = ObjectUtils.asMap(
                 "folder", "presenta/" + folder,
                 "use_filename", true,
-                "unique_filename", true
+                "unique_filename", true,
+                "resource_type", "auto"
             );
             
             Map uploadResult = cloudinary.uploader().upload(tempFile, params);

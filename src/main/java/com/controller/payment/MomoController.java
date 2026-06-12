@@ -122,25 +122,29 @@ public class MomoController extends HttpServlet {
                     os.write(input, 0, input.length);
                 }
 
-                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+                int responseCode = connection.getResponseCode();
+                java.io.InputStream is = (responseCode >= 400) ? connection.getErrorStream() : connection.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
                 StringBuilder responseStrBuilder = new StringBuilder();
                 String inputStr;
                 while ((inputStr = br.readLine()) != null) {
                     responseStrBuilder.append(inputStr);
                 }
                 br.close();
+                System.out.println("MOMO RESPONSE 1: " + responseStrBuilder.toString());
 
                 JsonObject jsonRes = JsonParser.parseString(responseStrBuilder.toString()).getAsJsonObject();
                 if (jsonRes.has("payUrl")) {
                     String payUrl = jsonRes.get("payUrl").getAsString();
                     response.sendRedirect(payUrl);
                 } else {
-                    request.setAttribute("message", "Lỗi cấu hình MoMo: " + jsonRes.get("message").getAsString());
+                    String msg = jsonRes.has("message") ? jsonRes.get("message").getAsString() : "Lỗi không xác định";
+                    request.setAttribute("message", "Chi tiết lỗi MoMo: " + msg);
                     request.getRequestDispatcher("views/web/payment-return/payment-failed.jsp").forward(request, response);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                request.setAttribute("message", "Không thể kết nối đến MoMo Server.");
+                request.setAttribute("message", "Không thể kết nối đến MoMo Server: " + e.getMessage());
                 request.getRequestDispatcher("views/web/payment-return/payment-failed.jsp").forward(request, response);
             }
             return;
@@ -243,13 +247,16 @@ public class MomoController extends HttpServlet {
             }
 
             // Đọc phản hồi (Response) từ MoMo
-            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+            int responseCode = connection.getResponseCode();
+            java.io.InputStream is = (responseCode >= 400) ? connection.getErrorStream() : connection.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
             StringBuilder responseStrBuilder = new StringBuilder();
             String inputStr;
             while ((inputStr = br.readLine()) != null) {
                 responseStrBuilder.append(inputStr);
             }
             br.close();
+            System.out.println("MOMO RESPONSE 2: " + responseStrBuilder.toString());
 
             // Trích xuất link payUrl từ chuỗi JSON trả về
             JsonObject jsonRes = JsonParser.parseString(responseStrBuilder.toString()).getAsJsonObject();
@@ -257,13 +264,14 @@ public class MomoController extends HttpServlet {
                 String payUrl = jsonRes.get("payUrl").getAsString();
                 response.sendRedirect(payUrl); // CHUYỂN HƯỚNG TỚI TRANG QUÉT MÃ MOMO
             } else {
-                request.setAttribute("message", "Lỗi cấu hình MoMo: " + jsonRes.get("message").getAsString());
+                String msg = jsonRes.has("message") ? jsonRes.get("message").getAsString() : "Lỗi không xác định";
+                request.setAttribute("message", "Chi tiết lỗi MoMo: " + msg);
                 request.getRequestDispatcher("views/web/payment-return/payment-failed.jsp").forward(request, response);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("message", "Không thể kết nối đến MoMo Server.");
+            request.setAttribute("message", "Không thể kết nối đến MoMo Server: " + e.getMessage());
             request.getRequestDispatcher("views/web/payment-return/payment-failed.jsp").forward(request, response);
         }
     }

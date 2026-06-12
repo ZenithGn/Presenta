@@ -130,8 +130,7 @@
                                 <%= categoryName %> expert designer.
                             </p>
                             <div class="btns">
-                                <button onclick="window.location.href='MainController?action=DesignerDetail&id=<%= d.getUserID()%>'">View Designer</button>
-                                <button>Book Now</button>
+                                <button style="background: #7c3aed; color: #fff;" onclick="window.location.href='MainController?action=DesignerDetail&id=<%= d.getUserID()%>'">View Detail</button>
                             </div>
                         </div>
                         <%  } %>

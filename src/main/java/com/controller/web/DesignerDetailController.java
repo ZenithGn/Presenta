@@ -31,7 +31,7 @@ public class DesignerDetailController extends HttpServlet {
             int designerId = Integer.parseInt(request.getParameter("id"));
             DesignerDAO dao = new DesignerDAO();
 
-            Designer designer = dao.getDesignerById(designerId);
+            Designer designer = dao.getFullDesignerProfile(designerId);
             List<Template> templates = dao.getTop3TemplatesByDesigner(designerId);
             List<Review> reviews = dao.getReviewsByDesigner(designerId);
             int templatesSold = dao.getTemplatesSold(designerId);

@@ -31,6 +31,11 @@
             .form-control:focus { outline: none; border-color: #0075FF; background: rgba(15, 23, 42, 0.8); }
             .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
             textarea.form-control { resize: vertical; min-height: 100px; }
+            .file-drop-area { position: relative; display: flex; align-items: center; width: 100%; padding: 25px; background: rgba(15, 23, 42, 0.6); border: 2px dashed rgba(255,255,255,0.2); border-radius: 12px; transition: 0.3s; cursor: pointer; }
+            .file-drop-area.is-active { border-color: #0075FF; background: rgba(15, 23, 42, 0.8); }
+            .fake-btn { flex-shrink: 0; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 8px 15px; margin-right: 10px; font-size: 14px; color: white; }
+            .file-msg { font-size: 14px; font-weight: 300; color: #A0AEC0; }
+            .file-input { position: absolute; left: 0; top: 0; height: 100%; width: 100%; cursor: pointer; opacity: 0; }
         </style>
     </head>
     <body class="designer-body">
@@ -64,7 +69,7 @@
                 <h2 style="color: white; font-size: 28px; font-weight: 800; margin-bottom: 8px;">Upload New Template</h2>
                 <p style="color: #A0AEC0; font-size: 14px; margin-bottom: 32px;">Fill in the details below to list a new design on the marketplace.</p>
 
-                <form action="${pageContext.request.contextPath}/MainController" method="POST">
+                <form action="${pageContext.request.contextPath}/CreateTemplateController" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="CreateTemplateForm"> <div class="form-group">
                         <label>Template Title <span style="color: #E53E3E;">*</span></label>
                         <input type="text" name="title" class="form-control" placeholder="Enter design name..." required>
@@ -109,8 +114,15 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Thumbnail Image URL <span style="color: #A0AEC0; font-weight: normal;">(Optional)</span></label>
-                        <input type="text" name="thumbnailURL" class="form-control" placeholder="Leave blank to use default image">
+                        <label>Thumbnail Image <span style="color: #A0AEC0; font-weight: normal;">(Optional)</span></label>
+                        <div class="file-drop-area" id="file-drop-area">
+                            <span class="fake-btn">Choose files</span>
+                            <span class="file-msg">or drag and drop files here</span>
+                            <input class="file-input" type="file" name="thumbnailFile" accept="image/*" id="thumbnailFile">
+                        </div>
+                        <div id="preview-container" style="display: none; margin-top: 15px; text-align: center;">
+                            <img id="image-preview" src="" alt="Image Preview" style="max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -159,6 +171,38 @@
             </div>
         </footer>
     
+<script>
+    const fileDropArea = document.querySelector('#file-drop-area');
+    const fileInput = document.querySelector('#thumbnailFile');
+    const fileMsg = document.querySelector('.file-msg');
+    const previewContainer = document.querySelector('#preview-container');
+    const imagePreview = document.querySelector('#image-preview');
+
+    fileInput.addEventListener('dragenter', () => fileDropArea.classList.add('is-active'));
+    fileInput.addEventListener('focus', () => fileDropArea.classList.add('is-active'));
+    fileInput.addEventListener('click', () => fileDropArea.classList.add('is-active'));
+
+    fileInput.addEventListener('dragleave', () => fileDropArea.classList.remove('is-active'));
+    fileInput.addEventListener('blur', () => fileDropArea.classList.remove('is-active'));
+    fileInput.addEventListener('drop', () => fileDropArea.classList.remove('is-active'));
+
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            fileMsg.textContent = file.name;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                previewContainer.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            fileMsg.textContent = 'or drag and drop files here';
+            previewContainer.style.display = 'none';
+            imagePreview.src = '';
+        }
+    });
+</script>
 <script src="${pageContext.request.contextPath}/assets/js/lang.js" charset="UTF-8"></script>
 </body>
 </html>

@@ -6,20 +6,30 @@ package com.controller.designer;
 
 import com.model.DesignerDAO;
 import com.model.User;
+import com.util.CloudinaryUtil;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 /**
  *
  * @author lehan
  */
 @WebServlet(name = "CreateTemplateController", urlPatterns = {"/CreateTemplateController"})
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+    maxFileSize = 1024 * 1024 * 10,      // 10MB
+    maxRequestSize = 1024 * 1024 * 50    // 50MB
+)
 public class CreateTemplateController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -100,10 +110,13 @@ public class CreateTemplateController extends HttpServlet {
             String designAssets = request.getParameter("designAssets");
             String fileURL = request.getParameter("fileURL");
 
-            // Lấy ThumbnailURL và XỬ LÝ NULL (Nếu người dùng để trống)
-            String thumbnailURL = request.getParameter("thumbnailURL");
-            if (thumbnailURL == null || thumbnailURL.trim().isEmpty()) {
-                thumbnailURL = null; // Ép về null chuẩn xác để Database nhận thẻ NULL
+            // Xử lý upload Thumbnail file
+            String thumbnailURL = null;
+            Part thumbnailPart = request.getPart("thumbnailFile");
+            if (thumbnailPart != null && thumbnailPart.getSize() > 0) {
+                String originalFileName = Paths.get(thumbnailPart.getSubmittedFileName()).getFileName().toString();
+                InputStream is = thumbnailPart.getInputStream();
+                thumbnailURL = CloudinaryUtil.uploadFile(is, originalFileName, "templates");
             }
 
             // Gọi DAO

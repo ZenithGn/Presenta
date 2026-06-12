@@ -15,12 +15,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.http.Part;
+import com.util.CloudinaryUtil;
+import java.io.InputStream;
+import java.nio.file.Paths;
 
 /**
  *
  * @author lehan
  */
 @WebServlet(name = "EditTemplateController", urlPatterns = {"/EditTemplateController"})
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+    maxFileSize = 1024 * 1024 * 10,      // 10MB
+    maxRequestSize = 1024 * 1024 * 50    // 50MB
+)
 public class EditTemplateController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -95,8 +105,19 @@ public class EditTemplateController extends HttpServlet {
             String description = request.getParameter("description");
             String coreFeatures = request.getParameter("coreFeatures");
             String designAssets = request.getParameter("designAssets");
-            String thumbnailURL = request.getParameter("thumbnailURL");
+            String thumbnailURL = request.getParameter("thumbnailURL"); // Existing/fallback URL
             String fileURL = request.getParameter("fileURL");
+
+            // Process thumbnail file upload
+            Part thumbnailPart = request.getPart("thumbnailFile");
+            if (thumbnailPart != null && thumbnailPart.getSize() > 0) {
+                String originalFileName = Paths.get(thumbnailPart.getSubmittedFileName()).getFileName().toString();
+                InputStream is = thumbnailPart.getInputStream();
+                String cloudinaryUrl = CloudinaryUtil.uploadFile(is, originalFileName, "templates");
+                if (cloudinaryUrl != null) {
+                    thumbnailURL = cloudinaryUrl;
+                }
+            }
 
             DesignerDAO dao = new DesignerDAO();
             boolean isUpdated = dao.updateTemplate(templateId, loginUser.getUserId(), categoryId, title, description, price, thumbnailURL, fileURL, coreFeatures, designAssets);

@@ -64,6 +64,11 @@
                 resize: vertical;
                 min-height: 100px;
             }
+            .file-drop-area { position: relative; display: flex; align-items: center; width: 100%; padding: 25px; background: rgba(15, 23, 42, 0.6); border: 2px dashed rgba(255,255,255,0.2); border-radius: 12px; transition: 0.3s; cursor: pointer; box-sizing: border-box; }
+            .file-drop-area.is-active { border-color: #0075FF; background: rgba(15, 23, 42, 0.8); }
+            .fake-btn { flex-shrink: 0; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 8px 15px; margin-right: 10px; font-size: 14px; color: white; }
+            .file-msg { font-size: 14px; font-weight: 300; color: #A0AEC0; }
+            .file-input { position: absolute; left: 0; top: 0; height: 100%; width: 100%; cursor: pointer; opacity: 0; }
         </style>
     </head>
     <body class="designer-body">
@@ -101,8 +106,7 @@
                 <h2 style="color: white; font-size: 28px; font-weight: 800; margin-bottom: 8px;">Edit Template Details</h2>
                 <p style="color: #A0AEC0; font-size: 14px; margin-bottom: 32px;">Update the information for ID: #TMP-<%= templateData.get("templateID")%></p>
 
-                <form action="${pageContext.request.contextPath}/MainController" method="POST">
-                    <input type="hidden" name="action" value="EditTemplate">
+                <form action="${pageContext.request.contextPath}/EditTemplateController" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="templateId" value="<%= templateData.get("templateID")%>">
 
                     <div class="form-group">
@@ -145,8 +149,30 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Thumbnail Image URL</label>
-                        <input type="text" name="thumbnailURL" class="form-control" value="<%= (templateData.get("thumbnailURL") != null) ? templateData.get("thumbnailURL") : ""%>">
+                        <label>Thumbnail Image <span style="color: #A0AEC0; font-weight: normal;">(Optional)</span></label>
+                        <div class="file-drop-area" id="file-drop-area">
+                            <span class="fake-btn">Choose File</span>
+                            <%
+                                String existingThumbnail = (templateData.get("thumbnailURL") != null) ? templateData.get("thumbnailURL").toString() : "";
+                                String fileMsgText = "or drag and drop files here";
+                                if (!existingThumbnail.isEmpty()) {
+                                    int lastSlash = existingThumbnail.lastIndexOf('/');
+                                    if (lastSlash != -1 && lastSlash < existingThumbnail.length() - 1) {
+                                        fileMsgText = "Current file: " + existingThumbnail.substring(lastSlash + 1);
+                                    } else {
+                                        fileMsgText = "Current file uploaded";
+                                    }
+                                }
+                            %>
+                            <span class="file-msg"><%= fileMsgText %></span>
+                            <input class="file-input" type="file" name="thumbnailFile" accept="image/*" id="thumbnailFile">
+                        </div>
+                        <% if (!existingThumbnail.isEmpty()) { %>
+                            <input type="hidden" name="thumbnailURL" value="<%= existingThumbnail %>">
+                        <% } %>
+                        <div id="preview-container" style="display: <%= existingThumbnail.isEmpty() ? "none" : "block" %>; margin-top: 15px; text-align: center;">
+                            <img id="image-preview" src="<%= existingThumbnail %>" alt="Image Preview" style="max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -195,6 +221,50 @@
             </div>
         </footer>
     
+<script>
+    const fileDropArea = document.querySelector('#file-drop-area');
+    const fileInput = document.querySelector('#thumbnailFile');
+    const fileMsg = document.querySelector('.file-msg');
+    const previewContainer = document.querySelector('#preview-container');
+    const imagePreview = document.querySelector('#image-preview');
+
+    if (fileDropArea && fileInput) {
+        fileInput.addEventListener('dragenter', () => fileDropArea.classList.add('is-active'));
+        fileInput.addEventListener('focus', () => fileDropArea.classList.add('is-active'));
+        fileInput.addEventListener('click', () => fileDropArea.classList.add('is-active'));
+
+        fileInput.addEventListener('dragleave', () => fileDropArea.classList.remove('is-active'));
+        fileInput.addEventListener('blur', () => fileDropArea.classList.remove('is-active'));
+        fileInput.addEventListener('drop', () => fileDropArea.classList.remove('is-active'));
+
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                fileMsg.textContent = "Current file: " + file.name;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                <%
+                    String existingThumbnailJS = (templateData.get("thumbnailURL") != null) ? templateData.get("thumbnailURL").toString() : "";
+                    String defaultMsgJS = "or drag and drop files here";
+                    if (!existingThumbnailJS.isEmpty()) {
+                        int lastSlash = existingThumbnailJS.lastIndexOf('/');
+                        if (lastSlash != -1 && lastSlash < existingThumbnailJS.length() - 1) {
+                            defaultMsgJS = "Current file: " + existingThumbnailJS.substring(lastSlash + 1);
+                        }
+                    }
+                %>
+                fileMsg.textContent = '<%= defaultMsgJS %>';
+                imagePreview.src = '<%= existingThumbnailJS %>';
+                previewContainer.style.display = '<%= existingThumbnailJS.isEmpty() ? "none" : "block" %>';
+            }
+        });
+    }
+</script>
 <script src="${pageContext.request.contextPath}/assets/js/lang.js" charset="UTF-8"></script>
 </body>
 </html>

@@ -19,6 +19,11 @@ const dict = {
     "Purchased Templates": "\ud83d\uded2 Template \u0111\u00e3 mua",
     "Custom Orders": "\ud83d\udd8c\ufe0f \u0110\u01a1n Customize",
     "Account Settings": "\u2699\ufe0f C\u00e0i \u0111\u1eb7t t\u00e0i kho\u1ea3n",
+    "\ud83d\uded2 Purchased Templates": "\ud83d\uded2 Template \u0111\u00e3 mua",
+    "\ud83d\udd8c\ufe0f Custom Orders": "\ud83d\udd8c\ufe0f \u0110\u01a1n Customize",
+    "\u2699\ufe0f Account Settings": "\u2699\ufe0f C\u00e0i \u0111\u1eb7t t\u00e0i kho\u1ea3n",
+    "Explore the ": "Kh\u00e1m ph\u00e1 ",
+    " to hire a designer for custom requests!": " \u0111\u1ec3 thu\u00ea designer thi\u1ebft k\u1ebf theo y\u00eau c\u1ea7u!",
     "TEMPLATE NAME": "T\u00ean Template",
     "PURCHASE DATE": "Ng\u00e0y mua",
     "Download": "Download",
@@ -314,6 +319,21 @@ const dict = {
     "Reviews": "Nh\u1eadn x\u00e9t"
 };
 
+function getTranslation(str) {
+    if (!str) return null;
+    let match = dict[str];
+    if (match !== undefined) return match;
+    
+    // Try case-insensitive lookup
+    let lowerStr = str.toLowerCase();
+    for (let key in dict) {
+        if (key.toLowerCase() === lowerStr) {
+            return dict[key];
+        }
+    }
+    return null;
+}
+
 function translateNode(node, lang) {
     if (node.nodeType === Node.TEXT_NODE) {
         let text = node.nodeValue.trim();
@@ -327,8 +347,9 @@ function translateNode(node, lang) {
         let originalTrimmed = node.originalText.trim();
 
         if (lang === 'vi') {
-            if (dict[originalTrimmed]) {
-                node.nodeValue = node.originalText.replace(originalTrimmed, dict[originalTrimmed]);
+            let match = getTranslation(originalTrimmed);
+            if (match) {
+                node.nodeValue = node.originalText.replace(originalTrimmed, match);
             }
         } else {
             node.nodeValue = node.originalText;
@@ -347,8 +368,9 @@ function translateNode(node, lang) {
                 node.dataset.origTitle = node.title;
             }
             let orig = node.dataset.origTitle;
-            if (lang === 'vi' && dict[orig]) {
-                node.title = dict[orig];
+            let match = getTranslation(orig);
+            if (lang === 'vi' && match) {
+                node.title = match;
             } else if (lang === 'en') {
                 node.title = orig;
             }
@@ -361,8 +383,9 @@ function translateNode(node, lang) {
                     node.dataset.origPlaceholder = node.placeholder;
                 }
                 let orig = node.dataset.origPlaceholder;
-                if (lang === 'vi' && dict[orig]) {
-                    node.placeholder = dict[orig];
+                let match = getTranslation(orig);
+                if (lang === 'vi' && match) {
+                    node.placeholder = match;
                 } else if (lang === 'en') {
                     node.placeholder = orig;
                 }
@@ -373,8 +396,9 @@ function translateNode(node, lang) {
                         node.dataset.origValue = node.value;
                     }
                     let orig = node.dataset.origValue;
-                    if (lang === 'vi' && dict[orig]) {
-                        node.value = dict[orig];
+                    let match = getTranslation(orig);
+                    if (lang === 'vi' && match) {
+                        node.value = match;
                     } else if (lang === 'en') {
                         node.value = orig;
                     }

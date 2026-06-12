@@ -185,7 +185,7 @@
             </div>
         </footer>
 
-        <script src="${pageContext.request.contextPath}/assets/js/lang.js" charset="UTF-8"></script>
+        <script src="${pageContext.request.contextPath}/assets/js/lang.js?v=4.0" charset="UTF-8"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
         <script>

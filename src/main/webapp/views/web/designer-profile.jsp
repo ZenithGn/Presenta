@@ -113,10 +113,10 @@
                     <p class="dp-tagline">Motion & Interaction & Academic Presentation Designer</p>
                     <div class="dp-hero-actions">
                         <% if (roleId == 2) { %>
-                        <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin: 0;" onsubmit="return confirm(localStorage.getItem('lang') === 'en' ? 'Are you sure you want to hire this designer?' : 'Bạn có chắc chắn muốn thuê designer này không?');">
+                        <form id="bookingForm" action="${pageContext.request.contextPath}/MainController" method="POST" style="margin: 0;">
                             <input type="hidden" name="action" value="BookDesigner">
                             <input type="hidden" name="designerID" value="<%= designer.getUserID()%>">
-                            <button type="submit" class="btn-primary">Book Now</button>
+                            <button type="button" class="btn-primary" onclick="openBookingConfirmModal()">Book Now</button>
                         </form>
                         <% } else if (roleId == 0) { %>
                         <a href="${pageContext.request.contextPath}/MainController?action=Login" class="btn-primary">Book Now</a>
@@ -388,6 +388,57 @@
                 scrollTrigger: { trigger: "#reviewsSection", start: "top 85%" },
                 opacity: 0, y: 50, duration: 0.6, stagger: 0.12, ease: "power2.out"
             });
+        </script>
+
+        <!-- Custom Booking Confirmation Modal -->
+        <div id="bookingConfirmModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(5px); transition: all 0.3s ease;">
+            <div class="modal-content" style="background: #11052C; padding: 30px; border-radius: 16px; width: 420px; text-align: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.5); font-family: inherit;">
+                <div style="font-size: 48px; margin-bottom: 15px;">🎨</div>
+                <h3 style="margin-top: 0; color: #ffffff; font-size: 20px; font-weight: 700; margin-bottom: 12px;">Booking Confirmation</h3>
+                <p id="bookingConfirmMessage" style="color: #cbd5e1; font-size: 14px; line-height: 1.5; margin-bottom: 25px;">
+                    Are you sure you want to hire this designer?
+                </p>
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button type="button" onclick="closeBookingConfirmModal()" style="background: rgba(255,255,255,0.1); color: #ffffff; border: none; padding: 10px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; transition: 0.2s;">
+                        No
+                    </button>
+                    <button type="button" onclick="submitBookingForm()" style="background: #4ade80; color: #11052C; border: none; padding: 10px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; transition: 0.2s;">
+                        Yes
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function openBookingConfirmModal() {
+                const modal = document.getElementById('bookingConfirmModal');
+                const title = modal.querySelector('h3');
+                const msg = document.getElementById('bookingConfirmMessage');
+                const btnNo = modal.querySelectorAll('button')[0];
+                const btnYes = modal.querySelectorAll('button')[1];
+                
+                const lang = localStorage.getItem('lang') || 'vi';
+                if (lang === 'en') {
+                    title.innerText = 'Booking Confirmation';
+                    msg.innerText = 'Are you sure you want to hire this designer?';
+                    btnNo.innerText = 'No';
+                    btnYes.innerText = 'Yes';
+                } else {
+                    title.innerText = 'Xác nhận thuê';
+                    msg.innerText = 'Bạn có chắc chắn muốn thuê designer này không?';
+                    btnNo.innerText = 'Không';
+                    btnYes.innerText = 'Có';
+                }
+                modal.style.display = 'flex';
+            }
+
+            function closeBookingConfirmModal() {
+                document.getElementById('bookingConfirmModal').style.display = 'none';
+            }
+
+            function submitBookingForm() {
+                document.getElementById('bookingForm').submit();
+            }
         </script>
     </body>
 </html>

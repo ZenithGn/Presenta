@@ -14,18 +14,17 @@ const dict = {
     "Welcome": "Xin ch\u00e0o",
     "Welcome,": "Xin ch\u00e0o,",
     "Designer:": "Nh\u00e0 thi\u1ebft k\u1ebf:",
-    "Contact": "Li\u00ean h\u1ec7",
-    "View Portfolio": "Xem Portfolio",
-    "\ud83d\uded2 Purchased Templates": "\ud83d\uded2 Template \u0111\u00e3 mua",
-    "\ud83d\udd8c\ufe0f Custom Orders": "\ud83d\udd8c\ufe0f \u0110\u01a1n Customize",
-    "\u2699\ufe0f Account Settings": "\u2699\ufe0f C\u00e0i \u0111\u1eb7t t\u00e0i kho\u1ea3n",
-    "Purchased Templates": "Template \u0110\u00e3 Mua (Download)",
-    "Template Name": "T\u00ean Template",
-    "Purchase Date": "Ng\u00e0y mua",
-    "\ud83d\udce5 Download": "\ud83d\udce5 Download",
-    "\u2b50 Review": "\u2b50 \u0110\u00e1nh gi\u00e1",
+    "CONTACT": "Li\u00ean h\u1ec7",
+    "VIEW PORTFOLIO": "Xem Portfolio",
+    "Purchased Templates": "\ud83d\uded2 Template \u0111\u00e3 mua",
+    "Custom Orders": "\ud83d\udd8c\ufe0f \u0110\u01a1n Customize",
+    "Account Settings": "\u2699\ufe0f C\u00e0i \u0111\u1eb7t t\u00e0i kho\u1ea3n",
+    "TEMPLATE NAME": "T\u00ean Template",
+    "PURCHASE DATE": "Ng\u00e0y mua",
+    "Download": "Download",
+    "Review": "\u0110\u00e1nh gi\u00e1",
     "You have not purchased any templates yet.": "B\u1ea1n ch\u01b0a mua s\u1ea3n ph\u1ea9m n\u00e0o.",
-    "Custom Design Orders": "\u0110\u01a1n Thi\u1ebft K\u1ebf Ri\u00eang (Customize)",
+    "CUSTOM DESIGN ORDERS": "\u0110\u01a1n Thi\u1ebft K\u1ebf Ri\u00eang (Customize)",
     "Order #": "\u0110\u01a1n #",
     "Not Priced Yet": "Ch\u01b0a \u0111\u1ecbnh gi\u00e1",
     "Ordered": "\u0110\u00e3 \u0111\u1eb7t",
@@ -111,7 +110,7 @@ const dict = {
     "Featured Designer": "Nh\u00e0 thi\u1ebft k\u1ebf n\u1ed5i b\u1eadt",
     "Meet Top-Rated Creators Building High-Quality Templates.": "G\u1eb7p g\u1ee1 nh\u1eefng nh\u00e0 s\u00e1ng t\u1ea1o h\u00e0ng \u0111\u1ea7u x\u00e2y d\u1ef1ng c\u00e1c m\u1eabu ch\u1ea5t l\u01b0\u1ee3ng cao.",
     "View Designer": "Xem nh\u00e0 thi\u1ebft k\u1ebf",
-    "Book Now": "Thu\u00ea designer",
+    "BOOK NOW": "Thu\u00ea Designer",
     "Ch\u01b0a c\u00f3 Designer n\u1ed5i b\u1eadt n\u00e0o \u0111\u1ec3 hi\u1ec3n th\u1ecb.": "Ch\u01b0a c\u00f3 Designer n\u1ed5i b\u1eadt n\u00e0o \u0111\u1ec3 hi\u1ec3n th\u1ecb.",
     "View All Designers": "Xem t\u1ea5t c\u1ea3 nh\u00e0 thi\u1ebft k\u1ebf",
     "Ready To Turn Your Design Skills": "S\u1eb5n s\u00e0ng bi\u1ebfn k\u1ef9 n\u0103ng thi\u1ebft k\u1ebf c\u1ee7a b\u1ea1n",
@@ -422,25 +421,25 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================
 // WEBSOCKET FOR REAL-TIME NOTIFICATIONS
 // ==========================================
-(function() {
+(function () {
     // Only connect if the browser supports WebSocket
     if ("WebSocket" in window) {
         // Construct the WebSocket URL based on current protocol and host
         const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
         const wsUrl = protocol + "//" + window.location.host + "/EXE202_Maven/notifications";
-        
+
         const socket = new WebSocket(wsUrl);
 
-        socket.onopen = function() {
+        socket.onopen = function () {
             console.log("Connected to Real-time Notification Server.");
         };
 
-        socket.onmessage = function(event) {
+        socket.onmessage = function (event) {
             console.log("Notification received: ", event.data);
             showToastNotification(event.data);
         };
 
-        socket.onclose = function() {
+        socket.onclose = function () {
             console.log("Disconnected from Notification Server.");
         };
     }
@@ -463,11 +462,11 @@ document.addEventListener('DOMContentLoaded', () => {
         toast.style.opacity = "0";
         toast.style.transform = "translateY(20px)";
         toast.style.transition = "all 0.3s ease";
-        
+
         toast.innerText = "\ud83d\udd14 " + message;
-        
+
         document.body.appendChild(toast);
-        
+
         // Animate in
         setTimeout(() => {
             toast.style.opacity = "1";

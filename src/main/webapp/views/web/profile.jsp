@@ -242,7 +242,7 @@
                                     <% if (status.equals("Completed_Design")) {%>
                                     <a href="${pageContext.request.contextPath}/MainController?action=ProcessOrder&paymentMethod=PAYOS&orderType=HIRE_DESIGNER&orderId=<%= co.getOrderId()%>"
                                        style="background: #4ade80; color: #11052C; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
-                                        💳 PayOS
+                                        Checkout
                                     </a>
                                     <% } else if (status.equals("Processing")) {
                                         String phone = customOrderDesignerPhones.get(co.getOrderId());

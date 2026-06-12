@@ -29,11 +29,13 @@ public class RegisterController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String url = ERROR_PAGE;
+        boolean forwarded = false;
 
         try {
             // Kiểm tra Method: Nếu là GET (bấm từ link) thì chỉ trả về trang register.jsp
             if (request.getMethod().equalsIgnoreCase("GET")) {
                 request.getRequestDispatcher(ERROR_PAGE).forward(request, response);
+                forwarded = true;
                 return;
             }
 
@@ -81,7 +83,9 @@ public class RegisterController extends HttpServlet {
             log("Error at RegisterController: " + e.toString());
             request.setAttribute("errorMessage", "Lỗi Server: " + e.getMessage());
         } finally {
-            request.getRequestDispatcher(url).forward(request, response);
+            if (!forwarded) {
+                request.getRequestDispatcher(url).forward(request, response);
+            }
         }
     }
 

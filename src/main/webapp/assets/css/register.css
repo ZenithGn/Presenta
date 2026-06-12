@@ -1,52 +1,73 @@
 /*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
-*/
-/* 
-    Created on : May 26, 2026, 2:40:06 PM
-    Author     : lehan
+    Register Page Overrides — Presenta Premium Redesign
+    Author: lehan
 */
 
-.login-card.register-card {
-    max-width: 500px; /* Rộng hơn form login một chút để chứa 2 cột nếu cần */
+/* Register card can be slightly wider */
+.auth-card.register-card {
+    max-width: 460px;
 }
-.role-tabs {
+
+/* ---- Password Strength Indicator ---- */
+.password-strength {
+    margin-top: 8px;
     display: flex;
-    background: #0F172A;
-    border-radius: 8px;
-    padding: 6px;
-    margin-bottom: 24px;
-    border: 1px solid var(--border-glass);
-}
-.role-tab {
-    flex: 1;
-    text-align: center;
-    padding: 10px 16px;
-    color: var(--text-muted);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-}
-.role-tab.active {
-    background: var(--primary); /* Electric Purple */
-    color: var(--on-primary); /* #3f008e */
-    box-shadow: 0 4px 12px rgba(210, 187, 255, 0.2);
+    gap: 4px;
+    height: 3px;
 }
 
-/* Khu vực chứa các field của Designer (Ẩn mặc định) */
-.designer-fields {
-    display: none;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.4s ease;
+.password-strength .strength-bar {
+    flex: 1;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.08);
+    transition: background 0.3s ease;
 }
-.designer-fields.active {
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px dashed var(--border-glass);
+
+.password-strength .strength-bar.active-weak {
+    background: #ef4444;
+}
+
+.password-strength .strength-bar.active-medium {
+    background: #f59e0b;
+}
+
+.password-strength .strength-bar.active-strong {
+    background: #22c55e;
+}
+
+/* ---- Terms Checkbox ---- */
+.terms-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 24px;
+    margin-top: 4px;
+}
+
+.terms-group input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    accent-color: var(--primary-container);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.terms-group label {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: var(--text-muted) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    line-height: 1.5;
+}
+
+.terms-group label a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.terms-group label a:hover {
+    text-decoration: underline;
 }

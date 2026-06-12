@@ -399,6 +399,6 @@
         <script src="${pageContext.request.contextPath}/assets/js/toast.js"></script>
         <script src="${pageContext.request.contextPath}/assets/js/profile.js"></script>
     
-<script src="${pageContext.request.contextPath}/assets/js/lang.js" charset="UTF-8"></script>
+<script src="${pageContext.request.contextPath}/assets/js/lang.js?v=3.0" charset="UTF-8"></script>
 </body>
 </html>

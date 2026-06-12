@@ -101,22 +101,22 @@
                     <h3 class="user-name"><%= loginUser.getUsername()%></h3>
                 </div>
                 <ul class="sidebar-menu">
-                    <li class="menu-item active" onclick="switchTab('tab-purchased', this)" id="nav-tab-purchased">🛒 Template đã mua</li>
-                    <li class="menu-item" onclick="switchTab('tab-custom', this)" id="nav-tab-custom">🖌️ Đơn Customize</li>
-                    <li class="menu-item" onclick="switchTab('tab-info', this)" id="nav-tab-info">⚙️ Cài đặt tài khoản</li>
+                    <li class="menu-item active" onclick="switchTab('tab-purchased', this)" id="nav-tab-purchased">🛒 Purchased Templates</li>
+                    <li class="menu-item" onclick="switchTab('tab-custom', this)" id="nav-tab-custom">🖌️ Custom Orders</li>
+                    <li class="menu-item" onclick="switchTab('tab-info', this)" id="nav-tab-info">⚙️ Account Settings</li>
                 </ul>
             </aside>
 
             <section class="profile-content-area">
 
                 <div id="tab-purchased" class="tab-pane active">
-                    <h2 class="tab-title">Template Đã Mua (Download)</h2>
+                    <h2 class="tab-title">Purchased Templates</h2>
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Tên Template</th>
-                                <th>Ngày mua</th>
-                                <th style="text-align: right;">Thao tác</th>
+                                <th>Template Name</th>
+                                <th>Purchase Date</th>
+                                <th style="text-align: right;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -132,7 +132,7 @@
                             </tr>
                             <% }
                             } else { %>
-                            <tr><td colspan="3" style="text-align: center; padding: 40px; color: #94a3b8;">Bạn chưa mua sản phẩm nào.</td></tr>
+                            <tr><td colspan="3" style="text-align: center; padding: 40px; color: #94a3b8;">You have not purchased any templates yet.</td></tr>
                             <% } %>
                         </tbody>
                     </table>
@@ -156,7 +156,7 @@
                 </div>
 
                 <div id="tab-custom" class="tab-pane">
-                    <h2 class="tab-title">Đơn Thiết Kế Riêng (Customize)</h2>
+                    <h2 class="tab-title">Custom Design Orders</h2>
 
                     <% if (customOrders != null && !customOrders.isEmpty()) { %>
                     <div style="display: flex; flex-direction: column; gap: 16px;">
@@ -170,27 +170,27 @@
 
                                 String statusLabel = "";
                                 if (status.equals("Pending"))
-                                    statusLabel = "Đang chờ Designer xác nhận...";
+                                    statusLabel = "Waiting for designer confirmation...";
                                 else if (status.equals("Processing"))
-                                    statusLabel = "Designer đang thực hiện...";
+                                    statusLabel = "Designer is working...";
                                 else if (status.equals("Completed_Design"))
-                                    statusLabel = "Đã hoàn thành thiết kế, chờ thanh toán";
+                                    statusLabel = "Design completed, waiting for payment";
                                 else if (status.equals("Completed"))
-                                    statusLabel = "Đã thanh toán";
+                                    statusLabel = "Paid";
                                 else if (status.equals("Cancelled"))
-                                    statusLabel = "Đã hủy";
+                                    statusLabel = "Cancelled";
                         %>
                         <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                                 <div>
-                                    <span style="font-weight: 700; color: white; font-size: 15px;">Đơn #<%= co.getOrderId()%></span>
+                                    <span style="font-weight: 700; color: white; font-size: 15px;">Order #<%= co.getOrderId()%></span>
                                     <span style="color: #94a3b8; font-size: 13px; margin-left: 12px;">
                                         <%= co.getCreateAt() != null ? new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(co.getCreateAt()) : "N/A"%>
                                     </span>
                                 </div>
                                 <div>
                                     <span style="color: #D8B4FF; font-weight: 600; font-size: 14px;">
-                                        <%= co.getTotalPrice() > 0 ? String.format("%,.0f₫", co.getTotalPrice()) : "Chưa định giá"%>
+                                        <%= co.getTotalPrice() > 0 ? String.format("%,.0f₫", co.getTotalPrice()) : "Not Priced Yet"%>
                                     </span>
                                 </div>
                             </div>
@@ -203,7 +203,7 @@
                                          <%= step1Class.equals("step-active") ? "background: #01B574; color: white;" : "background: rgba(255,255,255,0.1); color: #64748b;"%>">
                                         <%= step1Class.equals("step-active") ? "✓" : "1"%>
                                     </div>
-                                    <span style="font-size: 12px; color: #cbd5e1; white-space: nowrap;">Đã đặt</span>
+                                    <span style="font-size: 12px; color: #cbd5e1; white-space: nowrap;">Ordered</span>
                                 </div>
                                 <%-- Line 1 --%>
                                 <div style="height: 2px; flex: 1; min-width: 20px;
@@ -214,7 +214,7 @@
                                          <%= step2Class.equals("step-active") ? "background: #01B574; color: white;" : "background: rgba(255,255,255,0.1); color: #64748b;"%>">
                                         <%= step2Class.equals("step-active") ? "✓" : "2"%>
                                     </div>
-                                    <span style="font-size: 12px; color: #cbd5e1; white-space: nowrap;">Đang thiết kế</span>
+                                    <span style="font-size: 12px; color: #cbd5e1; white-space: nowrap;">Designing</span>
                                 </div>
                                 <%-- Line 2 --%>
                                 <div style="height: 2px; flex: 1; min-width: 20px;
@@ -225,7 +225,7 @@
                                          <%= step3Class.equals("step-active") ? "background: #01B574; color: white;" : "background: rgba(255,255,255,0.1); color: #64748b;"%>">
                                         <%= step3Class.equals("step-active") ? "✓" : "3"%>
                                     </div>
-                                    <span style="font-size: 12px; color: #cbd5e1; white-space: nowrap;">Hoàn thành</span>
+                                    <span style="font-size: 12px; color: #cbd5e1; white-space: nowrap;">Completed</span>
                                 </div>
                             </div>
 
@@ -237,7 +237,7 @@
                                 <div style="display: flex; gap: 10px;">
                                     <% if (status.equals("Completed_Design")) {%>
                                     <span style="background: rgba(255,255,255,0.1); color: #64748b; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; cursor: not-allowed;" title="VNPay is temporarily disabled">
-                                        💳 VNPay (Bảo trì)
+                                        💳 VNPay (Maintenance)
                                     </span>
                                     <a href="${pageContext.request.contextPath}/MainController?action=ProcessOrder&paymentMethod=MOMO&orderType=HIRE_DESIGNER&orderId=<%= co.getOrderId()%>"
                                        style="background: #FF5E7A; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
@@ -265,48 +265,48 @@
                     <% } else { %>
                     <div style="text-align: center; padding: 60px 20px; color: #94a3b8;">
                         <div style="font-size: 48px; margin-bottom: 16px;">🎨</div>
-                        <p style="font-size: 16px; margin-bottom: 8px;">Bạn chưa có đơn thiết kế riêng nào.</p>
-                        <p style="font-size: 14px;">Khám phá <a href="${pageContext.request.contextPath}/MainController?action=DesignerHub" style="color: #D8B4FF;">Designer Hub</a> để thuê designer thiết kế theo yêu cầu!</p>
+                        <p style="font-size: 16px; margin-bottom: 8px;">You have no custom design orders yet.</p>
+                        <p style="font-size: 14px;">Explore the <a href="${pageContext.request.contextPath}/MainController?action=DesignerHub" style="color: #D8B4FF;">Designer Hub</a> to hire a designer for custom requests!</p>
                     </div>
                     <% }%>
                 </div>
 
                 <div id="tab-info" class="tab-pane">
-                    <h2 class="tab-title">Cài đặt tài khoản</h2>
+                    <h2 class="tab-title">Account Settings</h2>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
 
                         <div style="display: flex; flex-direction: column; gap: 30px;">
 
                             <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                                <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Thông tin cá nhân</h4>
+                                <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Personal Info</h4>
                                 <form action="${pageContext.request.contextPath}/AccountController" method="POST">
                                     <input type="hidden" name="updateType" value="profile">
 
-                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Tên đăng nhập (Username)</label>
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Username</label>
                                     <input type="text" name="username" value="<%= loginUser.getUsername()%>" required 
                                            style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:15px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box; font-weight: bold;">
 
-                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Địa chỉ Email</label>
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Email Address</label>
                                     <input type="email" name="email" value="<%= loginUser.getEmail()%>" required 
                                            style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
 
-                                    <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding: 10px 20px; width: 100%;">Lưu thông tin</button>
+                                    <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding: 10px 20px; width: 100%;">Save Info</button>
                                 </form>
                             </div>
 
                             <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                                <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Đổi mật khẩu</h4>
+                                <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Change Password</h4>
                                 <form action="${pageContext.request.contextPath}/AccountController" method="POST">
                                     <input type="hidden" name="updateType" value="password">
 
-                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Mật khẩu hiện tại</label>
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Current Password</label>
                                     <input type="password" name="oldPass" required style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:15px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
 
-                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Mật khẩu mới</label>
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">New Password</label>
                                     <input type="password" name="newPass" required style="width:100%; padding:12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box;">
 
-                                    <button type="submit" class="btn-action" style="background: transparent; color:#D8B4FF; border: 1px solid #D8B4FF; padding: 10px 20px; width: 100%;">Thay đổi mật khẩu</button>
+                                    <button type="submit" class="btn-action" style="background: transparent; color:#D8B4FF; border: 1px solid #D8B4FF; padding: 10px 20px; width: 100%;">Change Password</button>
                                 </form>
                             </div>
 
@@ -314,21 +314,21 @@
 
                         <div>
                             <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); height: 100%; box-sizing: border-box; display: flex; flex-direction: column;">
-                                <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Đổi ảnh đại diện</h4>
+                                <h4 style="color: #D8B4FF; margin-top: 0; margin-bottom: 15px;">Change Avatar</h4>
                                 <p style="font-size: 13px; color: #cbd5e1; margin-top: 0; line-height: 1.5; flex-grow: 1;">
-                                    Bấm trực tiếp vào hình vòng tròn ảnh đại diện ở menu bên trái, hoặc bấm nút bên dưới để chọn một file ảnh (JPG, PNG, GIF) từ máy tính của bạn.
+                                    Click the avatar circle in the sidebar or choose a file below.
                                     <br><br>
-                                    <span style="color: #ffc107;">* Lưu ý: Kích thước file không được vượt quá 10MB.</span>
+                                    <span style="color: #ffc107;">* Max file size: 10MB (JPG, PNG, GIF)</span>
                                 </p>
 
                                 <form action="${pageContext.request.contextPath}/AccountController" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
                                     <input type="hidden" name="updateType" value="avatar">
 
-                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Chọn file ảnh từ máy</label>
+                                    <label style="display:block; font-size:13px; color:#E2D7FF; font-weight:700; margin-bottom:8px;">Choose Image File</label>
                                     <input type="file" name="avatarFile" id="avatar-file-input" accept="image/png, image/jpeg, image/gif" required 
                                            style="width:100%; padding:10px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; margin-bottom:20px; background:rgba(255,255,255,0.05); color:#ffffff; box-sizing: border-box; font-size: 12px;">
 
-                                    <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding: 12px 24px; width: 100%;">Lưu Ảnh Đại Diện Mới</button>
+                                    <button type="submit" class="btn-action" style="background:#D8B4FF; color:#11052C; padding: 12px 24px; width: 100%;">Upload New Avatar</button>
                                 </form>
                             </div>
                         </div>
@@ -341,7 +341,7 @@
 
         <div id="reviewModal" class="modal-overlay">
             <div class="modal-content">
-                <h3 style="margin-top: 0; color: #ffffff;">Đánh giá sản phẩm</h3>
+                <h3 style="margin-top: 0; color: #ffffff;">Review Template</h3>
                 <p id="reviewTemplateName" style="color: #D8B4FF; font-size: 14px; margin-bottom: 5px; font-weight:bold;"></p>
 
                 <form action="${pageContext.request.contextPath}/MainController" method="POST">
@@ -356,11 +356,11 @@
                         <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
                     </div>
 
-                    <textarea name="comment" class="review-textarea" rows="4" placeholder="Chia sẻ cảm nhận của bạn về Template này..." required></textarea>
+                    <textarea name="comment" class="review-textarea" rows="4" placeholder="Share your thoughts about this template..." required></textarea>
 
                     <div style="display: flex; gap: 10px; justify-content: space-between;">
-                        <button type="button" class="btn-action" style="background: rgba(255,255,255,0.1); color: #ffffff; flex:1;" onclick="closeReviewModal()">Hủy</button>
-                        <button type="submit" class="btn-action" style="background: #D8B4FF; color: #11052C; flex:1;">Gửi Đánh Giá</button>
+                        <button type="button" class="btn-action" style="background: rgba(255,255,255,0.1); color: #ffffff; flex:1;" onclick="closeReviewModal()">Cancel</button>
+                        <button type="submit" class="btn-action" style="background: #D8B4FF; color: #11052C; flex:1;">Submit Review</button>
                     </div>
                 </form>
             </div>

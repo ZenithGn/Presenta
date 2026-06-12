@@ -429,4 +429,74 @@ public class UserDAO {
         }
         return result;
     }
+
+    /**
+     * Get user by email.
+     */
+    public User getUserByEmail(String email) {
+        User user = null;
+        String sql = "SELECT * FROM Users WHERE email = ?";
+        try (Connection conn = DBUtils.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    user = new User(
+                            rs.getInt("userID"),
+                            rs.getString("userName"),
+                            rs.getString("password"),
+                            rs.getString("email"),
+                            rs.getInt("roleID"),
+                            rs.getBoolean("status")
+                    );
+                    user.setAvatarUrl(rs.getString("avatarURL"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    /**
+     * Register a new user from Google Login.
+     */
+    public User registerGoogleUser(String name, String email, String avatarUrl) {
+        // Generate a unique username based on the Google display name
+        String baseUsername = name.replaceAll("[^a-zA-Z0-9\\s]", "").trim();
+        if (baseUsername.isEmpty()) {
+            baseUsername = email.split("@")[0];
+        }
+        String username = baseUsername;
+        int suffix = 1;
+        while (checkDuplicate(username, "")) {
+            username = baseUsername + suffix;
+            suffix++;
+        }
+
+        String sql = "INSERT INTO Users (userName, password, email, roleID, status, avatarURL) VALUES (?, ?, ?, 2, 1, ?)";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, username);
+            // Generate a random secure password hash
+            String randomPassword = BCrypt.hashpw(java.util.UUID.randomUUID().toString(), BCrypt.gensalt());
+            ps.setString(2, randomPassword);
+            ps.setString(3, email);
+            ps.setString(4, avatarUrl);
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        int userId = rs.getInt(1);
+                        User user = new User(userId, username, null, email, 2, true);
+                        user.setAvatarUrl(avatarUrl);
+                        return user;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -11,14 +11,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Đăng nhập vào Presenta — nền tảng thiết kế sáng tạo hàng đầu.">
         <title>Đăng nhập - Presenta</title>
+        <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap" rel="stylesheet">
         <link rel="apple-touch-icon" sizes="180x180" href="${pageContext.request.contextPath}/assets/images/favicon/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="${pageContext.request.contextPath}/assets/images/favicon/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="${pageContext.request.contextPath}/assets/images/favicon/favicon-16x16.png">
         <link rel="manifest" href="${pageContext.request.contextPath}/assets/images/favicon/site.webmanifest">
         <link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/images/favicon/favicon.ico">
 
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css">
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/login.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/global.css?v=1.2">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/login.css?v=1.2">
+        <!-- Google Identity Services -->
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
     </head>
     <body>
 
@@ -32,7 +35,7 @@
                 </div>
 
                 <div class="brand-logo-area">
-                    <h2 class="brand-name">Presenta</h2>
+                    <h2 class="brand-name" style="font-family: 'Pacifico', cursive;">Presenta</h2>
                     <p class="brand-tagline">Nền tảng thiết kế sáng tạo giúp bạn biến ý tưởng thành hiện thực</p>
                 </div>
 
@@ -110,17 +113,20 @@
                         <button type="submit" class="btn-auth-submit" id="loginSubmitBtn">
                             Đăng Nhập
                         </button>
+
+                        <!-- Google Sign-In Button -->
+                        <div id="g-login-btn-container" style="width: 92%; margin: 12px auto 0 auto; min-height: 40px; display: flex; justify-content: center;"></div>
                     </form>
 
                     <div class="auth-divider">hoặc</div>
 
-                    <a href="${pageContext.request.contextPath}/MainController" class="btn-back-home" id="backHomeBtn">
+                    <a href="${pageContext.request.contextPath}/MainController" class="btn-back-home" id="backHomeBtn" style="margin-top: 20px;">
                         <svg viewBox="0 0 24 24"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
                         Quay lại Trang chủ
                     </a>
 
-                    <div class="auth-footer">
-                        <span>Chưa có tài khoản?</span>
+                    <div class="auth-footer" style="margin-top: 24px;">
+                        <span>Bạn chưa có tài khoản?</span>
                         <a href="${pageContext.request.contextPath}/MainController?action=Register" id="goRegisterLink">Đăng ký ngay</a>
                     </div>
                 </div>
@@ -139,6 +145,58 @@
                     eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
                 }
             }
+        </script>
+        <script>
+            function handleCredentialResponse(response) {
+                // Send ID Token from Google to backend Servlet
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '${pageContext.request.contextPath}/GoogleLoginController';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'credential';
+                input.value = response.credential;
+                
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+
+            function renderGoogleButton() {
+                const container = document.getElementById("g-login-btn-container");
+                if (!container) return;
+                
+                container.innerHTML = "";
+                const parentWidth = container.offsetWidth || 360;
+                
+                google.accounts.id.renderButton(
+                    container,
+                    { 
+                        theme: "filled_blue", 
+                        size: "large", 
+                        width: parentWidth, 
+                        shape: "rectangular",
+                        text: "signin_with",
+                        logo_alignment: "left"
+                    }
+                );
+            }
+
+            window.addEventListener('load', function() {
+                google.accounts.id.initialize({
+                    client_id: "${googleClientId}",
+                    callback: handleCredentialResponse
+                });
+                
+                renderGoogleButton();
+                
+                let resizeTimeout;
+                window.addEventListener('resize', function() {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(renderGoogleButton, 100);
+                });
+            });
         </script>
         <script src="${pageContext.request.contextPath}/assets/js/lang.js?v=4.0" charset="UTF-8"></script>
     </body>

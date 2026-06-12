@@ -41,6 +41,11 @@ public class LoginController extends HttpServlet {
         String url = ERROR_PAGE;
 
         try {
+            // Load Google Client ID for frontend
+            io.github.cdimascio.dotenv.Dotenv dotenv = io.github.cdimascio.dotenv.Dotenv.configure().ignoreIfMissing().load();
+            String googleClientId = dotenv.get("GOOGLE_CLIENT_ID");
+            request.setAttribute("googleClientId", googleClientId);
+
             // Lấy dữ liệu từ form
             String email = request.getParameter("email");
             String pass = request.getParameter("password");

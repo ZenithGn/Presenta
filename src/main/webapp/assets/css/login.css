@@ -48,9 +48,19 @@
 }
 
 @keyframes floatOrb {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -20px) scale(1.05); }
-    66% { transform: translate(-20px, 15px) scale(0.95); }
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate(30px, -20px) scale(1.05);
+    }
+
+    66% {
+        transform: translate(-20px, 15px) scale(0.95);
+    }
 }
 
 .brand-logo-area {
@@ -135,26 +145,41 @@
 }
 
 .floating-shapes .shape:nth-child(1) {
-    width: 120px; height: 120px;
-    top: 15%; right: 10%;
+    width: 120px;
+    height: 120px;
+    top: 15%;
+    right: 10%;
     animation: floatShape 12s ease-in-out infinite;
 }
 
 .floating-shapes .shape:nth-child(2) {
-    width: 80px; height: 80px;
-    bottom: 25%; left: 15%;
+    width: 80px;
+    height: 80px;
+    bottom: 25%;
+    left: 15%;
     animation: floatShape 9s ease-in-out infinite 2s;
 }
 
 .floating-shapes .shape:nth-child(3) {
-    width: 60px; height: 60px;
-    top: 60%; right: 25%;
+    width: 60px;
+    height: 60px;
+    top: 60%;
+    right: 25%;
     animation: floatShape 11s ease-in-out infinite 4s;
 }
 
 @keyframes floatShape {
-    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
-    50% { transform: translateY(-20px) rotate(180deg); opacity: 0.6; }
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.3;
+    }
+
+    50% {
+        transform: translateY(-20px) rotate(180deg);
+        opacity: 0.6;
+    }
 }
 
 /* --- Right Form Panel --- */
@@ -193,6 +218,7 @@
         opacity: 0;
         transform: translateY(24px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -282,7 +308,7 @@
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15), 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
-.auth-form .form-control:focus + .input-icon,
+.auth-form .form-control:focus+.input-icon,
 .auth-form .input-wrapper:focus-within .input-icon {
     color: var(--primary);
 }
@@ -370,13 +396,17 @@
 
 /* --- Submit Button --- */
 .btn-auth-submit {
-    width: 100%;
-    padding: 15px;
+    width: 91%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
     background: linear-gradient(135deg, #7c3aed 0%, #0566d9 100%);
     color: white;
     border: none;
-    border-radius: 10px;
-    font-size: 15px;
+    border-radius: 4px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -389,7 +419,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -423,7 +453,7 @@
     content: '';
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
 }
 
 /* --- Back to home link --- */
@@ -432,11 +462,12 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    width: 100%;
-    padding: 13px;
+    width: 91%;
+    height: 40px;
+    margin: 20px auto 0 auto;
     background: transparent;
     border: 1.5px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+    border-radius: 4px;
     color: var(--on-surface);
     font-size: 14px;
     font-weight: 600;
@@ -510,10 +541,23 @@
 }
 
 @keyframes shakeError {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-6px); }
-    50% { transform: translateX(6px); }
-    75% { transform: translateX(-3px); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-6px);
+    }
+
+    50% {
+        transform: translateX(6px);
+    }
+
+    75% {
+        transform: translateX(-3px);
+    }
 }
 
 /* ===================== REGISTER EXTRAS ===================== */
@@ -569,10 +613,12 @@
     .auth-brand-panel {
         display: none;
     }
+
     .auth-form-panel {
         flex: 1;
         padding: 32px 24px;
     }
+
     .auth-card {
         max-width: 420px;
     }
@@ -582,9 +628,11 @@
     .auth-form-panel {
         padding: 24px 16px;
     }
+
     .auth-card .card-header h1 {
         font-size: 26px;
     }
+
     .form-extras {
         flex-direction: column;
         gap: 12px;

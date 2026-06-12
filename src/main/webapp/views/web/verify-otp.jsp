@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Xác thực OTP - Presenta">
     <title>Xác thực OTP - Presenta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="apple-touch-icon" sizes="180x180" href="${pageContext.request.contextPath}/assets/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="${pageContext.request.contextPath}/assets/images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="${pageContext.request.contextPath}/assets/images/favicon/favicon-16x16.png">
@@ -44,7 +45,7 @@
             </div>
 
             <div class="brand-logo-area">
-                <h2 class="brand-name">Presenta</h2>
+                <h2 class="brand-name" style="font-family: 'Pacifico', cursive;">Presenta</h2>
                 <p class="brand-tagline">Chỉ còn một bước nữa để khôi phục tài khoản của bạn</p>
             </div>
 

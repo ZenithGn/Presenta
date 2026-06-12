@@ -79,7 +79,7 @@
             <aside class="profile-sidebar">
                 <div style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
 
-                    <div class="avatar-wrapper" onclick="triggerFileUpload()" title="Click để đổi ảnh đại diện">
+                    <div class="avatar-wrapper" onclick="triggerFileUpload()" title="Click to change avatar">
                         <%
                             String userAvatar = loginUser.getAvatarUrl();
                             // Đảm bảo đường dẫn là tuyệt đối từ gốc context
@@ -183,7 +183,7 @@
                         <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                                 <div>
-                                    <span style="font-weight: 700; color: white; font-size: 15px;">Order #<%= co.getOrderId()%></span>
+                                    <span style="font-weight: 700; color: white; font-size: 15px;"><span>Order #</span><%= co.getOrderId()%></span>
                                     <span style="color: #94a3b8; font-size: 13px; margin-left: 12px;">
                                         <%= co.getCreateAt() != null ? new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(co.getCreateAt()) : "N/A"%>
                                     </span>
@@ -231,7 +231,7 @@
 
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <span style="color: <%= status.equals("Cancelled") ? "#ef4444" : "#94a3b8"%>; font-size: 13px;">
-                                    📋 <%= statusLabel%>
+                                    📋 <span><%= statusLabel%></span>
                                 </span>
 
                                 <div style="display: flex; gap: 10px;">
@@ -246,7 +246,7 @@
                                     %>
                                     <a href="<%= ct.getFileURL()%>" target="_blank"
                                        style="background: #01B574; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
-                                        📥 Download File
+                                        📥 <span>Download File</span>
                                     </a>
                                     <% } %>
                                     <% } %>

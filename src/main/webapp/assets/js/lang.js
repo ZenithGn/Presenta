@@ -23,7 +23,7 @@ const dict = {
     "Template Name": "T\u00ean Template",
     "Purchase Date": "Ng\u00e0y mua",
     "\ud83d\udce5 Download": "\ud83d\udce5 Download",
-    "\u2b50 Review": "\u2b50 Review",
+    "\u2b50 Review": "\u2b50 \u0110\u00e1nh gi\u00e1",
     "You have not purchased any templates yet.": "B\u1ea1n ch\u01b0a mua s\u1ea3n ph\u1ea9m n\u00e0o.",
     "Custom Design Orders": "\u0110\u01a1n Thi\u1ebft K\u1ebf Ri\u00eang (Customize)",
     "Order #": "\u0110\u01a1n #",
@@ -37,7 +37,8 @@ const dict = {
     "Paid": "\u0110\u00e3 thanh to\u00e1n",
     "Cancelled": "\u0110\u00e3 h\u1ee7y",
     "VNPay (Maintenance)": "VNPay (B\u1ea3o tr\u00ec)",
-    "Download File": "Download File",
+    "Download File": "T\u1ea3i file",
+    "Click to change avatar": "Nh\u1ea5p \u0111\u1ec3 \u0111\u1ed5i \u1ea3nh \u0111\u1ea1i di\u1ec7n",
     "You have no custom design orders yet.": "B\u1ea1n ch\u01b0a c\u00f3 \u0111\u01a1n thi\u1ebft k\u1ebf ri\u00eang n\u00e0o.",
     "Explore the Designer Hub to hire a designer for custom requests!": "Kh\u00e1m ph\u00e1 Designer Hub \u0111\u1ec3 thu\u00ea designer thi\u1ebft k\u1ebf theo y\u00eau c\u1ea7u!",
     "Email Address": "\u0110\u1ecba ch\u1ec9 Email",
@@ -340,6 +341,19 @@ function translateNode(node, lang) {
         // Skip elements that explicitly request no translation
         if (node.classList && node.classList.contains('no-translate')) return;
         if (node.dataset && node.dataset.noTranslate) return;
+
+        // Handle title attributes
+        if (node.title) {
+            if (!node.dataset.origTitle) {
+                node.dataset.origTitle = node.title;
+            }
+            let orig = node.dataset.origTitle;
+            if (lang === 'vi' && dict[orig]) {
+                node.title = dict[orig];
+            } else if (lang === 'en') {
+                node.title = orig;
+            }
+        }
 
         // Handle input placeholders
         if (node.tagName === 'INPUT' || node.tagName === 'TEXTAREA') {

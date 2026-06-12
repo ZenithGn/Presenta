@@ -236,13 +236,6 @@
 
                                 <div style="display: flex; gap: 10px;">
                                     <% if (status.equals("Completed_Design")) {%>
-                                    <span style="background: rgba(255,255,255,0.1); color: #64748b; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; cursor: not-allowed;" title="VNPay is temporarily disabled">
-                                        💳 VNPay (Maintenance)
-                                    </span>
-                                    <a href="${pageContext.request.contextPath}/MainController?action=ProcessOrder&paymentMethod=MOMO&orderType=HIRE_DESIGNER&orderId=<%= co.getOrderId()%>"
-                                       style="background: #FF5E7A; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
-                                        💳 MoMo
-                                    </a>
                                     <a href="${pageContext.request.contextPath}/MainController?action=ProcessOrder&paymentMethod=PAYOS&orderType=HIRE_DESIGNER&orderId=<%= co.getOrderId()%>"
                                        style="background: #4ade80; color: #11052C; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
                                         💳 PayOS

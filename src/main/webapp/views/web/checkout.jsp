@@ -81,25 +81,8 @@
                         <div class="payment-methods-box">
                             <div style="margin-bottom: 30px;">
                                 <h3 style="font-size: 18px; font-weight: 700; color: #11052C; margin-bottom: 20px;">Select Payment Method</h3>
-                                <!-- Vnpay -->
-                                <label class="payment-method-label" style="display: flex; align-items: center; padding: 16px 20px; border: 1px solid #cbd5e1; border-radius: 12px; margin-bottom: 15px; cursor: not-allowed; background: #f8fafc; opacity: 0.6; transition: all 0.3s ease;" title="VNPay is temporarily disabled">
-                                    <input type="radio" name="paymentMethod" value="VNPAY" disabled style="margin-right: 15px; transform: scale(1.2); cursor: not-allowed;">
-
-                                    <img src="${pageContext.request.contextPath}/assets/images/logo/vnpay.png" alt="VNPay Icon" style="width: 36px; height: 36px; object-fit: contain; margin-right: 12px; border-radius: 4px; filter: grayscale(100%);">
-
-                                    <span style="font-size: 15px; font-weight: 600; color: #64748b;">VNPay Wallet / Banking (Disabled)</span>
-                                </label>
-                                <!-- Momo -->
-                                <label class="payment-method-label" style="display: flex; align-items: center; padding: 16px 20px; border: 1px solid #cbd5e1; border-radius: 12px; margin-bottom: 15px; cursor: pointer; background: #ffffff; transition: all 0.3s ease;">
-                                    <input type="radio" name="paymentMethod" value="MOMO" style="margin-right: 15px; transform: scale(1.2); cursor: pointer;">
-
-                                    <img src="${pageContext.request.contextPath}/assets/images/logo/momo.png" alt="MoMo Icon" style="width: 36px; height: 36px; object-fit: contain; margin-right: 12px; border-radius: 8px;">
-
-                                    <span style="font-size: 15px; font-weight: 600; color: #1e293b;">MoMo E-Wallet</span>
-                                </label>
-
-                                <label class="payment-method-label" style="display: flex; align-items: center; padding: 16px 20px; border: 1px solid #cbd5e1; border-radius: 12px; cursor: pointer; background: #ffffff; transition: all 0.3s ease;">
-                                    <input type="radio" name="paymentMethod" value="PAYOS" style="margin-right: 15px; transform: scale(1.2); cursor: pointer;">
+                                <label class="payment-method-label" style="display: flex; align-items: center; padding: 16px 20px; border: 2px solid #3b82f6; border-radius: 12px; cursor: pointer; background: #f0f9ff; transition: all 0.3s ease;">
+                                    <input type="radio" name="paymentMethod" value="PAYOS" checked style="margin-right: 15px; transform: scale(1.2); cursor: pointer;">
 
                                     <img src="${pageContext.request.contextPath}/assets/images/logo/payos.png" alt="PayOS Icon" style="width: 36px; height: 36px; object-fit: contain; margin-right: 12px; border-radius: 8px;">
 

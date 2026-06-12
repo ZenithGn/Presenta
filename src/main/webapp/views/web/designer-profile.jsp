@@ -113,7 +113,7 @@
                     <p class="dp-tagline">Motion & Interaction & Academic Presentation Designer</p>
                     <div class="dp-hero-actions">
                         <% if (roleId == 2) { %>
-                        <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin: 0;">
+                        <form action="${pageContext.request.contextPath}/MainController" method="POST" style="margin: 0;" onsubmit="return confirm(localStorage.getItem('lang') === 'en' ? 'Are you sure you want to hire this designer?' : 'Bạn có chắc chắn muốn thuê designer này không?');">
                             <input type="hidden" name="action" value="BookDesigner">
                             <input type="hidden" name="designerID" value="<%= designer.getUserID()%>">
                             <button type="submit" class="btn-primary">Book Now</button>

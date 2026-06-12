@@ -760,7 +760,7 @@ public class DesignerDAO {
             psCredit = conn.prepareStatement(creditSql);
 
             if ("HIRE_DESIGNER".equals(orderType) && hireDesignerId > 0) {
-                double share = totalPrice * 0.70;
+                double share = totalPrice * 0.95;
                 psCredit.setDouble(1, share);
                 psCredit.setInt(2, hireDesignerId);
                 psCredit.executeUpdate();
@@ -775,7 +775,7 @@ public class DesignerDAO {
                     while (rsDet.next()) {
                         double itemPrice = rsDet.getDouble("price");
                         int dId = rsDet.getInt("designerID");
-                        double share = itemPrice * 0.70;
+                        double share = itemPrice * 0.95;
                         psCredit.setDouble(1, share);
                         psCredit.setInt(2, dId);
                         psCredit.executeUpdate();

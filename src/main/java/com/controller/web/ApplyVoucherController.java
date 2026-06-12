@@ -40,11 +40,11 @@ public class ApplyVoucherController extends HttpServlet {
 
                 if (voucher != null) {
                     session.setAttribute("APPLIED_VOUCHER", voucher);
-                    session.setAttribute("VOUCHER_MSG", "Áp dụng mã thành công!");
+                    session.setAttribute("VOUCHER_MSG", "Voucher applied successfully!");
                     session.setAttribute("VOUCHER_MSG_TYPE", "success");
                 } else {
                     session.removeAttribute("APPLIED_VOUCHER");
-                    session.setAttribute("VOUCHER_MSG", "Mã giảm giá không hợp lệ hoặc đã hết hạn!");
+                    session.setAttribute("VOUCHER_MSG", "Invalid or expired voucher code!");
                     session.setAttribute("VOUCHER_MSG_TYPE", "error");
                 }
             }

@@ -126,8 +126,8 @@
                     } else {
                     %>
                     <div class="empty-cart-message">
-                        <h3>Giỏ hàng của bạn đang trống!</h3>
-                        <a href="${pageContext.request.contextPath}/MainController?action=Shop">Tiếp tục mua sắm</a>
+                        <h3>Your cart is empty!</h3>
+                        <a href="${pageContext.request.contextPath}/MainController?action=Shop">Continue shopping</a>
                     </div>
                     <% } %>
                 </div>
@@ -206,7 +206,7 @@
                             }
                         } else {
                         %>
-                        <p style="color: white; width: 100%; text-align: center;">Chưa có sản phẩm gợi ý.</p>
+                        <p style="color: white; width: 100%; text-align: center;">No recommended templates.</p>
                         <% }%>
                     </div>
                 </div>

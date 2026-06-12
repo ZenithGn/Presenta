@@ -17,7 +17,7 @@
     int roleId = loginUser.getRoleId();
     String message = (String) request.getAttribute("message");
     if (message == null)
-        message = "Đã xảy ra lỗi trong quá trình thanh toán.";
+        message = "An error occurred during the payment process.";
 %>
 
 <!DOCTYPE html>
@@ -136,7 +136,7 @@
             <div class="result-card">
                 <div class="icon-circle failed">✕</div>
                 <h1 class="result-title">Payment Failed!</h1>
-                <p class="result-desc"><%= message%><br>Vui lòng kiểm tra lại phương thức thanh toán.</p>
+                <p class="result-desc"><%= message%><br><span>Please double-check your payment method.</span></p>
                 <a href="${pageContext.request.contextPath}/MainController?action=ViewCart" class="btn-action">Back to Cart</a><br>
                 <a href="${pageContext.request.contextPath}/MainController" class="btn-secondary">Return to Homepage</a>
             </div>

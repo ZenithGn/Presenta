@@ -20,7 +20,7 @@
     }
     String message = (String) request.getAttribute("message");
     if (message == null) {
-        message = "Giao dịch đã được hoàn tất thành công!";
+        message = "Your transaction has been completed successfully!";
     }
 
     // Nhận lại danh sách sản phẩm truyền từ VNPayReturnController sang
@@ -198,10 +198,10 @@
             <div class="result-card">
                 <div class="icon-circle success">✓</div>
                 <h1 class="result-title">Payment Successful!</h1>
-                <p class="result-desc"><%= message%><br>Cảm ơn bạn đã mua hàng. File của bạn đã sẵn sàng để tải về bên dưới.</p>
+                <p class="result-desc"><%= message%><br><span>Thank you for your purchase. Your files are ready for download below.</span></p>
 
                 <div class="download-box-panel">
-                    <h2 class="download-box-title">Sản phẩm của bạn</h2>
+                    <h2 class="download-box-title">Your Products</h2>
                     <div class="download-items-list">
                         <%
                             if (purchasedTemplates != null && !purchasedTemplates.isEmpty()) {
@@ -210,14 +210,14 @@
                         <div class="download-row-item">
                             <span class="purchased-item-name" title="<%= t.getTitle()%>"><%= t.getTitle()%></span>
                             <a href="<%= t.getFileURL()%>" target="_blank" class="btn-download-zip">
-                                📥 Download (.zip)
+                                📥 <span>Download (.zip)</span>
                             </a>
                         </div>
                         <%
                             }
                         } else {
                         %>
-                        <p style="font-size: 13px; color: #64748b; margin: 0; text-align: center;">Không tìm thấy tệp tin đi kèm cho đơn hàng này.</p>
+                        <p style="font-size: 13px; color: #64748b; margin: 0; text-align: center;">No files found for this order.</p>
                         <% }%>
                     </div>
                 </div>

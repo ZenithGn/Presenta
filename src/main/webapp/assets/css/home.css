@@ -24,10 +24,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     font-weight: 800;
     color: white;
     text-decoration: none;
+    flex: 1;
 }
 .nav-links {
     display: flex;
     gap: 32px;
+    justify-content: center;
 }
 .nav-links a {
     color: var(--on-surface);
@@ -50,6 +52,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     display: flex;
     align-items: center;
     gap: 20px;
+    flex: 1;
+    justify-content: flex-end;
 }
 
 /* Main Container */

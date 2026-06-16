@@ -147,12 +147,12 @@ public class TemplateDAO {
     // Lấy sản phẩm bán chạy nhất trong vòng 7 ngày gần nhất
     public Template getBestTemplateOfTheWeek() {
         Template bestTemplate = null;
-        String sql = "SELECT TOP 1 t.*, COUNT(od.orderDetailID) as TotalSales "
+        String sql = "SELECT TOP 1 t.templateID, t.title, t.description, t.price, t.thumbnailURL, COUNT(od.orderDetailID) as TotalSales "
                 + "FROM Templates t "
                 + "JOIN OrderDetails od ON t.templateID = od.templateID "
                 + "JOIN Orders o ON od.orderID = o.orderID "
                 + "WHERE o.createAt >= DATEADD(day, -7, GETDATE()) AND o.status = 'Completed' AND o.orderType = 'BUY_TEMPLATE' "
-                + "GROUP BY t.templateID, t.designerID, t.categoryID, t.title, t.description, t.price, t.thumbnailURL, t.fileURL, t.createAt "
+                + "GROUP BY t.templateID, t.title, t.description, t.price, t.thumbnailURL "
                 + "ORDER BY TotalSales DESC";
 
         String fallbackSql = "SELECT TOP 1 * FROM Templates ORDER BY price DESC";
@@ -180,6 +180,19 @@ public class TemplateDAO {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            // In case of SQL error from the first query, try the fallback
+            try ( Connection conn = DBUtils.getConnection(); PreparedStatement ps2 = conn.prepareStatement(fallbackSql);  ResultSet rs2 = ps2.executeQuery()) {
+                if (rs2.next()) {
+                    bestTemplate = new Template();
+                    bestTemplate.setTemplateID(rs2.getInt("templateID"));
+                    bestTemplate.setTitle(rs2.getString("title"));
+                    bestTemplate.setDescription(rs2.getString("description"));
+                    bestTemplate.setPrice(rs2.getDouble("price"));
+                    bestTemplate.setThumbnailURL(rs2.getString("thumbnailURL"));
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
         return bestTemplate;
     }

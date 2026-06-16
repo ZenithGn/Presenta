@@ -28,7 +28,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     position: relative;
     display: inline-block;
     margin: 0;
-    line-height: 1;
+    line-height: 1.4;
+    padding-bottom: 10px;
 }
 
 /* BỐ CỤC CHIA 2 CỘT */
